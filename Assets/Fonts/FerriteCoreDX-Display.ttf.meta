@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 5f399f63602429d45aa35f78ede212d2
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 240
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Ferrite Core DX
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 1
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
