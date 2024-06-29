@@ -3,8 +3,6 @@ using System.Collections;
 
 public class Game : MonoBehaviour
 {
-    public static bool AlwaysReady = false;
-
     public static Game i;
 
     [SerializeField]
@@ -19,10 +17,25 @@ public class Game : MonoBehaviour
     [SerializeField]
     private float rotateIdleSpeed = 0.5f;
 
+    [Header("Debug switches")]
     [SerializeField]
     private bool alwaysReady = false;
 
+    [SerializeField]
+    private bool emulateP2 = false;
+
+    [SerializeField]
+    private bool showPerformanceInfo = false;
+
     public Level Level { get { return currentLevel; } }
+
+    public bool InGame { get { return wantsToPlay; } }
+
+    public bool AlwaysReady { get { return alwaysReady; } }
+
+    public bool ShowPerformanceInfo { get { return showPerformanceInfo; } }
+
+    public bool EmulateP2 { get { return emulateP2; } }
 
     private bool wantsToPlay = false;
 
@@ -37,11 +50,10 @@ public class Game : MonoBehaviour
 
 #else
         alwaysReady = false;
+        emulateP2 = false;
 #endif
 
         i = this;
-
-        AlwaysReady = alwaysReady;
 
         currentLevel = levels[0];
 
@@ -81,10 +93,10 @@ public class Game : MonoBehaviour
 
         for (int i = 0; i < Level.PLAYERS; i++)
         {
-            string txt = string.Empty;
-
             if (wantsToPlay)
             {
+                string txt = string.Empty;
+
                 animaticTarget = 0f;
 
                 if (currentLevel.IsPlayerReady(i))
@@ -112,14 +124,16 @@ public class Game : MonoBehaviour
                         split = Mathf.Max(split, 0.5f);
                     }
                 }
+
+                huds[i].SetText(txt);
             }
             else
             {
                 animaticTarget += Time.deltaTime;
                 split = Mathf.Sin(animaticTarget * rotateIdleSpeed);
-            }
 
-            huds[i].SetText(txt);
+                huds[i].SetTitle(i == 0 ? "X" : "Y");
+            }
         }
 
         if (shouldLockHud)

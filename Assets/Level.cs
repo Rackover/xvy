@@ -72,6 +72,21 @@ public class Level : MonoBehaviour {
 		return players[index].Weapon;
 	}
 
+	public bool IsPlayerBoosting(int index)
+    {
+		return players[index] != null && players[index].IsBoosting;
+    }
+
+    public Vector3 GetPlayerForward(int index)
+    {
+        return players[index].Transform.forward;
+    }
+
+    public Vector3 GetPlayerPosition(int index)
+	{
+		return players[index].Transform.position;
+	}
+
 	public Camera GetPlayerCamera(int index)
 	{
 		return players[index].Camera;

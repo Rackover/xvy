@@ -13,12 +13,26 @@ public class PlayerAnimation : MonoBehaviour
     [SerializeField]
     float lerpSpeed = 5f;
 
+    [SerializeField]
+    private float trailAlphaMin = 0.5f;
+
+    [SerializeField]
+    private float trailAlphaMax = 1f;
+
+    [SerializeField]
+    private TrailRenderer trail;
+
     bool wasSpawned = false;
+
+    Material dynaMat;
 
     // Start is called before the first frame update
     void Start()
     {
         transform.parent = null;
+
+        dynaMat = Instantiate(trail.sharedMaterial);
+        trail.sharedMaterial = dynaMat;
     }
 
     // Update is called once per frame
@@ -41,9 +55,28 @@ public class PlayerAnimation : MonoBehaviour
                     firstFrame ? 1f : playerMovement.SpeedAmount
                 );
 
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, 60f * (-playerMovement.VirtualJoystick.x));
+            var joyVal = 40f * -playerMovement.VirtualJoystick.x;
+
+            transform.eulerAngles = new Vector3(
+                //Mathf.Clamp(transform.eulerAngles.x, -playerMovement.MaxDownwardsAngle, playerMovement.MaxDownwardsAngle), 
+                transform.eulerAngles.x,
+                transform.eulerAngles.y, 
+                joyVal
+            );
+
+            Color trailColor = Color.Lerp(Color.white, Color.red, playerMovement.KickAmount);
+            trailColor.a = Mathf.Lerp(trailAlphaMin, trailAlphaMax, playerMovement.SpeedAmount);
+            dynaMat.SetColor("_TintColor", trailColor);
         }
 
         wasSpawned = player.IsSpawned;
+    }
+
+    void OnDestroy()
+    {
+        if (dynaMat)
+        {
+            Destroy(dynaMat);
+        }
     }
 }

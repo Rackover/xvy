@@ -2,144 +2,165 @@
 using System.Collections;
 using System;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour
+{
 
-	public event Action<Vector3, Vector3> OnSpawn;
+    public event Action<Vector3, Vector3> OnSpawn;
 
-	[SerializeField]
-	private Transform playerMovement;
+    [SerializeField]
+    private Transform playerMovement;
 
-	[SerializeField]
-	private PlayerWeapon weapon;
+    [SerializeField]
+    private PlayerWeapon weapon;
 
-	[SerializeField]
-	private PlayerCamera playerCamera;
+    [SerializeField]
+    private PlayerCamera playerCamera;
 
-	public int Index { get { return index; } }
+    public int Index { get { return index; } }
 
-	public bool IsReady { get; private set; }
+    public bool IsReady { get; private set; }
 
-	public bool IsSpawned { get; private set; }
+    public bool IsSpawned { get; private set; }
 
-	public bool IsAiming { get; private set; }
-	public bool IsBoosting { get; private set; }
-	public bool IsShooting {  get; private set; }
+    public bool IsBoosting { get; private set; }
 
-	public Vector2 StickDirection { get; private set; }
+    public bool IsShooting { get; private set; }
 
-	public Transform Transform { get { return playerMovement; } }
+    public Vector2 StickDirection { get; private set; }
 
-	public PlayerWeapon Weapon { get { return weapon; } }
+    public Transform Transform { get { return playerMovement; } }
 
-	public Camera Camera { get { return playerCamera.Camera; } }
+    public PlayerWeapon Weapon { get { return weapon; } }
 
-	private IPlayerInput input;
+    public Camera Camera { get { return playerCamera.Camera; } }
 
-	private int index;
+    private PlayerInput input;
 
-	public void Initialize(int index)
+    private int index;
+
+    public void Initialize(int index)
     {
-		if (input != null)
-		{
-			input.Dispose();
+        if (input != null)
+        {
+            input.Dispose();
         }
 
-//        input = new XInputDLLPlayerInput();
-        input = new MockInput();
-        
+        // Crashes dashboard
+        //        input = new XInputDLLPlayerInput();
+
+        //        input = new MockInput();
+        input = new XInputKernel();
+
         input.SetPlayerIndex(index);
 
-		this.index = index;
-		name = "PLAYER #" + index;
+        if (!input.GamepadPresent() && Game.i.EmulateP2)
+        {
+            input.Dispose();
+            input = new MockInput();
+            input.SetPlayerIndex(index);
+        }
 
-		IsReady = Game.AlwaysReady;
-		IsSpawned = false;
-		IsAiming = false;
-		IsBoosting = false;
-		IsShooting = false;
-		StickDirection = new Vector2();
+        this.index = index;
+        name = "PLAYER #" + index;
+
+        IsReady = Game.i.AlwaysReady;
+        IsSpawned = false;
+
+        IsBoosting = false;
+        IsShooting = false;
+        StickDirection = new Vector2();
     }
 
-	public bool GamepadConnected() { return input.GamepadPresent() || Game.AlwaysReady; }
+    public bool GamepadConnected() { return input.GamepadPresent() || Game.i.AlwaysReady; }
 
-	public bool AnyKey() { return input.AnyKey(); }
+    public void RumbleLight() { input.RumbleLightOnce(); }
 
-	public void Spawn(Transform spawner)
-	{
-		Debug.Log("Spawning "+name+" on "+spawner);
+    public bool AnyKey() { return input.AnyKey(); }
 
-		if (OnSpawn != null)
-		{
-			OnSpawn.Invoke(spawner.position, spawner.forward);
-		}
+    public void Spawn(Transform spawner)
+    {
+        Debug.Log("Spawning " + name + " on " + spawner);
 
-		IsSpawned = true;
+        if (OnSpawn != null)
+        {
+            OnSpawn.Invoke(spawner.position, spawner.forward);
+        }
+
+        IsSpawned = true;
     }
 
-	private void OnDestroy()
-	{
-		if (input != null)
-		{
-			input.Dispose();
-		}
-	}
+    private void OnDestroy()
+    {
+        if (input != null)
+        {
+            input.Dispose();
+        }
+    }
 
-	private void Update()
-	{
-		if (input == null)
-		{
-			return;
-		}
+    private void Update()
+    {
+        if (input == null)
+        {
+            return;
+        }
 
-		input.Refresh();
+        input.Refresh();
 
-		if (IsSpawned)
-		{
+        if (Game.i.InGame)
+        {
 
-			float aimAxis = input.LeftTrigger();
-			float shootAxis = input.RightTrigger();
-			StickDirection = input.GetDirection();
+            if (IsSpawned)
+            {
+
+                float aimAxis = input.RightTrigger();
+                bool shoot = input.AButton();
+                {
+                    Vector2 dir = input.GetDirection();
+
+                    if (float.IsNaN(dir.x) || float.IsInfinity(dir.x))
+                    {
+                        dir.x = 0f;
+                    }
+
+                    if (float.IsNaN(dir.y) || float.IsInfinity(dir.y))
+                    {
+                        dir.y = 0f;
+                    }
+
+                    StickDirection = dir;
+                }
 
 
-			if (aimAxis > 0f)
-			{
-				IsAiming = true;
-			}
-			else
-			{
-				IsAiming = false;
-			}
+                if (aimAxis > 0f)
+                {
+                    IsBoosting = true;
+                }
+                else
+                {
+                    IsBoosting = false;
+                }
 
-			if (shootAxis > 0f)
-			{
-				if (IsAiming)
-				{
-					if (IsBoosting)
-					{
-						// Do nothing
-					}
-					else
-					{
-						IsShooting = true;
-					}
-				}
-				else
-				{
-					IsBoosting = true;
-				}
-			}
-			else
-			{
-				IsShooting = false;
-				IsBoosting = false;
-			}
-		}
-		else
-		{
-			if (!IsReady)
-			{
-				IsReady = input.IsPressingStart();
+                if (shoot)
+                {
+                    IsShooting = true;
+                }
+                else
+                {
+                    IsShooting = false;
+                }
             }
-		}
+            else
+            {
+                if (!IsReady)
+                {
+                    IsReady = input.IsPressingStart();
+
+                    if (IsReady)
+                    {
+                        input.RumbleLightOnce();
+                    }
+                }
+            }
+        }
     }
 }

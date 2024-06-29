@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.ImageEffects;
@@ -8,8 +9,18 @@ public class PlayerCamera : MonoBehaviour
 
     [SerializeField] private float fov = 80f;
     [SerializeField] private float boostFov = 110f;
+    [SerializeField] private float kickFov = 140f;
 
     [SerializeField] private float shakeForce = 0.1f;
+
+    [SerializeField]
+    private float minBlur = 0f;
+
+    [SerializeField]
+    private float maxBlur = 0.3f;
+
+    [SerializeField]
+    private float kickBlur = 1f;
 
     [SerializeField] private MotionBlur blur;
 
@@ -31,6 +42,9 @@ public class PlayerCamera : MonoBehaviour
     private float rotationLerpSpeed = 2f;
 
     [SerializeField]
+    private float fovLerpSpeed = 4f;
+
+    [SerializeField]
     private Player player;
 
     [SerializeField]
@@ -43,6 +57,19 @@ public class PlayerCamera : MonoBehaviour
     private RenderTexture[] texes;
 
     public Camera Camera { get { return camera; } }
+
+    // (Performance)
+    public void ReplaceTexture(RenderTexture rt, RenderTexture newRt)
+    {
+        for (int i = 0; i < texes.Length; i++)
+        {
+            if (texes[i] == rt)
+            {
+                texes[i] = newRt;
+                break;
+            }
+        }
+    }
 
     // Start is called before the first frame update
     // Update is called once per frame
@@ -66,10 +93,12 @@ public class PlayerCamera : MonoBehaviour
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, firstFrame ? 1f : rotationLerpSpeed * Time.deltaTime);
 
             // Shake
-            if (playerMovement.SpeedAmount <= 1.0f && playerMovement.IsBoosting)
+            if (playerMovement.KickAmount > 0f)
             {
                 // don't
-                //camera.transform.localPosition = new Vector3(Random.value, Random.value, Random.value) * Mathf.Sin(playerMovement.SpeedAmount * Mathf.PI) * Mathf.Sign(Random.value - 0.5f) * shakeForce;
+                camera.transform.localPosition =
+                    UnityEngine.Random.insideUnitSphere * 
+                    Mathf.Sin(playerMovement.KickAmount * Mathf.PI) * Mathf.Sign(UnityEngine.Random.value - 0.5f) * shakeForce;
             }
             else
             {
@@ -78,10 +107,17 @@ public class PlayerCamera : MonoBehaviour
 
             var delta = playerMovement.SpeedAmount * playerMovement.SpeedAmount;
 
-            camera.fieldOfView = Mathf.Lerp(fov, boostFov, delta);
-            blur.blurAmount = Mathf.Lerp(0.2f, 1f, delta);
+            var fovTarget = Mathf.Lerp(fov, boostFov, delta);
+            blur.blurAmount = Mathf.Lerp(minBlur, maxBlur, delta);
+
+            if (playerMovement.KickAmount > 0F)
+            {
+                blur.blurAmount = Mathf.Lerp(blur.blurAmount, kickBlur, playerMovement.KickAmount);
+                fovTarget = Mathf.Lerp(fovTarget, kickFov, playerMovement.KickAmount);
+            }
 
             colorCorrection.saturation = Mathf.Lerp(0.8f, 1f, delta);
+            camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, fovTarget, fovLerpSpeed * Time.deltaTime);
         }
     }
 }

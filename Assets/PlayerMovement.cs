@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private float minBoost = 9f;
     [SerializeField] private float maxBoost = 40f;
+    [SerializeField] private float kickBoostBonus = 10f;
     [SerializeField] private float boostAcceleration = 5f;
     [SerializeField] private float rotationSpeed = 180f;
     [SerializeField] private float verticalStickMultiplier = -1f;
@@ -21,15 +22,24 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float pitchLerpSpeed = 4f;
 
+    [SerializeField]
+    private float kickBoostTime = 0.5f;
+
     public bool IsBoosting { get { return gasPedal >= 0.5f; } }
+
+    public float KickAmount { get { return startedBoostingAtTime.HasValue ? Mathf.Clamp01(1f - (Time.time - startedBoostingAtTime.Value) / kickBoostTime) : 0f; } }
+
     public float SpeedAmount { get { return speed / maxBoost; } }
 
     public Vector2 VirtualJoystick { get { return virtualStick; } }
+
+    public float MaxDownwardsAngle { get { return angleCap; } }
 
     private float speed;
     private float gasPedal;
     private Vector2 virtualStick;
     private Vector2 realStick;
+    private float? startedBoostingAtTime = 0f;
 
     void Awake()
     {
@@ -55,10 +65,20 @@ public class PlayerMovement : MonoBehaviour
 
     void GrabInput()
     {
-        float gasAxis = player.IsBoosting ? 1f : (player.IsAiming ? 0f : 0.5f);
-        //float gasAxis = (-Input.GetAxis("Gas")) * 0.5f + 0.5f;
+        if (startedBoostingAtTime.HasValue && !player.IsBoosting)
+        {
+            startedBoostingAtTime = null;
+        }
+        else if (!startedBoostingAtTime.HasValue && player.IsBoosting)
+        {
+            startedBoostingAtTime = Time.time;
+        }
+
+        float gasAxis = player.IsBoosting ? 1f : 0.7f;
+
 
         gasPedal = Mathf.Lerp(gasPedal, gasAxis, boostAcceleration * Time.deltaTime);
+
 
         realStick.x = player.StickDirection.x;
         realStick.y = verticalStickMultiplier * player.StickDirection.y;
@@ -70,7 +90,15 @@ public class PlayerMovement : MonoBehaviour
 
     void ApplyThrust()
     {
+        float kickSpeedBonus = 0f;
+        if (startedBoostingAtTime.HasValue)
+        {
+            kickSpeedBonus = kickBoostBonus * Mathf.Clamp01(1f - (Time.time - startedBoostingAtTime.Value) / kickBoostTime);
+        }
+
         speed = minBoost + (maxBoost - minBoost) * gasPedal;
+        speed += kickSpeedBonus;
+
         transform.position += speed * Time.deltaTime * transform.forward;
     }
 

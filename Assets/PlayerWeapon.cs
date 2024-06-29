@@ -6,6 +6,9 @@ using System.Collections.Generic;
 public class PlayerWeapon : MonoBehaviour
 {
     [SerializeField]
+    private float acquisitionDistance = 800;
+
+    [SerializeField]
     private Player player;
 
     [SerializeField]
@@ -27,17 +30,25 @@ public class PlayerWeapon : MonoBehaviour
     private float fireRate = 0.2f;
 
     [SerializeField]
+    private int burstSize = 3;
+
+    [SerializeField]
+    private float reloadTime = 1f;
+
+    [SerializeField]
     private float offCenterMultiplier = 0.5f;
+
+    public float AcquisitionDistanceMeters { get { return acquisitionDistance; } }
 
     public float Imprecision01 { get { return currentImprecision / maxImprecisionAmount; } }
 
-    public bool IsAiming { get { return player.IsAiming; } }
+    public Vector2 AimingPosition { get { return Vector2.Scale(player.StickDirection, new Vector2(1f, -1f)); } }
 
-    public Vector2 AimingPosition { get { return player.StickDirection; } }
-
-    private float lastFireTime = 0f;
+    private float reloadTimeRemaining = 0f;
 
     private bool shootLeft = false;
+
+    private int burstIndex = 0;
 
     private readonly Projectile[] activeMissiles = new Projectile[100];
 
@@ -57,12 +68,22 @@ public class PlayerWeapon : MonoBehaviour
     {
         if (player.IsSpawned)
         {
-            if (player.IsShooting)
+            if (player.IsShooting || burstIndex != 0)
             {
-                if (Time.time - lastFireTime > fireRate)
+                if (reloadTimeRemaining <= 0f)
                 {
                     Shoot();
-                    lastFireTime = Time.time;
+                    burstIndex++;
+
+                    if (burstIndex >= burstSize)
+                    {
+                        burstIndex = 0;
+                        reloadTimeRemaining = reloadTime;
+                    }
+                    else
+                    {
+                        reloadTimeRemaining = fireRate; ;
+                    }
                 }
 
                 currentImprecision = Mathf.Clamp(currentImprecision + Time.deltaTime * precisionDecreaseOverTime, 0f, maxImprecisionAmount);
@@ -77,6 +98,9 @@ public class PlayerWeapon : MonoBehaviour
             currentImprecision = 0f;
         }
 
+        reloadTimeRemaining -= Time.deltaTime;
+        reloadTimeRemaining = Mathf.Max(0f, reloadTimeRemaining);
+
         UpdateMissiles();
     }
 
@@ -89,13 +113,20 @@ public class PlayerWeapon : MonoBehaviour
             if (activeMissiles[i] == null)
             {
                 activeMissiles[i] = Pooler.DePool(this, missilePrefab);
+                activeMissiles[i].GetComponent<TrailRenderer>().Clear();
+
                 activeMissiles[i].transform.position = player.Transform.position + player.Transform.forward;
-                activeMissiles[i].transform.forward = Vector3.Lerp(player.Transform.forward, Random.insideUnitSphere, Imprecision01);
+
+                Vector3 shootDirection = (player.Transform.forward + (Random.insideUnitSphere * 2f - Vector3.one) * currentImprecision).normalized;
+
+                activeMissiles[i].transform.forward = shootDirection;
 
                 shootLeft = !shootLeft;
                 activeMissiles[i].transform.position += player.Transform.right * offCenterMultiplier * (shootLeft ? 1f : -1f);
 
                 activeMissiles[i].gameObject.SetActive(true);
+
+                player.RumbleLight();
 
                 shot = true;
 
