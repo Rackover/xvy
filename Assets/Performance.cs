@@ -31,7 +31,7 @@ public class Performance : MonoBehaviour {
 
     private void Start()
     {
-        input = new XInputKernel();
+        input = new NativeUnityInput();
         input.SetPlayerIndex(sizeIndex);
 
         performanceInfoParent.gameObject.SetActive(Game.i.ShowPerformanceInfo);

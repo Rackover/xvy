@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
         //        input = new XInputDLLPlayerInput();
 
         //        input = new MockInput();
-        input = new XInputKernel();
+        input = new NativeUnityInput();
 
         input.SetPlayerIndex(index);
 

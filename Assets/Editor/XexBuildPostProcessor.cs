@@ -19,7 +19,7 @@ public class XexBuildPostProcessor {
             new string[] { "Assets/Scene/RUN.unity" }, 
             "BUILD", 
             BuildTarget.XBOX360,
-            BuildOptions.None
+            BuildOptions.AllowDebugging
         );
     }
 
@@ -35,6 +35,8 @@ public class XexBuildPostProcessor {
             string xexTool = Path.Combine(projectPath, "xextool.exe");
 
             string xexPath = Path.Combine(pathToBuiltProject, "default.xex");
+
+            /*
             File.Copy(xexPath, Path.Combine(pathToBuiltProject, "backup.xex"));
 
             var pInfo = new System.Diagnostics.ProcessStartInfo(xexTool, "-m r "+xexPath);
@@ -46,16 +48,60 @@ public class XexBuildPostProcessor {
 
             int exitCode = pStart.ExitCode;
 
-
             if (exitCode == 0)
             {
                 Debug.Log("Xextool returned exit code " + exitCode);
-                System.Diagnostics.Process.Start("explorer", pathToBuiltProject);
             }
             else
             {
                 Debug.LogError("Xextool returned exit code "+ exitCode + "\n" + pStart.StandardOutput.ReadToEnd());
             }
+            */
+
+            // Upload
+            try
+            {
+
+                var files = Directory.GetFileSystemEntries(pathToBuiltProject);
+                using (System.Net.WebClient client = new System.Net.WebClient())
+                {
+                    client.Credentials = new System.Net.NetworkCredential("xboxftp", ".");
+                    foreach (string file in files)
+                    {
+                        if (file.StartsWith("."))
+                        {
+                            continue;
+                        }
+
+                        if (file.Contains("XenonPlayer"))
+                        {
+                            continue;
+                        }
+
+                        if (Directory.Exists(file))
+                        {
+                            continue;
+                        }
+
+                        const string xboxPath = "/Usb0/X360/xplane";
+                        string relativePath = file.Substring(pathToBuiltProject.Length+1);
+                        string targetPath = "ftp://169.254.8.8/" + xboxPath + "/" + relativePath;
+
+                        Debug.Log("Uploading to " + targetPath + "...");
+
+                        client.UploadFile(targetPath, file);
+
+                        Debug.Log("Done uploading " + targetPath);
+                    }
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.Log(e);
+
+                System.Diagnostics.Process.Start("explorer", pathToBuiltProject);
+            }
+
         }
     }
 }
