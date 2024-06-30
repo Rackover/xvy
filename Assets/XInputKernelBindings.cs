@@ -324,6 +324,13 @@ namespace XInputBindings
         [DllImport("XINPUT9_1_0.DLL")]
         private static extern uint XInputSetState(uint userIndex, ref XINPUT_VIBRATION vibration);
 #else
+        /*
+        [DllImport("__Internal")]
+        private static extern uint XInputGetState(uint userIndex, out XINPUT_STATE_GAMEPAD state);
+
+        [DllImport("__Internal")]
+        private static extern uint XInputSetState(uint userIndex, ref XINPUT_VIBRATION vibration);
+        */
 
         private static uint XInputGetState(uint userIndex, out XINPUT_STATE_GAMEPAD vibration)
         {
@@ -334,6 +341,20 @@ namespace XInputBindings
         {
             return XamInputSetState(userIndex, 0, ref vibration, 0, 0, 0);
         }
+
+        /*
+        
+        private static uint XamInputGetState(uint userIndex, uint unknown, out XINPUT_STATE_GAMEPAD state)
+        {
+            state = new XINPUT_STATE_GAMEPAD();
+            return 0;
+        }
+
+        private static uint XamInputSetState(uint userIndex, uint unknown, ref XINPUT_VIBRATION vibration, uint unknownA, uint unknownB, uint unknownC)
+        {
+            return 0;
+        }
+        */
 
         [DllImport("__Internal")]
         private static extern uint XamInputGetState(uint userIndex, uint unknown, out XINPUT_STATE_GAMEPAD state);

@@ -50,6 +50,7 @@ public class XexBuildPostProcessor {
             if (exitCode == 0)
             {
                 Debug.Log("Xextool returned exit code " + exitCode);
+                System.Diagnostics.Process.Start("explorer", pathToBuiltProject);
             }
             else
             {
