@@ -17,6 +17,16 @@ public class NativeUnityInput : PlayerInput {
         }
     }
 
+    protected override void SetVibration(float leftValue, float rightValue)
+    {
+#if X360
+        X360Core.SetControllerVibration((uint)playerIndex, leftValue, rightValue);
+#else
+
+        base.SetVibration(leftValue, rightValue);
+#endif
+    }
+
     public override bool GamepadPresent()
     {
         return Input.GetJoystickNames().Length > playerIndex;
