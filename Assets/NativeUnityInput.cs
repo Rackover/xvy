@@ -27,6 +27,11 @@ public class NativeUnityInput : PlayerInput {
 #endif
     }
 
+    public override Vector2 GetDPad()
+    {
+        return new Vector2(inputStates[NativeUnityInputMappings.GamepadInput.DPadX], inputStates[NativeUnityInputMappings.GamepadInput.DPadY]);
+    }
+
     public override bool GamepadPresent()
     {
         return Input.GetJoystickNames().Length > playerIndex;
@@ -74,13 +79,16 @@ public class NativeUnityInput : PlayerInput {
     {
         for (int i = 0; i < NativeUnityInputMappings.axes.Length; i++)
         {
-            inputStates[NativeUnityInputMappings.axes[i].name] = Input.GetAxis(NativeUnityInputMappings.GetVirtualInputName(NativeUnityInputMappings.axes[i].name, playerIndex));
+            string name = NativeUnityInputMappings.GetVirtualInputName(NativeUnityInputMappings.axes[i].name, playerIndex);
+            inputStates[NativeUnityInputMappings.axes[i].name] = Input.GetAxis(name);
         }
 
         for (int i = 0; i < NativeUnityInputMappings.buttons.Length; i++)
         {
+            string name = NativeUnityInputMappings.GetVirtualInputName(NativeUnityInputMappings.buttons[i].name, playerIndex);
+
             inputStates[NativeUnityInputMappings.buttons[i].name] = 
-                Input.GetButton(NativeUnityInputMappings.GetVirtualInputName(NativeUnityInputMappings.buttons[i].name, playerIndex)) ? 1f : 0f;
+                Input.GetButton(name) ? 1f : 0f;
         }
     }
 

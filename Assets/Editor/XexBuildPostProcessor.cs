@@ -32,11 +32,12 @@ public class XexBuildPostProcessor {
 
             string projectPath = Path.GetDirectoryName(assets);
 
+
+            /*
             string xexTool = Path.Combine(projectPath, "xextool.exe");
 
             string xexPath = Path.Combine(pathToBuiltProject, "default.xex");
 
-            /*
             File.Copy(xexPath, Path.Combine(pathToBuiltProject, "backup.xex"));
 
             var pInfo = new System.Diagnostics.ProcessStartInfo(xexTool, "-m r "+xexPath);

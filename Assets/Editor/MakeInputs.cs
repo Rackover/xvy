@@ -60,7 +60,7 @@ InputManager:
         builder.AppendLine("    descriptiveNegativeName:");
 
         builder.AppendLine("    negativeButton:");
-        builder.AppendLine("    positiveButton: joystick "+playerIndex+" "+button.path);
+        builder.AppendLine("    positiveButton: joystick "+button.path);
         builder.AppendLine("    altNegativeButton:");
         builder.AppendLine("    altPositiveButton:");
 
@@ -71,7 +71,7 @@ InputManager:
         builder.AppendLine("    invert: 0");
         builder.AppendLine("    type: 0");
         builder.AppendLine("    axis: 0");
-        builder.AppendLine("    joyNum: " + playerIndex);
+        builder.AppendLine("    joyNum: " + (playerIndex + 1));
     }
 
     private static void AddInput(StringBuilder builder, int playerIndex, ref NativeUnityInputMappings.Axis axis)
@@ -92,6 +92,6 @@ InputManager:
         builder.AppendLine("    invert: 0");
         builder.AppendLine("    type: 2");
         builder.AppendLine("    axis: "+axis.index);
-        builder.AppendLine("    joyNum: "+playerIndex);
+        builder.AppendLine("    joyNum: "+ (playerIndex + 1));
     }
 }
