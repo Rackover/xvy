@@ -24,6 +24,9 @@ public class SplitRenders : MonoBehaviour
     private float verticalVisibilityOffset = 0.1f;
 
     [SerializeField]
+    private RectTransform bar;
+
+    [SerializeField]
     private CanvasScaler canvasScaler;
 
     [SerializeField]
@@ -123,6 +126,9 @@ public class SplitRenders : MonoBehaviour
                 Vector2.up * vOffset * verticalVisibilityOffset * CanvasSize.y;
 
         }
+
+        bar.position = maskTransform.position;
+        bar.rotation = maskTransform.rotation;
     }
 
 #if UNITY_EDITOR

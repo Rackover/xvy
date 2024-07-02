@@ -22,7 +22,7 @@ public class PlayerAnimation : MonoBehaviour
     [SerializeField]
     private TrailRenderer trail;
 
-    bool wasSpawned = false;
+    bool wasAlive = false;
 
     Material dynaMat;
 
@@ -38,23 +38,15 @@ public class PlayerAnimation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (player.IsSpawned)
+        if (player.IsAlive)
         {
-            bool firstFrame = !wasSpawned;
+            bool firstFrame = !wasAlive;
 
             var localPos = playerMovement.transform.InverseTransformPoint(transform.position);
             localPos.z = 0f;
             transform.position = playerMovement.transform.TransformPoint(localPos);
 
-            transform.position = Vector3.Lerp(transform.position, playerMovement.transform.position, firstFrame ? 1f : lerpSpeed * Time.deltaTime);
-
-            transform.forward =
-               Vector3.Lerp(
-                   transform.forward,
-                    playerMovement.transform.TransformDirection(new Vector3(playerMovement.VirtualJoystick.x, playerMovement.VirtualJoystick.y, 1f).normalized),
-                    firstFrame ? 1f : playerMovement.SpeedAmount
-                );
-
+            CatchUpPositionAndForward(firstFrame ? 1f : lerpSpeed * Time.deltaTime, firstFrame ? 1f : playerMovement.SpeedAmount);
             var joyVal = 40f * -playerMovement.VirtualJoystick.x;
 
             transform.eulerAngles = new Vector3(
@@ -68,8 +60,24 @@ public class PlayerAnimation : MonoBehaviour
             trailColor.a = Mathf.Lerp(trailAlphaMin, trailAlphaMax, playerMovement.SpeedAmount);
             dynaMat.SetColor("_TintColor", trailColor);
         }
+    }
 
-        wasSpawned = player.IsSpawned;
+    void CatchUpPositionAndForward(float letpPosition, float lerpForward)
+    {
+        transform.position = Vector3.Lerp(transform.position, playerMovement.transform.position, letpPosition);
+
+        transform.forward =
+           Vector3.Lerp(
+               transform.forward,
+                playerMovement.transform.TransformDirection(new Vector3(playerMovement.VirtualJoystick.x, playerMovement.VirtualJoystick.y, 1f).normalized),
+                lerpForward
+            );
+
+    }
+
+    void OnEnable()
+    {
+        CatchUpPositionAndForward(1f, 1f);
     }
 
     void OnDestroy()

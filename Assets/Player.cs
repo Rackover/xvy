@@ -4,8 +4,11 @@ using System;
 
 public class Player : MonoBehaviour
 {
+    public event Action OnKilled;
 
-    public event Action<Vector3, Vector3> OnSpawn;
+    public event Action OnKilledByCollision;
+    public event Action OnKilledByEnemy;
+    public event Action<Vector3, Vector3> OnBirthed;
 
     [SerializeField]
     private Transform playerMovement;
@@ -14,7 +17,16 @@ public class Player : MonoBehaviour
     private PlayerWeapon weapon;
 
     [SerializeField]
+    private PlayerCollisions collisions;
+
+    [SerializeField]
     private PlayerCamera playerCamera;
+
+    [SerializeField]
+    private ParticleSystem deathShuriken;
+
+    [SerializeField]
+    private Transform visualsTransform;
 
     public int Index { get { return index; } }
 
@@ -22,7 +34,13 @@ public class Player : MonoBehaviour
 
     public bool IsSpawned { get; private set; }
 
+    public bool IsBeingHomedTo { get { return Game.i.Level.GetPlayerWeapon(1 - Index).HomingMissileAlive; } }
+
+    public bool IsAlive { get; private set; }
+
     public bool IsBoosting { get; private set; }
+
+    public bool IsAiming { get; private set; }
 
     public bool IsShooting { get; private set; }
 
@@ -74,19 +92,81 @@ public class Player : MonoBehaviour
     public bool GamepadConnected() { return input.GamepadPresent() || Game.i.AlwaysReady; }
 
     public void RumbleLight() { input.RumbleLightOnce(); }
+    public void RumbleHeavy() { input.RumbleHeavyOnce(); }
+    public void RumbleForSeconds(float seconds) { input.RumbleForSeconds(false, seconds); }
 
     public bool AnyKey() { return input.AnyKey(); }
 
-    public void Spawn(Transform spawner)
+    public void Birth(Transform spawner)
     {
         Debug.Log("Spawning " + name + " on " + spawner);
 
-        if (OnSpawn != null)
+        IsSpawned = true;
+        IsAlive = true;
+        visualsTransform.gameObject.SetActive(true);
+
+        if (OnBirthed != null)
         {
-            OnSpawn.Invoke(spawner.position, spawner.forward);
+            OnBirthed.Invoke(spawner.position, spawner.forward);
+        }
+    }
+
+    public void NotifyKilled()
+    {
+        IsAlive = false;
+        PlayDeathAnimation();
+
+        if (OnKilledByCollision != null)
+        {
+            OnKilledByEnemy.Invoke();
         }
 
-        IsSpawned = true;
+        if (OnKilled != null)
+        {
+            OnKilled.Invoke();
+        }
+    }
+
+    public void DeSpawn()
+    {
+        IsSpawned = false;
+    }
+
+    public void PlayDeathAnimation()
+    {
+        deathShuriken.Play();
+        visualsTransform.gameObject.SetActive(false);
+        RumbleForSeconds(0.4f);
+    }
+
+    private void Awake()
+    {
+        collisions.OnCollide += Collisions_OnCollide;
+        visualsTransform.gameObject.SetActive(false);
+    }
+
+    public void NotifyOobDeath()
+    {
+        Collisions_OnCollide(null);
+    }
+
+    private void Collisions_OnCollide(Collision _)
+    {
+        if (IsAlive)
+        {
+            IsAlive = false;
+            PlayDeathAnimation();
+
+            if (OnKilledByCollision != null)
+            {
+                OnKilledByCollision.Invoke();
+            }
+
+            if (OnKilled != null)
+            {
+                OnKilled.Invoke();
+            }
+        }
     }
 
     private void OnDestroy()
@@ -111,42 +191,54 @@ public class Player : MonoBehaviour
 
             if (IsSpawned)
             {
-
-                float aimAxis = input.RightTrigger();
-                bool shoot = input.AButton();
+                if (IsAlive)
                 {
-                    Vector2 dir = input.GetDirection();
-
-                    if (float.IsNaN(dir.x) || float.IsInfinity(dir.x))
+                    float gasAxis = input.RightTrigger();
+                    float antiGasAxis = input.LeftTrigger();
+                    bool shoot = input.AButton();
                     {
-                        dir.x = 0f;
+                        Vector2 dir = input.GetDirection();
+
+                        if (float.IsNaN(dir.x) || float.IsInfinity(dir.x))
+                        {
+                            dir.x = 0f;
+                        }
+
+                        if (float.IsNaN(dir.y) || float.IsInfinity(dir.y))
+                        {
+                            dir.y = 0f;
+                        }
+
+                        StickDirection = dir;
                     }
 
-                    if (float.IsNaN(dir.y) || float.IsInfinity(dir.y))
+
+                    if (gasAxis > 0f)
                     {
-                        dir.y = 0f;
+                        IsBoosting = true;
+                    }
+                    else
+                    {
+                        IsBoosting = false;
                     }
 
-                    StickDirection = dir;
-                }
+                    if (antiGasAxis > 0f)
+                    {
+                        IsAiming = true;
+                    }
+                    else
+                    {
+                        IsAiming = false;
+                    }
 
-
-                if (aimAxis > 0f)
-                {
-                    IsBoosting = true;
-                }
-                else
-                {
-                    IsBoosting = false;
-                }
-
-                if (shoot)
-                {
-                    IsShooting = true;
-                }
-                else
-                {
-                    IsShooting = false;
+                    if (shoot)
+                    {
+                        IsShooting = true;
+                    }
+                    else
+                    {
+                        IsShooting = false;
+                    }
                 }
             }
             else

@@ -27,7 +27,7 @@ public class MockInput : PlayerInput {
 
     public override bool AButton()
     {
-        return Mathf.Sin(Time.time) > 0.5f && Random.value > 0.1f;
+        return false;
     }
 
     public override float RightTrigger()
@@ -47,6 +47,6 @@ public class MockInput : PlayerInput {
 
     public override UnityEngine.Vector2 GetDirection()
     {
-        return new Vector2(Mathf.Sin(Time.time + playerIndex), Mathf.Cos(Time.time + playerIndex));
+        return new Vector2(Mathf.Sin(Time.time + playerIndex), 0.4f);
     }    
 }

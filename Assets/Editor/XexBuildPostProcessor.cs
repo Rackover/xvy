@@ -28,12 +28,12 @@ public class XexBuildPostProcessor {
     {
         if (target == BuildTarget.XBOX360)
         {
+
+            /*
+             
             string assets = Application.dataPath;
 
             string projectPath = Path.GetDirectoryName(assets);
-
-
-            /*
             string xexTool = Path.Combine(projectPath, "xextool.exe");
 
             string xexPath = Path.Combine(pathToBuiltProject, "default.xex");

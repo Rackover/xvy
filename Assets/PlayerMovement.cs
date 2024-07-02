@@ -29,6 +29,8 @@ public class PlayerMovement : MonoBehaviour
 
     public float KickAmount { get { return startedBoostingAtTime.HasValue ? Mathf.Clamp01(1f - (Time.time - startedBoostingAtTime.Value) / kickBoostTime) : 0f; } }
 
+    public float BoostAmount { get { return (speed - minBoost) / (maxBoost - minBoost); } }
+
     public float SpeedAmount { get { return speed / maxBoost; } }
 
     public Vector2 VirtualJoystick { get { return virtualStick; } }
@@ -43,7 +45,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Awake()
     {
-        player.OnSpawn += Player_OnSpawn;
+        player.OnBirthed += Player_OnSpawn;
     }
 
     private void Player_OnSpawn(Vector3 position, Vector3 direction)
@@ -54,7 +56,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (player.IsSpawned)
+        if (player.IsAlive)
         {
             GrabInput();
 
@@ -74,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
             startedBoostingAtTime = Time.time;
         }
 
-        float gasAxis = player.IsBoosting ? 1f : 0.7f;
+        float gasAxis = player.IsBoosting ? 1f : 0f;
 
 
         gasPedal = Mathf.Lerp(gasPedal, gasAxis, boostAcceleration * Time.deltaTime);
@@ -85,6 +87,12 @@ public class PlayerMovement : MonoBehaviour
 
         virtualStick.x = Mathf.Lerp(virtualStick.x, realStick.x, rollLerpSpeed * Time.deltaTime);
         virtualStick.y = Mathf.Lerp(virtualStick.y, realStick.y, pitchLerpSpeed * Time.deltaTime);
+
+        if (realStick.y > virtualStick.y && player.IsBoosting && transform.forward.y < -0.3f)
+        {
+            // giving them a hand
+            virtualStick.y = Mathf.Lerp(virtualStick.y, realStick.y, pitchLerpSpeed * Time.deltaTime * 0.3f);
+        }
 
     }
 

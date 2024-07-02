@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
+using System.Collections.Generic;
 
 public class Game : MonoBehaviour
 {
     public static Game i;
+
+    public event Action OnLevelLoaded;
 
     [SerializeField]
     private Level[] levels;
@@ -13,6 +17,9 @@ public class Game : MonoBehaviour
 
     [SerializeField]
     private PlayerHUD[] huds = new PlayerHUD[Level.PLAYERS];
+
+    [SerializeField]
+    private ScoreAnimation scoreAnim;
 
     [SerializeField]
     private float rotateIdleSpeed = 0.5f;
@@ -27,11 +34,21 @@ public class Game : MonoBehaviour
     [SerializeField]
     private bool showPerformanceInfo = false;
 
+    [SerializeField]
+    private bool alwaysHoming = false;
+
+    [SerializeField]
+    private RenderTexture[] texes;
+
+    public IList<RenderTexture> Texes { get { return texes; } }
+
     public Level Level { get { return currentLevel; } }
 
     public bool InGame { get { return wantsToPlay; } }
 
     public bool AlwaysReady { get { return alwaysReady; } }
+
+    public bool AlwaysHoming { get { return alwaysHoming; } }
 
     public bool ShowPerformanceInfo { get { return showPerformanceInfo; } }
 
@@ -57,7 +74,24 @@ public class Game : MonoBehaviour
 
         currentLevel = levels[0];
 
+        for (int playerIndex = 0; playerIndex < huds.Length; playerIndex++)
+        {
+            huds[playerIndex].SetID(playerIndex);
+        }
+
         InitLevel();
+    }
+
+    public void ReplaceTexture(RenderTexture rt, RenderTexture newRt)
+    {
+        for (int i = 0; i < texes.Length; i++)
+        {
+            if (texes[i] == rt)
+            {
+                texes[i] = newRt;
+                break;
+            }
+        }
     }
 
     private void InitLevel()
@@ -69,6 +103,11 @@ public class Game : MonoBehaviour
         Transform[] targets = currentLevel.GetTrackingTargets();
 
         splitRenders.SetTrackingTargets(targets);
+
+        if (OnLevelLoaded != null)
+        {
+            OnLevelLoaded.Invoke();
+        }
     }
 
     void Update()
@@ -89,6 +128,7 @@ public class Game : MonoBehaviour
     void UpdateHud()
     {
         bool shouldLockHud = true;
+        bool bothPlayersAlive = true;
         float split = 0.5f;
 
         for (int i = 0; i < Level.PLAYERS; i++)
@@ -103,16 +143,32 @@ public class Game : MonoBehaviour
                 {
                     if (currentLevel.HasPlayerSpawned(i))
                     {
-                        shouldLockHud = false;
+                        if (currentLevel.IsPlayerAlive(i))
+                        {
+
+                        }
+                        else
+                        {
+                            bothPlayersAlive = false;
+                            shouldLockHud = true;
+                            split = 0.5f;
+
+                            if (huds[i].IsReadyForRebirth && !scoreAnim.IsAnimating)
+                            {
+                                Game.i.Level.RebirthPlayers();
+                            }
+                        }
                     }
                     else
                     {
+                        bothPlayersAlive = false;
                         txt = "WAITING FOR OTHER PLAYERS";
                         split = Mathf.Max(split, 1f);
                     }
                 }
                 else
                 {
+                    bothPlayersAlive = false;
                     if (currentLevel.IsPlayerConnected(i))
                     {
                         txt = "READY UP";
@@ -129,6 +185,7 @@ public class Game : MonoBehaviour
             }
             else
             {
+                bothPlayersAlive = false;
                 animaticTarget += Time.deltaTime;
                 split = Mathf.Sin(animaticTarget * rotateIdleSpeed);
 
@@ -136,7 +193,7 @@ public class Game : MonoBehaviour
             }
         }
 
-        if (shouldLockHud)
+        if (shouldLockHud  && !bothPlayersAlive)
         {
             splitRenders.Lock(split);
         }

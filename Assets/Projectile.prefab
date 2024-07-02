@@ -77,10 +77,10 @@ TrailRenderer:
   m_Colors:
     m_Color[0]:
       serializedVersion: 2
-      rgba: 4294967295
+      rgba: 4278190080
     m_Color[1]:
       serializedVersion: 2
-      rgba: 4294967295
+      rgba: 4278190335
     m_Color[2]:
       serializedVersion: 2
       rgba: 4294967295
@@ -90,7 +90,7 @@ TrailRenderer:
     m_Color[4]:
       serializedVersion: 2
       rgba: 16777215
-  m_MinVertexDistance: 0.1
+  m_MinVertexDistance: 1
   m_Autodestruct: 0
 --- !u!114 &114000010455167594
 MonoBehaviour:
@@ -104,8 +104,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifespan: 3
-  detonationDistance: 4
-  velocity: 190
+  detonationDistance: 8
+  velocity: 220
 --- !u!123 &123000014057756808
 LensFlare:
   m_ObjectHideFlags: 1

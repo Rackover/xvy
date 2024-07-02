@@ -60,7 +60,7 @@ InputManager:
         builder.AppendLine("    descriptiveNegativeName:");
 
         builder.AppendLine("    negativeButton:");
-        builder.AppendLine("    positiveButton: joystick "+button.path);
+        builder.AppendLine("    positiveButton: joystick "+(playerIndex + 1)+" "+button.path);
         builder.AppendLine("    altNegativeButton:");
         builder.AppendLine("    altPositiveButton:");
 

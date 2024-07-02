@@ -22,6 +22,9 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField]
     private float kickBlur = 1f;
 
+    [SerializeField]
+    private float maxSpeedLinesOpacity = 0.3f;
+
     [SerializeField] private MotionBlur blur;
 
     [SerializeField] private ColorCorrectionCurves colorCorrection;
@@ -54,22 +57,13 @@ public class PlayerCamera : MonoBehaviour
     private new Camera camera;
 
     [SerializeField]
-    private RenderTexture[] texes;
+    private ParticleSystem speedLines;
 
     public Camera Camera { get { return camera; } }
 
-    // (Performance)
-    public void ReplaceTexture(RenderTexture rt, RenderTexture newRt)
-    {
-        for (int i = 0; i < texes.Length; i++)
-        {
-            if (texes[i] == rt)
-            {
-                texes[i] = newRt;
-                break;
-            }
-        }
-    }
+    private Vector3 lastPosition;
+    private Vector3 lastVelocity;
+
 
     // Start is called before the first frame update
     // Update is called once per frame
@@ -77,27 +71,40 @@ public class PlayerCamera : MonoBehaviour
     {
         bool wasSpawned = camera.enabled;
         camera.enabled = player.IsSpawned;
+        speedLines.gameObject.SetActive(player.IsSpawned);
 
         if (player.IsSpawned)
         {
             bool firstFrame = wasSpawned;
-            camera.targetTexture = texes[player.Index];
+            camera.targetTexture = Game.i.Texes[player.Index];
 
-            transform.position = playerMovement.transform.TransformPoint(new Vector3(0f, verticalDistance, behindDistance + split.HorizontalAmount * behindDistanceHorizontalSplitBonus));
+            if (player.IsAlive)
+            {
+                transform.position = playerMovement.transform.TransformPoint(new Vector3(0f, verticalDistance, behindDistance + split.HorizontalAmount * behindDistanceHorizontalSplitBonus));
+              
+                lastVelocity = transform.position - lastPosition;
+                lastPosition = transform.position;
+            }
+            else
+            {
+                transform.position += lastVelocity;
+                lastVelocity = Vector3.Lerp(lastVelocity, Vector3.zero, Time.deltaTime * 8);
+            }
+
             Quaternion targetRot = Quaternion.LookRotation(
-                playerMovement.transform.position 
-                + playerMovement.transform.up * verticalDistance
-                - transform.position
-            );
+                  playerMovement.transform.position
+                  + playerMovement.transform.up * verticalDistance
+                  - transform.position
+              );
 
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, firstFrame ? 1f : rotationLerpSpeed * Time.deltaTime);
 
+
             // Shake
-            if (playerMovement.KickAmount > 0f)
+            if (!player.IsAlive || (playerMovement.KickAmount > 0f && player.IsAlive))
             {
-                // don't
                 camera.transform.localPosition =
-                    UnityEngine.Random.insideUnitSphere * 
+                    UnityEngine.Random.insideUnitSphere *
                     Mathf.Sin(playerMovement.KickAmount * Mathf.PI) * Mathf.Sign(UnityEngine.Random.value - 0.5f) * shakeForce;
             }
             else
@@ -108,16 +115,32 @@ public class PlayerCamera : MonoBehaviour
             var delta = playerMovement.SpeedAmount * playerMovement.SpeedAmount;
 
             var fovTarget = Mathf.Lerp(fov, boostFov, delta);
-            blur.blurAmount = Mathf.Lerp(minBlur, maxBlur, delta);
 
-            if (playerMovement.KickAmount > 0F)
+            speedLines.startColor = Color.Lerp(new Color(1f, 1f, 1f, 0f), new Color(1f, 1f, 1f, maxSpeedLinesOpacity), playerMovement.BoostAmount * playerMovement.BoostAmount);
+
+            if (player.IsAlive)
             {
-                blur.blurAmount = Mathf.Lerp(blur.blurAmount, kickBlur, playerMovement.KickAmount);
-                fovTarget = Mathf.Lerp(fovTarget, kickFov, playerMovement.KickAmount);
-            }
+                blur.blurAmount = Mathf.Lerp(minBlur, maxBlur, delta);
 
-            colorCorrection.saturation = Mathf.Lerp(0.8f, 1f, delta);
-            camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, fovTarget, fovLerpSpeed * Time.deltaTime);
+                if (playerMovement.KickAmount > 0F)
+                {
+                    blur.blurAmount = Mathf.Lerp(blur.blurAmount, kickBlur, playerMovement.KickAmount);
+                    fovTarget = Mathf.Lerp(fovTarget, kickFov, playerMovement.KickAmount);
+                }
+
+                colorCorrection.saturation = Mathf.Lerp(1f, 1.2f, delta);
+                camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, fovTarget, fovLerpSpeed * Time.deltaTime);
+
+                if (player.IsBeingHomedTo)
+                {
+                    // Feedback anyone??
+                }
+            }
+            else
+            {
+                blur.blurAmount = 0f;
+                colorCorrection.saturation = Mathf.Clamp01(colorCorrection.saturation - Time.deltaTime);
+            }
         }
     }
 }

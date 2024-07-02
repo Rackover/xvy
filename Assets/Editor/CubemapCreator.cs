@@ -40,15 +40,15 @@ public class CubemapCreator {
             RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
             camera.targetTexture = rt;
             Texture2D screenShot = new Texture2D(resWidth, resHeight, TextureFormat.RGB24, false);
-            screenShot.filterMode = FilterMode.Bilinear;
-            screenShot.wrapMode = TextureWrapMode.Clamp;
-
             camera.Render();
             RenderTexture.active = rt;
             screenShot.ReadPixels(new Rect(0, 0, resWidth, resHeight), 0, 0);
             camera.targetTexture = null;
             RenderTexture.active = null; // JC: added to avoid errors
             UnityEngine.Object.DestroyImmediate(rt);
+
+            screenShot.filterMode = FilterMode.Bilinear;
+            screenShot.wrapMode = TextureWrapMode.Clamp;
 
             byte[] bytes = screenShot.EncodeToPNG();
             string dir = Application.dataPath + "/CubemapRenders/LAST/";
@@ -62,6 +62,8 @@ public class CubemapCreator {
 
 
         GameObject.DestroyImmediate(obj);
+
+        AssetDatabase.Refresh();
     }
 
 #endif

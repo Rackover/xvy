@@ -139,11 +139,7 @@ public class Performance : MonoBehaviour {
 
             for (int i = 0; i < renderTextureSetters[rt].Count; i++)
             {
-                for (int pCameraIndex = 0; pCameraIndex < playerCameras.Length; pCameraIndex++)
-                {
-                    playerCameras[pCameraIndex].ReplaceTexture(rt, newRenderTexture);
-                }
-
+                Game.i.ReplaceTexture(rt, newRenderTexture);
                 renderTextureSetters[rt][i](newRenderTexture);
             }
 
