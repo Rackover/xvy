@@ -49,6 +49,8 @@ public class SplitRenders : MonoBehaviour
 
     private float flipTarget = 0f;
 
+    private float winnerSplitAmount = 0f;
+
     private bool isLocked = false;
 
     public void SetTrackingTargets(Transform[] targets)
@@ -75,14 +77,32 @@ public class SplitRenders : MonoBehaviour
     {
         if (transforms != null)
         {
-            if (!isLocked)
+            if (Game.i.Level.GameOver)
+            {
+                UpdateWinnerSplit();
+            }
+            else if (!isLocked)
             {
                 ComputeSplit();
             }
 
             flip = Mathf.Lerp(flip, flipTarget, Time.deltaTime * 6f);
 
+
             UpdateSplit();
+        }
+    }
+
+    void UpdateWinnerSplit()
+    {
+        if (Game.i.Level.GameOver)
+        {
+            winnerSplitAmount += Time.deltaTime;
+            winnerSplitAmount = Mathf.Clamp01(winnerSplitAmount);
+        }
+        else
+        {
+            winnerSplitAmount = 0f;
         }
     }
 
@@ -126,6 +146,27 @@ public class SplitRenders : MonoBehaviour
                 Vector2.up * vOffset * verticalVisibilityOffset * CanvasSize.y;
 
         }
+
+        if (Game.i && Game.i.Level.GameOver)
+        {
+            if (Game.i.Level.Winner == 0)
+            {
+                topTransform.anchoredPosition = Vector3.Lerp(topTransform.anchoredPosition, Vector3.zero, winnerSplitAmount);
+                maskTransform.anchoredPosition = new Vector2(
+                    maskTransform.anchoredPosition.x,
+                    Mathf.Lerp(0f, -maskTransform.sizeDelta.y/2f, winnerSplitAmount)
+                );
+            }
+            else
+            {
+                childMaskTransform.anchoredPosition = Vector3.Lerp(childMaskTransform.anchoredPosition, Vector3.zero, winnerSplitAmount);
+                maskTransform.anchoredPosition = new Vector2(
+                    maskTransform.anchoredPosition.x,
+                    Mathf.Lerp(0f, -maskTransform.sizeDelta.y/2f, winnerSplitAmount)
+                );
+            }
+        }
+
 
         bar.position = maskTransform.position;
         bar.rotation = maskTransform.rotation;

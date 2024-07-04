@@ -27,6 +27,8 @@ public class PlayerMovement : MonoBehaviour
 
     public bool IsBoosting { get { return gasPedal >= 0.5f; } }
 
+    public float Speed { get { return speed; } }
+
     public float KickAmount { get { return startedBoostingAtTime.HasValue ? Mathf.Clamp01(1f - (Time.time - startedBoostingAtTime.Value) / kickBoostTime) : 0f; } }
 
     public float BoostAmount { get { return (speed - minBoost) / (maxBoost - minBoost); } }

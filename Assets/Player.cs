@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     public event Action<Vector3, Vector3> OnBirthed;
 
     [SerializeField]
-    private Transform playerMovement;
+    private PlayerMovement playerMovement;
 
     [SerializeField]
     private PlayerWeapon weapon;
@@ -46,13 +46,17 @@ public class Player : MonoBehaviour
 
     public Vector2 StickDirection { get; private set; }
 
-    public Transform Transform { get { return playerMovement; } }
+    public float Speed { get { return playerMovement.Speed; } }
+
+    public Transform Transform { get { return playerMovement.transform; } }
 
     public PlayerWeapon Weapon { get { return weapon; } }
 
     public Camera Camera { get { return playerCamera.Camera; } }
 
     private PlayerInput input;
+
+    private float lifetime = 0f;
 
     private int index;
 
@@ -104,6 +108,7 @@ public class Player : MonoBehaviour
         IsSpawned = true;
         IsAlive = true;
         visualsTransform.gameObject.SetActive(true);
+        lifetime = 0f;
 
         if (OnBirthed != null)
         {
@@ -152,6 +157,12 @@ public class Player : MonoBehaviour
 
     private void Collisions_OnCollide(Collision _)
     {
+        if (lifetime < 1f)
+        {
+            // Cannot instant die of collision
+            return;
+        }
+
         if (IsAlive)
         {
             IsAlive = false;
@@ -193,6 +204,8 @@ public class Player : MonoBehaviour
             {
                 if (IsAlive)
                 {
+                    lifetime += Time.deltaTime;
+
                     float gasAxis = input.RightTrigger();
                     float antiGasAxis = input.LeftTrigger();
                     bool shoot = input.AButton();

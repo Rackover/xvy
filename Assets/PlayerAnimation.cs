@@ -20,7 +20,7 @@ public class PlayerAnimation : MonoBehaviour
     private float trailAlphaMax = 1f;
 
     [SerializeField]
-    private TrailRenderer trail;
+    private TrailRenderer[] trails;
 
     bool wasAlive = false;
 
@@ -31,13 +31,23 @@ public class PlayerAnimation : MonoBehaviour
     {
         transform.parent = null;
 
-        dynaMat = Instantiate(trail.sharedMaterial);
-        trail.sharedMaterial = dynaMat;
+        dynaMat = Instantiate(trails[0].sharedMaterial);
+
+        for (int i = 0; i < trails.Length; i++)
+        {
+            trails[i].sharedMaterial = dynaMat;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (player == null)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+
         if (player.IsAlive)
         {
             bool firstFrame = !wasAlive;

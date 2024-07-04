@@ -123,8 +123,6 @@ public class Performance : MonoBehaviour {
             }
         }
 
-        PlayerCamera[] playerCameras = FindObjectsOfType<PlayerCamera>();
-
         sizeIndex = (sizeIndex + 1) % textureSizes.Length;
         Vector2 size = textureSizes[sizeIndex];
 

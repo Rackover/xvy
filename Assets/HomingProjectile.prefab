@@ -323,7 +323,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lifespan: 6
   detonationDistance: 4
-  velocity: 100
+  velocity: 260
   maxTurnRate: 60
   tailRotateSpeed: 440
   trails:
@@ -331,7 +331,30 @@ MonoBehaviour:
   - {fileID: 96000010334372948}
   - {fileID: 96000012344990080}
   trackAfterSeconds: 0.5
+  stopTrackingAtDistanceBonus: 1
+  accelerationTime: 1
   animTransform: {fileID: 4000013606004868}
+  axelCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 0.49710444
+      value: 0.12551072
+      inSlope: 0.56396514
+      outSlope: 0.56396514
+      tangentMode: 0
+    - time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!123 &123000014057756808
 LensFlare:
   m_ObjectHideFlags: 1

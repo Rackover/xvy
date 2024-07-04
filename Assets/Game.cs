@@ -22,6 +22,9 @@ public class Game : MonoBehaviour
     private ScoreAnimation scoreAnim;
 
     [SerializeField]
+    private int scoreToWin = 5;
+
+    [SerializeField]
     private float rotateIdleSpeed = 0.5f;
 
     [Header("Debug switches")]
@@ -38,9 +41,14 @@ public class Game : MonoBehaviour
     private bool alwaysHoming = false;
 
     [SerializeField]
+    private float gameOverDuration = 8f;
+
+    [SerializeField]
     private RenderTexture[] texes;
 
     public IList<RenderTexture> Texes { get { return texes; } }
+
+    public int ScoreToWin { get { return scoreToWin; } }
 
     public Level Level { get { return currentLevel; } }
 
@@ -58,7 +66,11 @@ public class Game : MonoBehaviour
 
     private Level currentLevel;
 
+    private int levelIndex = 0;
+
     private float animaticTarget = 0f;
+
+    private float gameOverTimer = 0f;
 
     void Awake()
     {
@@ -72,14 +84,14 @@ public class Game : MonoBehaviour
 
         i = this;
 
-        currentLevel = levels[0];
+        currentLevel = levels[levelIndex];
 
         for (int playerIndex = 0; playerIndex < huds.Length; playerIndex++)
         {
             huds[playerIndex].SetID(playerIndex);
         }
 
-        InitLevel();
+        EnterLevel();
     }
 
     public void ReplaceTexture(RenderTexture rt, RenderTexture newRt)
@@ -94,11 +106,20 @@ public class Game : MonoBehaviour
         }
     }
 
-    private void InitLevel()
+    private void ExitLevel()
+    {
+        currentLevel.Exit();
+        currentLevel.gameObject.SetActive(false);
+        wantsToPlay = false;
+    }
+
+    private void EnterLevel()
     {
         currentLevel.gameObject.SetActive(true);
 
-        currentLevel.Setup();
+        currentLevel.Enter();
+
+        gameOverTimer = 0f;
 
         Transform[] targets = currentLevel.GetTrackingTargets();
 
@@ -108,6 +129,17 @@ public class Game : MonoBehaviour
         {
             OnLevelLoaded.Invoke();
         }
+    }
+
+    [ContextMenu("Next level")]
+    private void NextLevel()
+    {
+        ExitLevel();
+
+        levelIndex = (levelIndex + 1)% levels.Length;
+        currentLevel = levels[levelIndex];
+
+        EnterLevel();
     }
 
     void Update()
@@ -123,6 +155,16 @@ public class Game : MonoBehaviour
         wantsToPlay |= alwaysReady;
 
         UpdateHud();
+
+        if (currentLevel.GameOver)
+        {
+            gameOverTimer += Time.deltaTime;
+
+            if (gameOverTimer > gameOverDuration)
+            {
+                NextLevel();
+            }
+        }
     }
 
     void UpdateHud()
@@ -143,7 +185,35 @@ public class Game : MonoBehaviour
                 {
                     if (currentLevel.HasPlayerSpawned(i))
                     {
-                        if (currentLevel.IsPlayerAlive(i))
+                        if (currentLevel.GameOver)
+                        {
+                            if (currentLevel.Winner == i)
+                            {
+                                shouldLockHud = true;
+                                bothPlayersAlive = false;
+                                split = i;
+
+                                if (!scoreAnim.IsAnimating)
+                                {
+                                    int winnerScore = currentLevel.Scores[currentLevel.Winner];
+                                    int loserScore = currentLevel.Scores[1 - currentLevel.Winner];
+
+                                    txt = "WON " + winnerScore + " TO " + loserScore + "\n\n";
+
+                                    if (winnerScore - loserScore <= 1)
+                                    {
+                                        txt += "CLOSE ONE\n\n";
+                                    }
+                                    else
+                                    {
+                                        txt += "WELL PLAYED\n\n";
+                                    }
+
+                                    txt += "GOOD GAME";
+                                }
+                            }
+                        }
+                        else if (currentLevel.IsPlayerAlive(i))
                         {
 
                         }
@@ -153,7 +223,7 @@ public class Game : MonoBehaviour
                             shouldLockHud = true;
                             split = 0.5f;
 
-                            if (huds[i].IsReadyForRebirth && !scoreAnim.IsAnimating)
+                            if (huds[i].IsReadyForRebirth && !scoreAnim.IsAnimating && !currentLevel.GameOver)
                             {
                                 Game.i.Level.RebirthPlayers();
                             }

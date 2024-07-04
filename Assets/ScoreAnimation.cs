@@ -65,12 +65,15 @@ public class ScoreAnimation : MonoBehaviour {
 
     private void CurrentLevel_OnScoreChanged()
     {
-        scoresToDisplay.Enqueue(new Score()
+        if (!Game.i.Level.GameOver)
         {
-            playerA = Game.i.Level.Scores[0],
-            playerB = Game.i.Level.Scores[1],
-            almostWon = Game.i.Level.HasAlmostWon()
-        });
+            scoresToDisplay.Enqueue(new Score()
+            {
+                playerA = Game.i.Level.Scores[0],
+                playerB = Game.i.Level.Scores[1],
+                almostWon = Game.i.Level.HasAlmostWon()
+            });
+        }
     }
 
     void Update()
@@ -84,7 +87,16 @@ public class ScoreAnimation : MonoBehaviour {
 
     private IEnumerator AnimateScoreCoroutine(Score scoreToAnimate)
     {
-        Debug.Log("Playing score animation");
+        Color almostWonColor = Color.red;
+
+        if (scoreToAnimate.almostWon)
+        {
+            outline.effectColor = almostWonColor;
+        }
+        else
+        {
+            outline.effectColor = Color.black;
+        }
 
         textMesh.enabled = true;
         textMesh.text = "\n\n";
@@ -111,21 +123,21 @@ public class ScoreAnimation : MonoBehaviour {
                 textMesh.text = scoreToAnimate.playerA + "\n.\n" + scoreToAnimate.playerB;
                 textMesh.enabled = !textMesh.enabled;
 
-                if (scoreToAnimate.almostWon)
-                {
-                    outline.effectColor = Color.red;
-                }
-                else
-                {
-                    outline.effectColor = Color.black;
-                }
-
                 yield return new WaitForSeconds(blinkSpeed);
             }
 
             if (scoresToDisplay.Count > 0)
             {
                 scoreToAnimate = scoresToDisplay.Dequeue();
+
+                if (scoreToAnimate.almostWon)
+                {
+                    outline.effectColor = almostWonColor;
+                }
+                else
+                {
+                    outline.effectColor = Color.black;
+                }
             }
         }
 

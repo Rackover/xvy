@@ -19,14 +19,14 @@ public class PlayerWeapon : MonoBehaviour
 
     [SerializeField]
     private Projectile homingMissilePrefab;
-    
+
     [SerializeField]
     [Range(0f, 1f)]
     private float precisionIncreaseOverTime = 0.05f;
 
     [SerializeField]
     [Range(0f, 1f)]
-    private float precisionDecreaseOverTime = 0.25f;
+    private float precisionDecreasePerShot = 0.25f;
 
     [SerializeField]
     [Range(0f, 1f)]
@@ -50,6 +50,9 @@ public class PlayerWeapon : MonoBehaviour
     [SerializeField]
     private float aimAcquisitionMultiplier = 1f;
 
+    [SerializeField]
+    private float aimingAmplitude = 150f;
+
     public float AcquisitionDistanceMeters { get { return acquisitionDistance; } }
 
     public bool HasEnemyInAcquisitionSights { set; private get; }
@@ -57,6 +60,8 @@ public class PlayerWeapon : MonoBehaviour
     public bool IsAcquiring { get { return acquisitionAmount > 0f; } }
 
     public float Imprecision01 { get { return currentImprecision / maxImprecisionAmount; } }
+
+    public float AimingAmplitude { get { return aimingAmplitude; } }
 
     public Vector2 AimingPosition { get { return player.StickDirection; } }
 
@@ -129,13 +134,11 @@ public class PlayerWeapon : MonoBehaviour
                         acquisitionAmount = 0f;
                     }
                 }
-
-                currentImprecision = Mathf.Clamp(currentImprecision + Time.deltaTime * precisionDecreaseOverTime, 0f, maxImprecisionAmount);
             }
             else
             {
                 int otherPlayer = 1 - player.Index;
-                if (Game.i.Level.IsPlayerAlive(otherPlayer))
+                if (Game.i.Level.IsPlayerAlive(otherPlayer) && !homingMissileAlive)
                 {
                     if (player.IsBoosting)
                     {
@@ -195,8 +198,9 @@ public class PlayerWeapon : MonoBehaviour
                 HomingMissile homing = Pooler.DePool(this, homingMissilePrefab, HOMING_MISSILE_POOL) as HomingMissile;
 
                 Transform otherPlayerTransform = Game.i.Level.GetPlayerTransform(1 - player.Index);
-                Vector3 fwd = otherPlayerTransform ? (otherPlayerTransform.position - player.Transform.position).normalized : player.Transform.forward;
+                Vector3 fwd = otherPlayerTransform ? (otherPlayerTransform.position - player.Transform.position).normalized : GetShootDirection();
 
+                homing.SetOwner(player.Index);
                 homing.ClearTrails();
                 homing.SetHomingTarget(otherPlayerTransform);
                 homing.transform.position = player.Transform.position + fwd;
@@ -222,6 +226,15 @@ public class PlayerWeapon : MonoBehaviour
         }
     }
 
+    private Vector3 GetShootDirection()
+    {
+        Vector3 frustrumEnd = transform.position + transform.forward * 400f; // optimal shooting distance
+
+        Vector3 aimAt = frustrumEnd + (transform.right * AimingPosition.x + transform.up * AimingPosition.y) * aimingAmplitude;
+
+        return (aimAt - transform.position).normalized;
+    }
+
     void Shoot()
     {
         bool shot = false;
@@ -235,7 +248,7 @@ public class PlayerWeapon : MonoBehaviour
 
                 activeMissiles[i].transform.position = player.Transform.position + player.Transform.forward;
 
-                Vector3 shootDirection = (player.Transform.forward + (Random.insideUnitSphere * 2f - Vector3.one) * currentImprecision).normalized;
+                Vector3 shootDirection = (GetShootDirection() + (Random.insideUnitSphere * 2f - Vector3.one) * currentImprecision).normalized;
 
                 activeMissiles[i].transform.forward = shootDirection;
 
@@ -245,6 +258,8 @@ public class PlayerWeapon : MonoBehaviour
                 activeMissiles[i].gameObject.SetActive(true);
 
                 player.RumbleLight();
+
+                currentImprecision = Mathf.Clamp(currentImprecision + precisionDecreasePerShot, 0f, maxImprecisionAmount);
 
                 shot = true;
 

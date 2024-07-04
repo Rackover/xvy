@@ -16,6 +16,9 @@ public class PlayerHUD : MonoBehaviour
     private UnityEngine.UI.Text trackerText;
 
     [SerializeField]
+    private UnityEngine.UI.Text warningText;
+
+    [SerializeField]
     private UnityEngine.UI.Image trackerImg;
 
     [SerializeField]
@@ -90,6 +93,7 @@ public class PlayerHUD : MonoBehaviour
                     {
                         UpdateWeaponReticle(boosting, weapon);
                         UpdateTargetTracking((playerIndex + 1) % 2, weapon, Game.i.Level.GetPlayerCamera(playerIndex));
+                        UpdateWarnings();
                         IsReadyForRebirth = false;
                     }
                     else
@@ -97,6 +101,7 @@ public class PlayerHUD : MonoBehaviour
                         aimGroup.alpha = 0f;
                         trackerImg.enabled = false;
                         trackerText.enabled = false;
+                        warningText.enabled = false;
                     }
 
                     UpdateDeathAnimation(isAlive);
@@ -106,6 +111,8 @@ public class PlayerHUD : MonoBehaviour
             }
         }
 
+        warningText.enabled = false;
+
         whiteFade.color = Color.white;
         whiteFade.enabled = false;
 
@@ -114,10 +121,32 @@ public class PlayerHUD : MonoBehaviour
         aimTargetingChild.enabled = false;
 
         aimRect.sizeDelta = minAimSize;
+        rawImageRect.localScale = Vector3.one;
 
         aimGroup.alpha = 0f;
 
         IsReadyForRebirth = false;
+    }
+
+    static readonly Color transparentWhite = new Color(1f, 1f, 1f, 0f);
+
+    private void UpdateWarnings()
+    {
+        if (Game.i.Level.IsPlayerBeingHomedTo(playerIndex))
+        {
+            warningText.enabled = true;
+            warningText.color = Color.Lerp(Color.red, transparentWhite, Mathf.Sin(Time.time * blinkSpeed * Mathf.PI));
+
+            warningText.text = @"/!\ MISSILE WARNING /!\
+
+
+
+PLEASE PERFORM EVASION MANEUVERS";
+        }
+        else
+        {
+            warningText.enabled = false;
+        }
     }
 
     private void UpdateDeathAnimation(bool isAlive)
@@ -268,7 +297,7 @@ public class PlayerHUD : MonoBehaviour
         }
 
         aimRect.sizeDelta = Vector2.Lerp(minAimSize, maxAimSize, weapon.Imprecision01);
-        aimRect.anchoredPosition = Vector2.Lerp(aimRect.anchoredPosition, 150 * weapon.AimingPosition, Time.deltaTime * 4f);
+        aimRect.anchoredPosition = Vector2.Lerp(aimRect.anchoredPosition, weapon.AimingAmplitude * weapon.AimingPosition, Time.deltaTime * 4f);
 
     }
 }

@@ -131,9 +131,13 @@ public class PlayerCamera : MonoBehaviour
                 colorCorrection.saturation = Mathf.Lerp(1f, 1.2f, delta);
                 camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, fovTarget, fovLerpSpeed * Time.deltaTime);
 
-                if (player.IsBeingHomedTo)
+
                 {
-                    // Feedback anyone??
+                    float lifeRemaining01 = 0f;
+                    if (Game.i.Level.IsOOB(player.Index, out lifeRemaining01))
+                    {
+                        colorCorrection.saturation *= lifeRemaining01;
+                    }
                 }
             }
             else

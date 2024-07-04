@@ -12,9 +12,6 @@ public class Level : MonoBehaviour
     public event Action OnScoreChanged;
 
     [SerializeField]
-    private int scoreToWin = 5;
-
-    [SerializeField]
     private Material skybox;
 
     [SerializeField]
@@ -32,7 +29,12 @@ public class Level : MonoBehaviour
     [SerializeField]
     private float maxOobTime = 3f;
 
+    public int Winner { get { return scores[0] > scores[1] ? 0 : 1; } }
+
     public IList<int> Scores { get { return scores; } }
+    public bool GameOver { get { return gameOver; } }
+
+    private bool gameOver = false;
 
     private readonly Player[] players = new Player[PLAYERS];
 
@@ -47,22 +49,32 @@ public class Level : MonoBehaviour
         return trackingTargets;
     }
 
-    public void Setup()
+    public void Exit()
     {
-        playerPrefab.gameObject.SetActive(false);
-
-        RenderSettings.skybox = skybox;
-
         for (int i = 0; i < PLAYERS; i++)
         {
             if (players[i])
             {
                 Destroy(players[i].gameObject);
             }
+        }
+    }
+    
+    public void Enter()
+    {
+        playerPrefab.gameObject.SetActive(false);
+        gameOver = false;
 
+        RenderSettings.skybox = skybox;
+
+        for (int i = 0; i < PLAYERS; i++)
+        {
             players[i] = Instantiate(playerPrefab);
             players[i].gameObject.SetActive(true);
             players[i].Initialize(i);
+
+            scores[i] = 0;
+            oobTime[i] = 0f;
 
             int index = i;
             players[i].OnKilled += () => OnPlayerKilled(index);
@@ -74,13 +86,28 @@ public class Level : MonoBehaviour
 
     private void OnPlayerKilled(int player)
     {
-        scores[1 - player]++;
-
-        Debug.Log("Player " + player + " killed");
-
-        if (OnScoreChanged != null)
+        if (GameOver)
         {
-            OnScoreChanged.Invoke();
+            players[player].Birth(spawns[player]);
+        }
+        else
+        {
+            scores[1 - player]++;
+
+
+            if (OnScoreChanged != null)
+            {
+                OnScoreChanged.Invoke();
+            }
+
+            for (int i = 0; i < Scores.Count; i++)
+            {
+                if (Scores[i] >= Game.i.ScoreToWin)
+                {
+                    gameOver = true;
+                    break;
+                }
+            }
         }
     }
 
@@ -108,12 +135,12 @@ public class Level : MonoBehaviour
     {
         if (player.HasValue)
         {
-            return scores[player.Value] == scoreToWin - 1;
+            return scores[player.Value] == Game.i.ScoreToWin - 1;
         }
 
         for (int i = 0; i < PLAYERS; i++)
         {
-            if (scores[i] == scoreToWin - 1)
+            if (scores[i] == Game.i.ScoreToWin - 1)
             {
                 return true;
             }
@@ -140,6 +167,11 @@ public class Level : MonoBehaviour
         return players[index] != null && players[index].GamepadConnected();
     }
 
+    public bool IsPlayerBeingHomedTo(int index)
+    {
+        return players[index] != null && players[index].IsBeingHomedTo;
+    }
+
     public PlayerWeapon GetPlayerWeapon(int index)
     {
         return players[index].Weapon;
@@ -153,6 +185,11 @@ public class Level : MonoBehaviour
     public Transform GetPlayerTransform(int index)
     {
         return players[index].Transform;
+    }
+
+    public float GetPlayerSpeed(int index)
+    {
+        return players[index].Speed;
     }
 
     public Vector3 GetPlayerPosition(int index)
@@ -233,8 +270,8 @@ public class Level : MonoBehaviour
         {
             if (players[i].IsAlive && players[i].IsReady)
             {
-
-                if (boundaries.Contains(players[i].Transform.position))
+                bool oob = !boundaries.Contains(players[i].Transform.position);
+                if (oob)
                 {
                     oobTime[i] += Time.deltaTime;
 
@@ -275,4 +312,13 @@ public class Level : MonoBehaviour
             }
         }
     }
+
+#if UNITY_EDITOR
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireCube(boundaries.center, boundaries.size);
+    }
+
+#endif
 }

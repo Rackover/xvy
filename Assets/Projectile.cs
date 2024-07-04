@@ -10,7 +10,9 @@ public class Projectile : MonoBehaviour {
     private float detonationDistance = 4f;
 
     [SerializeField]
-    private float velocity = 50f;
+    protected float velocity = 50f;
+
+    protected virtual float Velocity { get { return velocity; } }
 
     public bool Expired { get { return livedFor > lifespan; } }
 
@@ -34,14 +36,14 @@ public class Projectile : MonoBehaviour {
         detonationDistanceSqrd = detonationDistance * detonationDistance;
     }
 
-    public void SetOwner(int id)
+    public virtual void SetOwner(int id)
     {
         this.owner = id;
     }
 
     public virtual void ManualUpdate()
     {
-        transform.position += GetDirection() * velocity * Time.deltaTime;
+        transform.position += GetDirection() * Velocity * Time.deltaTime;
         livedFor += Time.deltaTime;
 
         int otherId = 1 - owner;
