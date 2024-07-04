@@ -71,7 +71,7 @@ public class PlayerCamera : MonoBehaviour
     {
         bool wasSpawned = camera.enabled;
         camera.enabled = player.IsSpawned;
-        speedLines.gameObject.SetActive(player.IsSpawned);
+        speedLines.gameObject.SetActive(player.IsSpawned && player.IsAlive);
 
         if (player.IsSpawned)
         {

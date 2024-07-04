@@ -9,8 +9,8 @@ Shader "Skybox Gradient"
 		_Bottom("Bottom", Color) = (0,1,0.03440881,0)
 		_mult("mult", Float) = 1
 		_Offset("Offset", Range( -1 , 1)) = 0
-		_BottomMultiplier("BottomMultiplier", Range( 0 , 10)) = 1
-		_TopMultiplier("TopMultiplier", Range( 0 , 10)) = 1
+		_BottomMultiplier("BottomMultiplier", Range( 0 , 50)) = 1
+		_TopMultiplier("TopMultiplier", Range( 0 , 50)) = 1
 
 	}
 	

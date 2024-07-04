@@ -6,16 +6,21 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: M_PanningTex
-  m_Shader: {fileID: 45, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: _ALPHABLEND_ON _EMISSION
+  m_Name: M_Skybox_City_Baked
+  m_Shader: {fileID: 10700, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
-  m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Transparent
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
     m_TexEnvs:
+    - first:
+        name: _BackTex
+      second:
+        m_Texture: {fileID: 2800000, guid: 6c51c3dbe59b30a4fa848338b9d73057, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - first:
         name: _BumpMap
       second:
@@ -41,16 +46,34 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
+        name: _DownTex
+      second:
+        m_Texture: {fileID: 2800000, guid: 1cf6406d5a83da44997e15c2e1da60a5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
         name: _EmissionMap
       second:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
+        name: _FrontTex
+      second:
+        m_Texture: {fileID: 2800000, guid: 92d639778dfd7c540a75f309ff07b7d9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
+        name: _LeftTex
+      second:
+        m_Texture: {fileID: 2800000, guid: bcbaa66b28486d346a0d04f959f2959c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
         name: _MainTex
       second:
-        m_Texture: {fileID: 2800000, guid: 853cd407a929a574da9993bfda39485f, type: 3}
-        m_Scale: {x: 7.18, y: 3.73}
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
         name: _MetallicGlossMap
@@ -71,12 +94,27 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
-        name: _SpecGlossMap
+        name: _RightTex
+      second:
+        m_Texture: {fileID: 2800000, guid: 9ef15bdc55838e74b83617e3f7ae9c86, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
+        name: _Tex
       second:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - first:
+        name: _UpTex
+      second:
+        m_Texture: {fileID: 2800000, guid: 9042b9d2f666dd44194a47e2264e3d93, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
+    - first:
+        name: _BottomMultiplier
+      second: 0.74
     - first:
         name: _BumpScale
       second: 1
@@ -88,31 +126,40 @@ Material:
       second: 1
     - first:
         name: _DstBlend
-      second: 10
+      second: 0
+    - first:
+        name: _Exposure
+      second: 1
     - first:
         name: _GlossMapScale
       second: 1
     - first:
         name: _Glossiness
-      second: 1
+      second: 0.5
     - first:
         name: _GlossyReflections
-      second: 1
-    - first:
-        name: _InvFade
       second: 1
     - first:
         name: _Metallic
       second: 0
     - first:
         name: _Mode
-      second: 2
+      second: 0
     - first:
         name: _OcclusionStrength
       second: 1
     - first:
+        name: _Offset
+      second: -0.17
+    - first:
         name: _Parallax
       second: 0.02
+    - first:
+        name: _Rotation
+      second: 0
+    - first:
+        name: _Screenspace
+      second: 0
     - first:
         name: _SmoothnessTextureChannel
       second: 0
@@ -121,14 +168,23 @@ Material:
       second: 1
     - first:
         name: _SrcBlend
-      second: 5
+      second: 1
+    - first:
+        name: _TopMultiplier
+      second: 10
     - first:
         name: _UVSec
       second: 0
     - first:
         name: _ZWrite
-      second: 0
+      second: 1
+    - first:
+        name: _mult
+      second: 1
     m_Colors:
+    - first:
+        name: _Bottom
+      second: {r: 1, g: 1, b: 1, a: 0}
     - first:
         name: _Color
       second: {r: 1, g: 1, b: 1, a: 1}
@@ -136,5 +192,11 @@ Material:
         name: _EmissionColor
       second: {r: 0, g: 0, b: 0, a: 1}
     - first:
-        name: _SpecColor
-      second: {r: 0.5294118, g: 0.5294118, b: 0.5294118, a: 1}
+        name: _Middle
+      second: {r: 1, g: 0.35172412, b: 0, a: 0}
+    - first:
+        name: _Tint
+      second: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+    - first:
+        name: _Top
+      second: {r: 0, g: 0, b: 0, a: 0}

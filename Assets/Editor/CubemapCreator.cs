@@ -51,7 +51,7 @@ public class CubemapCreator {
             screenShot.wrapMode = TextureWrapMode.Clamp;
 
             byte[] bytes = screenShot.EncodeToPNG();
-            string dir = Application.dataPath + "/CubemapRenders/LAST/";
+            string dir = Application.dataPath + "/CubemapRenders/"+RenderSettings.skybox.name.Replace("M_Skybox_", "")+"/";
 
             Directory.CreateDirectory(dir);
 

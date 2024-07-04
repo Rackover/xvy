@@ -15,6 +15,18 @@ public class Level : MonoBehaviour
     private Material skybox;
 
     [SerializeField]
+    private bool fogEnabled = false;
+
+    [SerializeField]
+    private Color fogColor;
+
+    [SerializeField]
+    private float fogStart;
+
+    [SerializeField]
+    private float fogEnd;
+
+    [SerializeField]
     private Player playerPrefab;
 
     [SerializeField]
@@ -62,6 +74,13 @@ public class Level : MonoBehaviour
     
     public void Enter()
     {
+
+        RenderSettings.fog = fogEnabled;
+        RenderSettings.fogStartDistance = fogStart;
+        RenderSettings.fogEndDistance = fogEnd;
+        RenderSettings.fogDensity = fogColor.a;
+        RenderSettings.fogColor = fogColor;
+
         playerPrefab.gameObject.SetActive(false);
         gameOver = false;
 

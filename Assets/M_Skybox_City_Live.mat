@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: M_Skybox_WindMills
-  m_Shader: {fileID: 10700, guid: 0000000000000000f000000000000000, type: 0}
+  m_Name: M_Skybox_City_Live
+  m_Shader: {fileID: 4800000, guid: 22f2e99b5b593504e85cabb3082e20e5, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
   m_CustomRenderQueue: -1
@@ -18,7 +18,7 @@ Material:
     - first:
         name: _BackTex
       second:
-        m_Texture: {fileID: 2800000, guid: 29d6258aa9db5e04a846ffe691df5c79, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2063eee6615a84549960b3b483b00565, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
@@ -48,7 +48,7 @@ Material:
     - first:
         name: _DownTex
       second:
-        m_Texture: {fileID: 2800000, guid: 8620ee57a20fa304db5e6e915853541f, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7f01deeb991f50c4a97c0fee4c080ff1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
@@ -60,13 +60,13 @@ Material:
     - first:
         name: _FrontTex
       second:
-        m_Texture: {fileID: 2800000, guid: 7201ec2703902ac4b8ad196be40e5b40, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2482afc984776c4468920f77d9ec96b3, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
         name: _LeftTex
       second:
-        m_Texture: {fileID: 2800000, guid: 2f261bb222836624f9fb618ae5c6d514, type: 3}
+        m_Texture: {fileID: 2800000, guid: a44afc317a4be8e429fbe411ebbd2452, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
@@ -96,7 +96,7 @@ Material:
     - first:
         name: _RightTex
       second:
-        m_Texture: {fileID: 2800000, guid: 74def169d27d74445abe00ddf2704353, type: 3}
+        m_Texture: {fileID: 2800000, guid: fd999c6d829ba4e45b897d907a3f6de1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
@@ -108,13 +108,13 @@ Material:
     - first:
         name: _UpTex
       second:
-        m_Texture: {fileID: 2800000, guid: 346faff19b4f7204a845c313d47a7155, type: 3}
+        m_Texture: {fileID: 2800000, guid: a0474df70b0ccc840bc88c2f6342b2c2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - first:
         name: _BottomMultiplier
-      second: 0.74
+      second: 50
     - first:
         name: _BumpScale
       second: 1
@@ -150,7 +150,7 @@ Material:
       second: 1
     - first:
         name: _Offset
-      second: -0.17
+      second: 0
     - first:
         name: _Parallax
       second: 0.02
@@ -171,7 +171,7 @@ Material:
       second: 1
     - first:
         name: _TopMultiplier
-      second: 10
+      second: 1
     - first:
         name: _UVSec
       second: 0
@@ -184,7 +184,7 @@ Material:
     m_Colors:
     - first:
         name: _Bottom
-      second: {r: 1, g: 1, b: 1, a: 0}
+      second: {r: 0, g: 0, b: 0, a: 0}
     - first:
         name: _Color
       second: {r: 1, g: 1, b: 1, a: 1}
@@ -193,10 +193,10 @@ Material:
       second: {r: 0, g: 0, b: 0, a: 1}
     - first:
         name: _Middle
-      second: {r: 1, g: 0.35172412, b: 0, a: 0}
+      second: {r: 1, g: 0.7807302, b: 0.30882353, a: 0}
     - first:
         name: _Tint
       second: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
     - first:
         name: _Top
-      second: {r: 0, g: 0, b: 0, a: 0}
+      second: {r: 1, g: 0, b: 0, a: 1}
