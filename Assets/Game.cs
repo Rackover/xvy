@@ -54,6 +54,8 @@ public class Game : MonoBehaviour
 
     public bool InGame { get { return wantsToPlay; } }
 
+    public bool Playing { get { return currentLevel && InGame && Level.IsPlayerReady(0) && Level.IsPlayerReady(1); } }
+
     public bool AlwaysReady { get { return alwaysReady; } }
 
     public bool AlwaysHoming { get { return alwaysHoming; } }
@@ -71,6 +73,10 @@ public class Game : MonoBehaviour
     private float animaticTarget = 0f;
 
     private float gameOverTimer = 0f;
+
+    private float idleTimer = 0f;
+
+    private float readyTimer = 0f;
 
     void Awake()
     {
@@ -108,6 +114,8 @@ public class Game : MonoBehaviour
 
     private void ExitLevel()
     {
+        idleTimer = 0f;
+
         currentLevel.Exit();
         currentLevel.gameObject.SetActive(false);
         wantsToPlay = false;
@@ -261,6 +269,35 @@ public class Game : MonoBehaviour
 
                 huds[i].SetTitle(i == 0 ? "X" : "Y");
             }
+        }
+
+        if (wantsToPlay)
+        {
+            idleTimer = 0f;
+
+            if (Playing)
+            {
+                readyTimer = 0f;
+            }
+            else
+            {
+                readyTimer += Time.deltaTime;
+            }
+        }
+        else
+        {
+            idleTimer += Time.deltaTime;
+        }
+
+        if (idleTimer > 60f)
+        {
+            idleTimer = 0f;
+            NextLevel();
+        }
+        else if (readyTimer > 15f)
+        {
+            readyTimer = 0f;
+            wantsToPlay = false;
         }
 
         if (shouldLockHud  && !bothPlayersAlive)

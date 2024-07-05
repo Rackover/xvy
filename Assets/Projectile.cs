@@ -36,6 +36,11 @@ public class Projectile : MonoBehaviour {
         detonationDistanceSqrd = detonationDistance * detonationDistance;
     }
 
+    void OnCollisionEnter(Collision other)
+    {
+        Detonate(null);
+    }
+
     public virtual void SetOwner(int id)
     {
         this.owner = id;

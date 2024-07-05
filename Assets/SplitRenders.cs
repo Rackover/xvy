@@ -56,7 +56,11 @@ public class SplitRenders : MonoBehaviour
     public void SetTrackingTargets(Transform[] targets)
     {
         transforms = targets;
-        ComputeSplit();
+
+        if (!isLocked)
+        {
+            ComputeSplit();
+        }
 
         flip = flipTarget;
         UpdateSplit();

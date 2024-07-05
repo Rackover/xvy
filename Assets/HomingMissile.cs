@@ -90,7 +90,7 @@ public class HomingMissile : Projectile
 
             if (direction.sqrMagnitude < noTrackDistanceSqrd)
             {
-                float trackAmount = 1f - Mathf.Clamp01(noTrackDistanceSqrd / distVector.sqrMagnitude);
+                float trackAmount = Mathf.Clamp01(distVector.sqrMagnitude / noTrackDistanceSqrd);
                 direction = Vector3.Lerp(transform.forward, direction, trackAmount);
             }
 

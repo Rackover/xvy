@@ -250,9 +250,33 @@ public class Level : MonoBehaviour
         {
             if (!players[i].IsSpawned || !players[i].IsAlive)
             {
-                players[i].Birth(spawns[i]);
+                players[i].Birth(PickBestSpawn(i));
             }
         }
+    }
+
+    private Transform PickBestSpawn(int player)
+    {
+        int otherPlayer = 1 - player;
+
+        if (!players[otherPlayer].IsAlive)
+        {
+            return spawns[player];
+        }
+
+        float bestSpawnDistance = float.PositiveInfinity;
+        Transform bestSpawn = spawns[0];
+        for (int i = 0; i < spawns.Length; i++)
+        {
+            float dist = Vector3.SqrMagnitude(spawns[i].position - players[otherPlayer].Transform.position);
+            if (dist < bestSpawnDistance)
+            {
+                bestSpawn = spawns[i];
+                bestSpawnDistance = dist;
+            }
+        }
+
+        return bestSpawn;
     }
 
     void Update()
