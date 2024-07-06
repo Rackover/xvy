@@ -4,32 +4,29 @@ using UnityEditor.Callbacks;
 using System.IO;
 using System.Collections;
 
-public class XexBuildPostProcessor {
-
-    [MenuItem("Build/XEX")]
-    public static void BuildXeX()
+public class ElfBuildPostProcessor
+{
+    [MenuItem("Build/ELF")]
+    public static void BuildElf()
     {
-        BuildXeX(BuildOptions.None);
+        BuildElf(BuildOptions.None);
     }
 
-    [MenuItem("Build/XEX Debug")]
-    public static void BuildXeXDebug()
+    [MenuItem("Build/ELF Debug")]
+    public static void BuildElfDebug()
     {
-        BuildXeX(BuildOptions.AllowDebugging | BuildOptions.Development);
+        BuildElf(BuildOptions.AllowDebugging | BuildOptions.Development);
     }
 
-    private static void BuildXeX(BuildOptions options)
+    private static void BuildElf(BuildOptions options)
     {
-        EditorUserBuildSettings.xboxBuildSubtarget = XboxBuildSubtarget.Master;
-        EditorUserBuildSettings.xboxRunMethod = XboxRunMethod.HDD;
-
-        PlayerSettings.xboxTitleId = "33334444";
         PlayerSettings.stripEngineCode = true;
-
+        EditorUserBuildSettings.sceBuildSubtarget = SCEBuildSubtarget.HddTitle;
+        
         BuildPipeline.BuildPlayer(
             new string[] { "Assets/Scene/RUN.unity" },
-            "BUILD_X360",
-            BuildTarget.XBOX360,
+            "BUILD_PS3",
+            BuildTarget.PS3,
             options
         );
     }
@@ -38,38 +35,10 @@ public class XexBuildPostProcessor {
     [PostProcessBuild(1)]
     public static void OnPostProcessBuild(BuildTarget target, string pathToBuiltProject)
     {
-        if (target == BuildTarget.XBOX360)
+        if (target == BuildTarget.PS3)
         {
-
-            /*
-             
-            string assets = Application.dataPath;
-
-            string projectPath = Path.GetDirectoryName(assets);
-            string xexTool = Path.Combine(projectPath, "xextool.exe");
-
-            string xexPath = Path.Combine(pathToBuiltProject, "default.xex");
-
-            File.Copy(xexPath, Path.Combine(pathToBuiltProject, "backup.xex"));
-
-            var pInfo = new System.Diagnostics.ProcessStartInfo(xexTool, "-m r "+xexPath);
-            pInfo.RedirectStandardOutput = true;
-            pInfo.UseShellExecute = false;
-
-            var pStart = System.Diagnostics.Process.Start(pInfo);
-            pStart.WaitForExit();
-
-            int exitCode = pStart.ExitCode;
-
-            if (exitCode == 0)
-            {
-                Debug.Log("Xextool returned exit code " + exitCode);
-            }
-            else
-            {
-                Debug.LogError("Xextool returned exit code "+ exitCode + "\n" + pStart.StandardOutput.ReadToEnd());
-            }
-            */
+            System.Diagnostics.Process.Start("explorer", pathToBuiltProject);
+            return;
 
             // Upload
             try
@@ -80,7 +49,7 @@ public class XexBuildPostProcessor {
                 int i = 0;
 
                 {
-                    var credentials = new System.Net.NetworkCredential("xboxftp", ".");
+                    var credentials = new System.Net.NetworkCredential("169.254.3.0", ".");
                     foreach (string file in files)
                     {
                         i++;
@@ -90,17 +59,17 @@ public class XexBuildPostProcessor {
                             continue;
                         }
 
-                        if (file.Contains("XenonPlayer"))
+                        if (file.Contains("MapFiles"))
                         {
                             continue;
                         }
 
                         const string xboxPath = "Usb0/X360/xplane";
-                        string relativePath = file.Substring(pathToBuiltProject.Length+1);
+                        string relativePath = file.Substring(pathToBuiltProject.Length + 1);
 
                         string targetPath = "ftp://169.254.8.8/" + xboxPath + "/" + relativePath.Replace("\\", "/");
 
-                        UnityEditor.EditorUtility.DisplayProgressBar("Uploading " + relativePath + " ("+ i + "/" + files.Length + ")", targetPath, (i/(float)files.Length));
+                        UnityEditor.EditorUtility.DisplayProgressBar("Uploading " + relativePath + " (" + i + "/" + files.Length + ")", targetPath, (i / (float)files.Length));
 
                         var request = (System.Net.FtpWebRequest)System.Net.FtpWebRequest.Create(targetPath);
                         request.Credentials = credentials;
@@ -116,7 +85,7 @@ public class XexBuildPostProcessor {
                         if (Directory.Exists(file))
                         {
                             request.Method = System.Net.WebRequestMethods.Ftp.MakeDirectory;
-                            response = request.GetResponse(); 
+                            response = request.GetResponse();
                         }
                         else
                         {
@@ -132,9 +101,9 @@ public class XexBuildPostProcessor {
                             }
                         }
 
-                        var ftpResponse = (System.Net.FtpWebResponse) response;
+                        var ftpResponse = (System.Net.FtpWebResponse)response;
 
-                        if (ftpResponse.StatusCode == System.Net.FtpStatusCode.CommandOK 
+                        if (ftpResponse.StatusCode == System.Net.FtpStatusCode.CommandOK
                             || ftpResponse.StatusCode == System.Net.FtpStatusCode.FileActionOK
                             || ftpResponse.StatusCode == System.Net.FtpStatusCode.ClosingControl
                             )
@@ -143,7 +112,7 @@ public class XexBuildPostProcessor {
 
                             System.DateTime transferFinished = System.DateTime.Now;
 
-                            Debug.Log("Uploaded "+targetPath+" in "+(transferFinished-transferStarted).TotalSeconds+" seconds");
+                            Debug.Log("Uploaded " + targetPath + " in " + (transferFinished - transferStarted).TotalSeconds + " seconds");
 
                         }
                         else

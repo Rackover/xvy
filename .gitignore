@@ -64,5 +64,5 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
-/BUILD/
+/BUILD*/
 /test/

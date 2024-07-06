@@ -24,7 +24,12 @@ Shader "Hidden/ColorCorrectionCurvesSimple" {
 	{
 		v2f o;
 		o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
-		o.uv = UnityStereoScreenSpaceUVAdjust(v.texcoord.xy, _MainTex_ST);
+		#if UNITY_5_4_1
+			o.uv = UnityStereoScreenSpaceUVAdjust(v.texcoord.xy, _MainTex_ST);
+		#else
+			o.uv = v.texcoord.xy;
+		#endif
+
 		return o;
 	} 
 	

@@ -68,7 +68,6 @@
 				float4 vertex : SV_POSITION;
                 fixed4 color    : COLOR;
                 float4 worldPosition : TEXCOORD1;
-                UNITY_VERTEX_OUTPUT_STEREO
 			};
 			 
 			uniform sampler2D _MainTex;

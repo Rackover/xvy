@@ -60,7 +60,8 @@ namespace LouveSystems
                 throw new Exception("Tried to depool with NULL example!");
             }
 
-            T obj = (UnityEngine.GameObject.Instantiate(example.gameObject, example.transform.parent) as GameObject).GetComponent<T>();
+            T obj = (UnityEngine.GameObject.Instantiate(example.gameObject) as GameObject).GetComponent<T>();
+            obj.transform.parent = example.transform.parent;
 
             return obj;
         }
