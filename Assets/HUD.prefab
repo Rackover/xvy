@@ -130,7 +130,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1000011699806710
 GameObject:
   m_ObjectHideFlags: 0
@@ -402,7 +402,6 @@ MonoBehaviour:
   warningText: {fileID: 114000010659634898}
   trackerImg: {fileID: 114000014013343638}
   whiteFade: {fileID: 114000011132384632}
-  fullFader: {fileID: 114000011420549550}
   splitRenderSize: {fileID: 0}
   aimRect: {fileID: 224000013633031706}
   aimTargetingChild: {fileID: 114000012203589704}

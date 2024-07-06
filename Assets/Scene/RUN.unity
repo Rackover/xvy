@@ -24410,14 +24410,15 @@ MonoBehaviour:
   scoreAnim: {fileID: 413193034}
   scoreToWin: 5
   rotateIdleSpeed: 0.02
-  alwaysReady: 0
-  emulateP2: 1
-  showPerformanceInfo: 0
-  alwaysHoming: 0
   gameOverDuration: 15
   texes:
   - {fileID: 8400000, guid: 5af65befae4692e46a7b9c84df446d70, type: 2}
   - {fileID: 8400000, guid: 46a4eb9b24ef7d944819ced186526136, type: 2}
+  alwaysReady: 0
+  emulateP2: 1
+  showPerformanceInfo: 0
+  alwaysHoming: 0
+  allowMasterControl: 1
 --- !u!4 &1498359810
 Transform:
   m_ObjectHideFlags: 0

@@ -26,9 +26,6 @@ public class PlayerHUD : MonoBehaviour
     private UnityEngine.UI.Image whiteFade;
 
     [SerializeField]
-    private Fade fullFader;
-
-    [SerializeField]
     private RectTransform splitRenderSize;
 
     [SerializeField]
@@ -108,7 +105,8 @@ public class PlayerHUD : MonoBehaviour
                     {
                         if (!wasAlive)
                         {
-                            fullFader.FadeTransition(null, true);
+                            whiteFade.color = Color.white;
+                            whiteFade.enabled = true;
                         }
 
                         UpdateWeaponReticle(boosting, weapon);
@@ -186,7 +184,7 @@ PLEASE PERFORM EVASION MANEUVERS";
         }
         else
         {
-            if (!fullFader.IsAnimating && !IsReadyForRebirth)
+            if (!IsReadyForRebirth)
             {
                 if (deadAnimationTimer < 1f)
                 {
@@ -204,8 +202,8 @@ PLEASE PERFORM EVASION MANEUVERS";
                 {
                     rawImageRect.localScale = new Vector3(1f, 1f, rawImageRect.localScale.z);
 
-                    whiteFade.enabled = false;
                     whiteFade.color = Color.white;
+                    whiteFade.enabled = true;
 
                     IsReadyForRebirth = true;
                 }
