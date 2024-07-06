@@ -13,10 +13,6 @@ public class Jukebox : MonoBehaviour
         Count
     }
 
-
-    [SerializeField]
-    private float fightingDistanceMeters = 800f;
-
     [Header("Clips")]
 
     [SerializeField]
@@ -45,6 +41,12 @@ public class Jukebox : MonoBehaviour
 
     [SerializeField]
     private float fadeSpeed = 2f;
+
+    [SerializeField]
+    private float menuVolume = 1f;
+
+    [SerializeField]
+    private float ingameVolume = 0.6f;
 
     private float time;
 
@@ -80,6 +82,8 @@ public class Jukebox : MonoBehaviour
     {
         if (Game.i.Playing)
         {
+            SetClip(Ambience.Base, bassLine);
+
             if (Game.i.Level.IsPlayerAlive(0) && Game.i.Level.IsPlayerAlive(1))
             {
                 SetClip(Ambience.Drums, heavyDrum);
@@ -98,16 +102,18 @@ public class Jukebox : MonoBehaviour
                 }
             }
 
-            SetClip(Ambience.Additional, additionalClip);
-
-            if (Game.i.Level.IsPlayerAlive(0) && Game.i.Level.IsPlayerAlive(1) && 
-                Vector3.SqrMagnitude(Game.i.Level.GetPlayerPosition(0) - Game.i.Level.GetPlayerPosition(1)) < fightingDistanceMeters * fightingDistanceMeters)
+            if (additionalClip != null)
             {
-                SetClip(Ambience.Base, fightingDistance);
+                SetClip(Ambience.Additional, additionalClip);
+            }
+            else if (Game.i.Level.IsPlayerAlive(0) && Game.i.Level.IsPlayerAlive(1) && 
+                (Game.i.Level.GetPlayerWeapon(0).IsAcquiring || Game.i.Level.GetPlayerWeapon(1).IsAcquiring))
+            {
+                SetClip(Ambience.Additional, fightingDistance);
             }
             else
             {
-                SetClip(Ambience.Base, null);
+                SetClip(Ambience.Additional, null);
             }
         }
         else
@@ -140,6 +146,8 @@ public class Jukebox : MonoBehaviour
             }
 
             k.Value.volume = Mathf.Clamp01(k.Value.volume + Time.deltaTime * fadeSpeed * (selected ? 1 : -1));
+
+            k.Value.volume = Mathf.Min(k.Value.volume, Game.i.Playing ? ingameVolume : menuVolume);
         }
     }
 

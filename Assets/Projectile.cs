@@ -12,6 +12,23 @@ public class Projectile : MonoBehaviour {
     [SerializeField]
     protected float velocity = 50f;
 
+    [SerializeField]
+    private AudioClip birthSound;
+
+    [SerializeField]
+    private AudioClip detonationSound;
+
+    [SerializeField]
+    private AudioSource source;
+
+    [SerializeField]
+    private ParticleSystem deathParticles;
+
+    [SerializeField]
+    private Rigidbody body;
+
+    public int Owner { get { return owner; } }
+
     protected virtual float Velocity { get { return velocity; } }
 
     public bool Expired { get { return livedFor > lifespan; } }
@@ -34,6 +51,7 @@ public class Projectile : MonoBehaviour {
         livedFor = 0f;
         detonated = false;
         detonationDistanceSqrd = detonationDistance * detonationDistance;
+        deathParticles.Clear();
     }
 
     void OnCollisionEnter(Collision other)
@@ -41,9 +59,24 @@ public class Projectile : MonoBehaviour {
         Detonate(null);
     }
 
+    void Awake()
+    {
+        deathParticles.transform.parent = null;
+    }
+
+    void OnDestroy()
+    {
+        if (deathParticles)
+        {
+            Destroy(deathParticles.gameObject);
+        }
+    }
+
     public virtual void SetOwner(int id)
     {
         this.owner = id;
+
+        Game.i.Level.PlaySoundOnPlayer(id, birthSound);
     }
 
     public virtual void ManualUpdate()
@@ -52,6 +85,11 @@ public class Projectile : MonoBehaviour {
         Age();
 
         DetectCollision();
+    }
+
+    void FixedUpdate()
+    {
+        body.MovePosition(transform.position);
     }
 
     private void DetectCollision()
@@ -124,7 +162,12 @@ public class Projectile : MonoBehaviour {
             Game.i.Level.KillPlayerFromMissile(target.Value);
         }
 
+        source.PlayOneShot(detonationSound);
+
         livedFor = float.MaxValue;
+
+        deathParticles.transform.position = transform.position;
+        deathParticles.Play();
 
         detonated = true;
     }

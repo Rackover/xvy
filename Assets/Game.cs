@@ -10,6 +10,12 @@ public class Game : MonoBehaviour
     public event Action OnLevelLoaded;
 
     [SerializeField]
+    private Fade fade;
+
+    [SerializeField]
+    private AudioSource generalAudioSource;
+
+    [SerializeField]
     private Level[] levels;
 
     [SerializeField]
@@ -27,6 +33,12 @@ public class Game : MonoBehaviour
     [SerializeField]
     private float rotateIdleSpeed = 0.5f;
 
+    [SerializeField]
+    private float gameOverDuration = 8f;
+
+    [SerializeField]
+    private RenderTexture[] texes;
+
     [Header("Debug switches")]
     [SerializeField]
     private bool alwaysReady = false;
@@ -41,10 +53,9 @@ public class Game : MonoBehaviour
     private bool alwaysHoming = false;
 
     [SerializeField]
-    private float gameOverDuration = 8f;
+    private bool allowMasterControl = true;
 
-    [SerializeField]
-    private RenderTexture[] texes;
+    public AudioSource GeneralAudioSource { get { return generalAudioSource; } }
 
     public IList<RenderTexture> Texes { get { return texes; } }
 
@@ -78,6 +89,8 @@ public class Game : MonoBehaviour
 
     private float readyTimer = 0f;
 
+    private PlayerInput masterInput;
+
     void Awake()
     {
 #if UNITY_EDITOR
@@ -85,10 +98,14 @@ public class Game : MonoBehaviour
 
 #else
         alwaysReady = false;
-        emulateP2 = false;
 #endif
 
         i = this;
+
+        if (allowMasterControl)
+        {
+            StartCoroutine(ListenToMaster());
+        }
 
         currentLevel = levels[levelIndex];
 
@@ -98,6 +115,23 @@ public class Game : MonoBehaviour
         }
 
         EnterLevel();
+    }
+
+    private IEnumerator ListenToMaster()
+    {
+        masterInput = PlayerInput.MakeForPlatform();
+        masterInput.SetPlayerIndex(0);
+
+        while (true)
+        {
+            masterInput.Refresh();
+            if (masterInput.GetDPad().x > 0.8f)
+            {
+                NextLevel();
+            }
+
+            yield return new WaitForSeconds(0.6f);
+        }
     }
 
     public void ReplaceTexture(RenderTexture rt, RenderTexture newRt)
@@ -157,6 +191,7 @@ public class Game : MonoBehaviour
             if (currentLevel.AnyKey())
             {
                 wantsToPlay = true;
+                idleTimer = 0f;
             }
         }
 
@@ -164,13 +199,18 @@ public class Game : MonoBehaviour
 
         UpdateHud();
 
+        if (fade.IsAnimating)
+        {
+            return;
+        }
+
         if (currentLevel.GameOver)
         {
             gameOverTimer += Time.deltaTime;
 
             if (gameOverTimer > gameOverDuration)
             {
-                NextLevel();
+                fade.FadeTransition(NextLevel);
             }
         }
     }
@@ -206,11 +246,9 @@ public class Game : MonoBehaviour
                                     int winnerScore = currentLevel.Scores[currentLevel.Winner];
                                     int loserScore = currentLevel.Scores[1 - currentLevel.Winner];
 
-                                    txt = "WON " + winnerScore + " TO " + loserScore + "\n\n";
-
                                     if (winnerScore - loserScore <= 1)
                                     {
-                                        txt += "CLOSE ONE\n\n";
+                                        txt += "THAT WAS A CLOSE ONE\n\n";
                                     }
                                     else
                                     {
@@ -240,7 +278,7 @@ public class Game : MonoBehaviour
                     else
                     {
                         bothPlayersAlive = false;
-                        txt = "WAITING FOR OTHER PLAYERS";
+                        txt = currentLevel.IsPlayerReady(1 - i) ? string.Empty : "WAITING FOR OTHER PLAYERS";
                         split = Mathf.Max(split, 1f);
                     }
                 }
@@ -254,7 +292,7 @@ public class Game : MonoBehaviour
                     }
                     else
                     {
-                        txt = "PLUG IN";
+                        txt = Mathf.Sin(Time.time * 10f) > 0f ? string.Empty : "PLUG IN";
                         split = Mathf.Max(split, 0.5f);
                     }
                 }

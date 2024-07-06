@@ -11,11 +11,17 @@ public class TitleScreen : MonoBehaviour {
     {
         if (Game.i.InGame)
         {
-            titleMesh.enabled = false;
+            if (titleMesh.enabled)
+            {
+                titleMesh.enabled = false;
+            }
         }
         else
         {
-            titleMesh.enabled = true;
+            if (!titleMesh.enabled)
+            {
+                titleMesh.enabled = true;
+            }
         }
     }
 }

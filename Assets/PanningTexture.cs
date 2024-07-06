@@ -10,7 +10,7 @@ public class PanningTexture : MonoBehaviour {
     Vector2 scale = Vector2.one;
 
     [SerializeField]
-	private Renderer renderer;
+	private Renderer texRenderer;
 
 	// Use this for initialization
 	void Start () {
@@ -22,7 +22,7 @@ public class PanningTexture : MonoBehaviour {
 
         float verticalOffset = Time.time * scrollSpeed.x;
         float horizontalOffset = Time.time * scrollSpeed.y;
-        renderer.material.mainTextureOffset = new Vector2(horizontalOffset, verticalOffset);
-		renderer.material.mainTextureScale = scale;
+        texRenderer.material.mainTextureOffset = new Vector2(horizontalOffset, verticalOffset);
+		texRenderer.material.mainTextureScale = scale;
     }
 }

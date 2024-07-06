@@ -24,6 +24,9 @@ public class ScoreAnimation : MonoBehaviour {
     [SerializeField]
     private float blinkSpeed = 0.1f;
 
+    [SerializeField]
+    private AudioClip[] scoreNotes = new AudioClip[3];
+
     public bool IsAnimating { get { return currentAnim != null && scoresToDisplay.Count == 0; } }
 
     private Level currentLevel;
@@ -103,12 +106,15 @@ public class ScoreAnimation : MonoBehaviour {
 
         yield return new WaitForSeconds(waitBeforeScore);
 
+        Game.i.GeneralAudioSource.PlayOneShot(scoreNotes[0]);
         textMesh.text = scoreToAnimate.playerA + "\n\n";
         yield return new WaitForSeconds(waitBeforeScore);
 
+        Game.i.GeneralAudioSource.PlayOneShot(scoreNotes[1]);
         textMesh.text = scoreToAnimate.playerA + "\n.\n";
         yield return new WaitForSeconds(waitBeforeScore);
 
+        Game.i.GeneralAudioSource.PlayOneShot(scoreNotes[2]);
         textMesh.text = scoreToAnimate.playerA + "\n.\n"+scoreToAnimate.playerB;
         yield return new WaitForSeconds(waitBeforeScore * 2);
 

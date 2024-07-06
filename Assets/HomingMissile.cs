@@ -20,9 +20,6 @@ public class HomingMissile : Projectile
     private float stopTrackingAtDistanceBonus = 5f;
 
     [SerializeField]
-    private float accelerationTime = 1f;
-
-    [SerializeField]
     private Transform animTransform;
 
     [SerializeField]

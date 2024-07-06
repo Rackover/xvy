@@ -48,10 +48,13 @@ public class PlayerWeapon : MonoBehaviour
     private float acquisitionSpeed = 0.33f;
 
     [SerializeField]
-    private float aimAcquisitionMultiplier = 1f;
+    private float aimingAmplitude = 150f;
 
     [SerializeField]
-    private float aimingAmplitude = 150f;
+    private AudioSource generalSource;
+
+    [SerializeField]
+    private AudioClip homingConfirmedClip;
 
     public float AcquisitionDistanceMeters { get { return acquisitionDistance; } }
 
@@ -212,6 +215,7 @@ public class PlayerWeapon : MonoBehaviour
                 activeMissiles[i] = homing;
 
                 player.RumbleHeavy();
+                generalSource.PlayOneShot(homingConfirmedClip);
 
                 shot = true;
 

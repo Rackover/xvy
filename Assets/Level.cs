@@ -206,6 +206,14 @@ public class Level : MonoBehaviour
         return players[index].Transform;
     }
 
+    public void PlaySoundOnPlayer(int index, AudioClip clip)
+    {
+        if (players[index] != null)
+        {
+            players[index].LocalSource.PlayOneShot(clip);
+        }
+    }
+
     public float GetPlayerSpeed(int index)
     {
         return players[index].Speed;

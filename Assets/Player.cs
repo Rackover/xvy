@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.Networking.Types;
 
 public class Player : MonoBehaviour
 {
@@ -28,6 +29,20 @@ public class Player : MonoBehaviour
     [SerializeField]
     private Transform visualsTransform;
 
+
+    [Header("Sounds")]
+    [SerializeField]
+    private AudioSource source;
+
+    [SerializeField]
+    private AudioClip birthClip;
+
+    [SerializeField]
+    private AudioClip readyClip;
+
+    [SerializeField]
+    private AudioClip deathClip;
+
     public int Index { get { return index; } }
 
     public bool IsReady { get; private set; }
@@ -43,6 +58,8 @@ public class Player : MonoBehaviour
     public bool IsAiming { get; private set; }
 
     public bool IsShooting { get; private set; }
+
+    public AudioSource LocalSource { get { return source; } }
 
     public Vector2 StickDirection { get; private set; }
 
@@ -130,6 +147,8 @@ public class Player : MonoBehaviour
         visualsTransform.gameObject.SetActive(true);
         lifetime = 0f;
 
+        source.PlayOneShot(birthClip);
+
         if (OnBirthed != null)
         {
             OnBirthed.Invoke(spawner.position, spawner.forward);
@@ -164,6 +183,7 @@ public class Player : MonoBehaviour
 
     public void PlayDeathAnimation()
     {
+        source.PlayOneShot(deathClip);
         deathShuriken.Play();
         visualsTransform.gameObject.SetActive(false);
         RumbleForSeconds(0.4f);
@@ -289,10 +309,12 @@ public class Player : MonoBehaviour
             {
                 if (!IsReady)
                 {
+
                     IsReady = input.IsPressingStart();
 
                     if (IsReady)
                     {
+                        source.PlayOneShot(readyClip);
                         input.RumbleLightOnce();
                     }
                 }

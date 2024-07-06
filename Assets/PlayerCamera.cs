@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
+using UnityEngine.Networking.Types;
 using UnityStandardAssets.ImageEffects;
 
 public class PlayerCamera : MonoBehaviour
@@ -59,11 +61,58 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField]
     private ParticleSystem speedLines;
 
+    [SerializeField]
+    private AudioSource generalSource;
+
+    [SerializeField]
+    private AudioSource burnerSource;
+
+    [SerializeField]
+    private AudioSource windSource;
+
+    [SerializeField]
+    private AudioSource lockOnSource;
+
+    private AudioSource[] localSources;
+
     public Camera Camera { get { return camera; } }
 
     private Vector3 lastPosition;
     private Vector3 lastVelocity;
 
+    void Awake()
+    {
+        localSources = new AudioSource[]
+        {
+            generalSource,
+            windSource,
+            burnerSource,
+            lockOnSource,
+        };
+
+        for (int i = 0; i < localSources.Length; i++)
+        {
+            if (localSources[i] != generalSource)
+            {
+                localSources[i].volume = 0f;
+            }
+        }
+
+        lockOnSource.Stop();
+        lockOnSource.volume = 1f;
+    }
+
+    void Update()
+    {
+        generalSource.panStereo = Mathf.Lerp(0.5f, player.Index == 0 ? -1f : 1f, split.HorizontalAmount);
+        for (int i = 0; i < localSources.Length; i++)
+        {
+            if (localSources[i] != generalSource)
+            {
+                localSources[i].panStereo = generalSource.panStereo;
+            }
+        }
+    }
 
     // Start is called before the first frame update
     // Update is called once per frame
@@ -73,6 +122,10 @@ public class PlayerCamera : MonoBehaviour
         camera.enabled = player.IsSpawned;
         speedLines.gameObject.SetActive(player.IsSpawned && player.IsAlive);
 
+        float burnerSourceVolume = 0f;
+        float windSourceVolume = 0f;
+        bool playLockOn = false;
+
         if (player.IsSpawned)
         {
             bool firstFrame = wasSpawned;
@@ -81,9 +134,13 @@ public class PlayerCamera : MonoBehaviour
             if (player.IsAlive)
             {
                 transform.position = playerMovement.transform.TransformPoint(new Vector3(0f, verticalDistance, behindDistance + split.HorizontalAmount * behindDistanceHorizontalSplitBonus));
-              
+
                 lastVelocity = transform.position - lastPosition;
                 lastPosition = transform.position;
+
+                burnerSourceVolume = player.IsBoosting ? 1f : 0.5f;
+                windSourceVolume = player.IsBoosting ? 0.3f : 1f;
+                playLockOn = player.Weapon.TargetAcquired && !player.Weapon.HomingMissileAlive;
             }
             else
             {
@@ -145,6 +202,19 @@ public class PlayerCamera : MonoBehaviour
                 blur.blurAmount = 0f;
                 colorCorrection.saturation = Mathf.Clamp01(colorCorrection.saturation - Time.deltaTime);
             }
+        }
+
+
+        burnerSource.volume = burnerSourceVolume;
+        windSource.volume = windSourceVolume;
+
+        if (playLockOn && !lockOnSource.isPlaying)
+        {
+            lockOnSource.Play();
+        }
+        else if (!playLockOn && lockOnSource.isPlaying)
+        {
+            lockOnSource.Stop();
         }
     }
 }

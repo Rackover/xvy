@@ -12,7 +12,7 @@ public class MockInput : PlayerInput {
 
     public override bool AnyKey()
     {
-        return Time.time > 3f + playerIndex;
+        return Time.time > 6f + playerIndex;
     }
 
     public override void SetPlayerIndex(int index)
@@ -47,6 +47,6 @@ public class MockInput : PlayerInput {
 
     public override UnityEngine.Vector2 GetDirection()
     {
-        return new Vector2(Mathf.Sin(Time.time + playerIndex), 0.4f);
+        return new Vector2(Mathf.Sin(Time.time + playerIndex), Mathf.Clamp01(Mathf.Cos(Time.time + playerIndex) + 0.4f));
     }    
 }

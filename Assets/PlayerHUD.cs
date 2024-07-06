@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class PlayerHUD : MonoBehaviour
 {
@@ -23,6 +24,9 @@ public class PlayerHUD : MonoBehaviour
 
     [SerializeField]
     private UnityEngine.UI.Image whiteFade;
+
+    [SerializeField]
+    private Fade fullFader;
 
     [SerializeField]
     private RectTransform splitRenderSize;
@@ -53,9 +57,20 @@ public class PlayerHUD : MonoBehaviour
     [SerializeField]
     private int blinkSpeed = 10;
 
+    [SerializeField]
+    private float minAcquisitionScreenDistance = 20;
+
+    [SerializeField]
+    private float maxAcquisitionScreenDistance = 300;
+
+    [SerializeField]
+    private Image aimTowardsArrow;
+
     public bool IsReadyForRebirth { get; private set; }
 
     private float deadAnimationTimer = 0f;
+
+    private bool wasAlive = false;
 
     public void SetID(int index)
     {
@@ -91,6 +106,11 @@ public class PlayerHUD : MonoBehaviour
                 {
                     if (isAlive)
                     {
+                        if (!wasAlive)
+                        {
+                            fullFader.FadeTransition(null, true);
+                        }
+
                         UpdateWeaponReticle(boosting, weapon);
                         UpdateTargetTracking((playerIndex + 1) % 2, weapon, Game.i.Level.GetPlayerCamera(playerIndex));
                         UpdateWarnings();
@@ -105,12 +125,14 @@ public class PlayerHUD : MonoBehaviour
                     }
 
                     UpdateDeathAnimation(isAlive);
+                    wasAlive = isAlive;
 
                     return;
                 }
             }
         }
 
+        wasAlive = false;
         warningText.enabled = false;
 
         whiteFade.color = Color.white;
@@ -164,24 +186,29 @@ PLEASE PERFORM EVASION MANEUVERS";
         }
         else
         {
-            if (deadAnimationTimer < 1f)
+            if (!fullFader.IsAnimating && !IsReadyForRebirth)
             {
-                deadAnimationTimer += Time.deltaTime;
-            }
-            else if (rawImageRect.localScale.y > 0.01f)
-            {
-                rawImageRect.localScale = new Vector3(rawImageRect.localScale.x , rawImageRect.localScale.y - Time.deltaTime * 3f, rawImageRect.localScale.z);
-            }
-            else if (rawImageRect.localScale.x > 0.01f)
-            {
-                rawImageRect.localScale = new Vector3(rawImageRect.localScale.x - Time.deltaTime * 3f, 0f, rawImageRect.localScale.z);
-            }
-            else
-            {
-                rawImageRect.localScale = new Vector3(0f, 0f, rawImageRect.localScale.z);
+                if (deadAnimationTimer < 1f)
+                {
+                    deadAnimationTimer += Time.deltaTime;
+                }
+                else if (rawImageRect.localScale.y > 0.01f)
+                {
+                    rawImageRect.localScale = new Vector3(rawImageRect.localScale.x, rawImageRect.localScale.y - Time.deltaTime * 3f, rawImageRect.localScale.z);
+                }
+                else if (rawImageRect.localScale.x > 0.01f)
+                {
+                    rawImageRect.localScale = new Vector3(rawImageRect.localScale.x - Time.deltaTime * 3f, 0f, rawImageRect.localScale.z);
+                }
+                else
+                {
+                    rawImageRect.localScale = new Vector3(1f, 1f, rawImageRect.localScale.z);
 
-                whiteFade.color = Color.white;
-                IsReadyForRebirth = true;
+                    whiteFade.enabled = false;
+                    whiteFade.color = Color.white;
+
+                    IsReadyForRebirth = true;
+                }
             }
         }
     }
@@ -205,7 +232,14 @@ PLEASE PERFORM EVASION MANEUVERS";
             trackerImg.enabled = true;
             trackerText.enabled = true;
 
-            weapon.HasEnemyInAcquisitionSights = true;
+            Vector2 acquisitionRectSize = new Vector2(32f, 32f) * Mathf.Lerp(sizeMultiplier, 1f, weapon.Acquisition01);
+
+            weapon.HasEnemyInAcquisitionSights = 
+                !weapon.HomingMissileAlive &&
+                (
+                    weapon.TargetAcquired ||
+                    Vector2.Distance(trackerImg.transform.position, aimRect.transform.position) < Mathf.Lerp(maxAcquisitionScreenDistance, minAcquisitionScreenDistance, weapon.Acquisition01)
+                );
 
             float distance = Vector3.Distance(otherPosition, myPosition);
 
@@ -251,7 +285,7 @@ PLEASE PERFORM EVASION MANEUVERS";
                 aimTrackerColor.a = Mathf.Sqrt(weapon.Acquisition01);
 
                 aimTargetingChild.enabled = true;
-                aimTargetingChild.rectTransform.sizeDelta = new Vector2(32f, 32f) * Mathf.Lerp(sizeMultiplier, 1f, weapon.Acquisition01);
+                aimTargetingChild.rectTransform.sizeDelta = acquisitionRectSize;
                 aimTargetingChild.rectTransform.localEulerAngles += new Vector3(0f, 0f, rotateAimTarget * Time.deltaTime);
                 aimTargetingChild.color = aimTrackerColor;
 
@@ -282,6 +316,27 @@ PLEASE PERFORM EVASION MANEUVERS";
 
             trackerImg.rectTransform.localEulerAngles = Vector3.Lerp(trackerImg.rectTransform.localEulerAngles, new Vector3(0f, 0f, enemyAbove ? 180f : 0f), Time.deltaTime* 20f);
             trackerText.rectTransform.localEulerAngles = -trackerImg.rectTransform.localEulerAngles;
+
+            UpdateTrackerBar(enable: weapon.IsAcquiring && !weapon.HomingMissileAlive && !weapon.TargetAcquired);
+        }
+    }
+
+    private void UpdateTrackerBar(bool enable)
+    {
+        RectTransform targetTracker = trackerImg.rectTransform;
+        aimTowardsArrow.enabled = enable;
+
+        if (aimTowardsArrow.isActiveAndEnabled)
+        {
+            Vector3 direction = (targetTracker.transform.position - aimTowardsArrow.transform.position);
+            direction.z = 0f;
+            Vector3 normalizedDirection = direction.normalized;
+
+            float angle = Mathf.Atan2(-normalizedDirection.x, normalizedDirection.y) * Mathf.Rad2Deg;
+
+            aimTowardsArrow.rectTransform.localEulerAngles = new Vector3(0f, 0f, angle);
+            aimTowardsArrow.rectTransform.sizeDelta = new Vector2(1f, direction.magnitude);
+            aimTowardsArrow.color = aimTargetingChild.color;
         }
     }
 
