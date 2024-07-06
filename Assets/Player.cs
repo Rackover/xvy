@@ -101,10 +101,6 @@ public class Player : MonoBehaviour
             input.Dispose();
         }
 
-        // Crashes dashboard
-        //        input = new XInputDLLPlayerInput();
-
-        //        input = new MockInput();
         input = PlayerInput.MakeForPlatform();
 
         input.SetPlayerIndex(index);

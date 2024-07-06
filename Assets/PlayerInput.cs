@@ -31,7 +31,11 @@ public abstract class PlayerInput : IDisposable
 
     public static PlayerInput MakeForPlatform()
     {
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+        return new XInputKernel();
+#else
         return new NativeUnityInput();
+#endif
     }
 
     public string Dump()
