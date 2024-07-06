@@ -41,13 +41,13 @@ public class NativeUnityInput : PlayerInput {
     {
         foreach(var val in inputStates.Values)
         {
-            if (val != 0f)
+            if (Mathf.Abs(val) > 0.5f)
             {
                 return true;
             }
         }
 
-        return false;
+        return AButton() || IsPressingStart();
     }
 
     public override void SetPlayerIndex(int index)
@@ -57,7 +57,11 @@ public class NativeUnityInput : PlayerInput {
 
     public override bool AButton()
     {
-        return inputStates[NativeUnityInputMappings.GamepadInput.A] > 0f;
+#if !UNITY_XBOX360
+        return Input.GetKey(playerIndex == 0 ? KeyCode.Joystick1Button0 : KeyCode.Joystick2Button0);
+#else
+        return Input.GetKey(playerIndex == 0 ? KeyCode.JoystickButton0 : KeyCode.Joystick1Button0);
+#endif
     }
 
     public override float LeftTrigger()
@@ -72,7 +76,11 @@ public class NativeUnityInput : PlayerInput {
 
     public override bool IsPressingStart()
     {
-        return inputStates[NativeUnityInputMappings.GamepadInput.Start] > 0f;
+#if !UNITY_XBOX360
+        return Input.GetKey(playerIndex == 0 ? KeyCode.Joystick1Button7 : KeyCode.Joystick2Button7);
+#else
+        return Input.GetKey(playerIndex == 0 ? KeyCode.JoystickButton7 : KeyCode.Joystick1Button7);
+#endif
     }
 
     public override void Refresh()

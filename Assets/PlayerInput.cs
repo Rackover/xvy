@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Text;
 
 public abstract class PlayerInput : IDisposable
 {
@@ -28,10 +29,30 @@ public abstract class PlayerInput : IDisposable
 
     protected virtual void SetVibration(float leftValue, float rightValue) { }
 
+    public static PlayerInput MakeForPlatform()
+    {
+        return new NativeUnityInput();
+    }
+
+    public string Dump()
+    {
+        StringBuilder builder = new StringBuilder();
+
+        builder.AppendLine("Connected: " + GamepadPresent());
+        builder.AppendLine("Start: " + IsPressingStart());
+        builder.AppendLine("LStick: " + GetDirection());
+        builder.AppendLine("DPad: " + GetDPad());
+        builder.AppendLine("A: " + AButton());
+        builder.AppendLine("LT: " + LeftTrigger().ToString("n0"));
+        builder.AppendLine("RT: " + RightTrigger().ToString("n0"));
+        builder.AppendLine("AnyKey: " + AnyKey());
+
+        return builder.ToString();
+    }
 
     public virtual void Dispose()
     {
-        
+
     }
 
     public void RumbleHeavyOnce()

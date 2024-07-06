@@ -48,20 +48,63 @@ public class Projectile : MonoBehaviour {
 
     public virtual void ManualUpdate()
     {
-        transform.position += GetDirection() * Velocity * Time.deltaTime;
-        livedFor += Time.deltaTime;
+        MoveForward();
+        Age();
 
+        DetectCollision();
+    }
+
+    private void DetectCollision()
+    {
+        Vector3 otherPosition = GetOtherPlayerPosition();
+        float mag = Vector3.SqrMagnitude(otherPosition - GetMyPosition());
+
+        if (mag < detonationDistanceSqrd)
+        {
+            KillOtherPlayer();
+            Player.SetDeathString(1 - owner, "Detonated "+GetType()+" from " + owner + " because distance magnitude (" + mag.ToString("n0") + " meters) between "+otherPosition+" and "+GetMyPosition()+" was closest than the DD2 (" + detonationDistanceSqrd.ToString("n0") + ")");
+        }
+    }
+
+    private void Age()
+    {
+        livedFor += Time.deltaTime;
+    }
+
+    private void MoveForward()
+    {
+        transform.position += GetDirection() * Velocity * Time.deltaTime;
+    }
+   
+    private void KillOtherPlayer()
+    {
+        int otherId = 1 - owner;
+        Detonate(otherId);
+    }
+
+    private Vector3 GetMyPosition()
+    {
+        return transform.position;
+    }
+
+    private Vector3 GetOtherPlayerPosition()
+    {
+        int otherId = 1 - owner;
+        Vector3 otherPosition = Game.i.Level.GetPlayerPosition(otherId);
+
+        return otherPosition;
+    }
+
+    private bool IsOtherPlayerAlive()
+    {
         int otherId = 1 - owner;
 
         if (Game.i.Level.IsPlayerAlive(otherId))
         {
-            Vector3 otherPosition = Game.i.Level.GetPlayerPosition(otherId);
-
-            if (Vector3.SqrMagnitude(otherPosition - transform.position) < detonationDistanceSqrd)
-            {
-                Detonate(otherId);
-            }
+            return true;
         }
+
+        return false;
     }
 
     public void Expire()
@@ -76,7 +119,7 @@ public class Projectile : MonoBehaviour {
             return;
         }
 
-        if (target.HasValue)
+        if (target.HasValue && Game.i.Level.IsPlayerAlive(target.Value))
         {
             Game.i.Level.KillPlayerFromMissile(target.Value);
         }

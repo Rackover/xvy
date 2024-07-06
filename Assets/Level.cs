@@ -224,6 +224,11 @@ public class Level : MonoBehaviour
         }
     }
 
+    public string GetPlayerDebugStateDump(int index)
+    {
+        return players[index].DebugDump;
+    }
+
     public Camera GetPlayerCamera(int index)
     {
         return players[index].Camera;
@@ -264,12 +269,12 @@ public class Level : MonoBehaviour
             return spawns[player];
         }
 
-        float bestSpawnDistance = float.PositiveInfinity;
+        float bestSpawnDistance = float.NegativeInfinity;
         Transform bestSpawn = spawns[0];
         for (int i = 0; i < spawns.Length; i++)
         {
             float dist = Vector3.SqrMagnitude(spawns[i].position - players[otherPlayer].Transform.position);
-            if (dist < bestSpawnDistance)
+            if (dist > bestSpawnDistance)
             {
                 bestSpawn = spawns[i];
                 bestSpawnDistance = dist;

@@ -6,7 +6,8 @@ using System;
 using System.Text;
 using System.Security.Cryptography;
 
-public class Performance : MonoBehaviour {
+public class Performance : MonoBehaviour
+{
 
     [SerializeField]
     private GameObject performanceInfoParent;
@@ -23,15 +24,18 @@ public class Performance : MonoBehaviour {
         new Vector2(960, 640),
         new Vector2(640, 426),
         new Vector2(480, 320),
+        
+#if !UNITY_XBOX360
         new Vector2(1920, 1280),
         new Vector2(1280, 853),
+#endif
     };
 
     private int sizeIndex = 0;
 
     private void Start()
     {
-        input = new NativeUnityInput();
+        input = PlayerInput.MakeForPlatform();
         input.SetPlayerIndex(sizeIndex);
 
         performanceInfoParent.gameObject.SetActive(Game.i.ShowPerformanceInfo);
@@ -72,6 +76,11 @@ public class Performance : MonoBehaviour {
 
     void ResizeRenderTextures()
     {
+        if (!performanceInfoParent.gameObject.activeSelf)
+        {
+            return;
+        }
+
         if (!ready)
         {
             return;
@@ -96,7 +105,8 @@ public class Performance : MonoBehaviour {
                     renderTextureSetters.Add(rt, new List<Action<RenderTexture>>());
                 }
 
-                renderTextureSetters[rt].Add((o) => {
+                renderTextureSetters[rt].Add((o) =>
+                {
                     rawImage.texture = o;
                 });
             }
@@ -104,7 +114,7 @@ public class Performance : MonoBehaviour {
 
         Camera[] cameras = GetAllCameras();
 
-        foreach(Camera camRef in cameras)
+        foreach (Camera camRef in cameras)
         {
             Camera cam = camRef;
             if (cam.targetTexture)
@@ -133,7 +143,7 @@ public class Performance : MonoBehaviour {
             ti++;
 
             RenderTexture newRenderTexture = new RenderTexture((int)size.x, (int)size.y, rt.depth, rt.format);
-            newRenderTexture.name = "RT_"+size.x+"x"+size.y+"_"+(ti+1);
+            newRenderTexture.name = "RT_" + size.x + "x" + size.y + "_" + (ti + 1);
 
             for (int i = 0; i < renderTextureSetters[rt].Count; i++)
             {
@@ -155,6 +165,11 @@ public class Performance : MonoBehaviour {
 
     void Toggle<T>() where T : Behaviour
     {
+        if (!performanceInfoParent.gameObject.activeSelf)
+        {
+            return;
+        }
+
         if (!ready)
         {
             return;
@@ -179,11 +194,13 @@ public class Performance : MonoBehaviour {
             StringBuilder sb = new StringBuilder();
 
             {
+                {
+                    float dt = Time.unscaledDeltaTime;
+                    int fps = (int)(1f / dt);
+
+#if !X360
                 const int TARGET_FPS = 50;
                 const int BAD_FPS = 20;
-
-                float dt = Time.unscaledDeltaTime;
-                int fps = (int)(1f / dt);
 
                 string color = "#AAFFAA";
                 if (fps <= BAD_FPS)
@@ -198,16 +215,31 @@ public class Performance : MonoBehaviour {
                 sb.Append("<color=");
                 sb.Append(color);
                 sb.Append(">");
-                sb.Append(fps);
-                sb.Append(" fps</color>");
-                sb.AppendLine();
-            }
+#endif
+                    sb.Append(fps);
+                    sb.Append(" fps");
 
-            {
-                sb.Append("RT: ");
-                sb.Append((int)textureSizes[sizeIndex].x);
-                sb.Append(" x ");
-                sb.Append((int)textureSizes[sizeIndex].y);
+#if !X360
+                sb.Append("</color>");
+#endif
+                    sb.AppendLine();
+                }
+
+                {
+                    sb.Append("RT: ");
+                    sb.Append((int)textureSizes[sizeIndex].x);
+                    sb.Append(" x ");
+                    sb.Append((int)textureSizes[sizeIndex].y);
+                    sb.AppendLine();
+                }
+
+                {
+                    for (int i = 0; i < Level.PLAYERS; i++)
+                    {
+                        string dump = Game.i.Level.GetPlayerDebugStateDump(i);
+                        sb.AppendLine(dump);
+                    }
+                }
             }
 
             performanceInfo.text = sb.ToString();

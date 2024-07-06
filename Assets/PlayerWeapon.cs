@@ -247,6 +247,7 @@ public class PlayerWeapon : MonoBehaviour
                 activeMissiles[i].GetComponent<TrailRenderer>().Clear();
 
                 activeMissiles[i].transform.position = player.Transform.position + player.Transform.forward;
+                activeMissiles[i].SetOwner(player.Index);
 
                 Vector3 shootDirection = (GetShootDirection() + (Random.insideUnitSphere * 2f - Vector3.one) * currentImprecision).normalized;
 

@@ -54,13 +54,19 @@ InputManager:
 
     private static void AddInput(StringBuilder builder, int playerIndex, ref NativeUnityInputMappings.Button button)
     {
+        int joystickIndex = playerIndex + 1;
+
         builder.AppendLine("  - serializedVersion: 3");
         builder.AppendLine("    m_Name: " + NativeUnityInputMappings.GetVirtualInputName(button.name, playerIndex));
         builder.AppendLine("    descriptiveName:");
         builder.AppendLine("    descriptiveNegativeName:");
 
         builder.AppendLine("    negativeButton:");
-        builder.AppendLine("    positiveButton: joystick "+(playerIndex + 1)+" "+button.path);
+#if X360
+        builder.AppendLine("    positiveButton: joystick " + joystickIndex + " " + button.path);
+#else
+        builder.AppendLine("    positiveButton: joystick " + joystickIndex + " " + button.path);
+#endif
         builder.AppendLine("    altNegativeButton:");
         builder.AppendLine("    altPositiveButton:");
 
@@ -71,7 +77,7 @@ InputManager:
         builder.AppendLine("    invert: 0");
         builder.AppendLine("    type: 0");
         builder.AppendLine("    axis: 0");
-        builder.AppendLine("    joyNum: " + (playerIndex + 1));
+        builder.AppendLine("    joyNum: " + joystickIndex);
     }
 
     private static void AddInput(StringBuilder builder, int playerIndex, ref NativeUnityInputMappings.Axis axis)

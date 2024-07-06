@@ -9,6 +9,17 @@ public class XexBuildPostProcessor {
     [MenuItem("Build/XEX")]
     public static void BuildXeX()
     {
+        BuildXeX(BuildOptions.None);
+    }
+
+    [MenuItem("Build/XEX Debug")]
+    public static void BuildXeXDebug()
+    {
+        BuildXeX(BuildOptions.AllowDebugging | BuildOptions.Development);
+    }
+
+    private static void BuildXeX(BuildOptions options)
+    {
         EditorUserBuildSettings.xboxBuildSubtarget = XboxBuildSubtarget.Master;
         EditorUserBuildSettings.xboxRunMethod = XboxRunMethod.HDD;
 
@@ -16,12 +27,13 @@ public class XexBuildPostProcessor {
         PlayerSettings.stripEngineCode = true;
 
         BuildPipeline.BuildPlayer(
-            new string[] { "Assets/Scene/RUN.unity" }, 
-            "BUILD", 
+            new string[] { "Assets/Scene/RUN.unity" },
+            "BUILD",
             BuildTarget.XBOX360,
-            BuildOptions.AllowDebugging
+            options
         );
     }
+
 
     [PostProcessBuild(1)]
     public static void OnPostProcessBuild(BuildTarget target, string pathToBuiltProject)
@@ -63,12 +75,16 @@ public class XexBuildPostProcessor {
             try
             {
 
-                var files = Directory.GetFileSystemEntries(pathToBuiltProject);
-                using (System.Net.WebClient client = new System.Net.WebClient())
+                var files = Directory.GetFiles(pathToBuiltProject, "*.*", SearchOption.AllDirectories);
+
+                int i = 0;
+
                 {
-                    client.Credentials = new System.Net.NetworkCredential("xboxftp", ".");
+                    var credentials = new System.Net.NetworkCredential("xboxftp", ".");
                     foreach (string file in files)
                     {
+                        i++;
+
                         if (file.StartsWith("."))
                         {
                             continue;
@@ -79,22 +95,65 @@ public class XexBuildPostProcessor {
                             continue;
                         }
 
+                        const string xboxPath = "Usb0/X360/xplane";
+                        string relativePath = file.Substring(pathToBuiltProject.Length+1);
+
+                        string targetPath = "ftp://169.254.8.8/" + xboxPath + "/" + relativePath.Replace("\\", "/");
+
+                        UnityEditor.EditorUtility.DisplayProgressBar("Uploading " + relativePath + " ("+ i + "/" + files.Length + ")", targetPath, (i/(float)files.Length));
+
+                        var request = (System.Net.FtpWebRequest)System.Net.FtpWebRequest.Create(targetPath);
+                        request.Credentials = credentials;
+
+                        request.KeepAlive = true;
+                        request.UseBinary = true;
+                        request.UsePassive = true;
+
+                        System.Net.WebResponse response;
+
+                        System.DateTime transferStarted = System.DateTime.Now;
+
                         if (Directory.Exists(file))
                         {
-                            continue;
+                            request.Method = System.Net.WebRequestMethods.Ftp.MakeDirectory;
+                            response = request.GetResponse(); 
+                        }
+                        else
+                        {
+                            request.Method = System.Net.WebRequestMethods.Ftp.UploadFile;
+                            byte[] data = File.ReadAllBytes(file);
+                            {
+                                using (Stream writeStream = request.GetRequestStream())
+                                {
+                                    writeStream.Write(data, 0, data.Length);
+                                }
+
+                                response = request.GetResponse();
+                            }
                         }
 
-                        const string xboxPath = "/Usb0/X360/xplane";
-                        string relativePath = file.Substring(pathToBuiltProject.Length+1);
-                        string targetPath = "ftp://169.254.8.8/" + xboxPath + "/" + relativePath;
+                        var ftpResponse = (System.Net.FtpWebResponse) response;
 
-                        Debug.Log("Uploading to " + targetPath + "...");
+                        if (ftpResponse.StatusCode == System.Net.FtpStatusCode.CommandOK 
+                            || ftpResponse.StatusCode == System.Net.FtpStatusCode.FileActionOK
+                            || ftpResponse.StatusCode == System.Net.FtpStatusCode.ClosingControl
+                            )
+                        {
+                            // All good
 
-                        client.UploadFile(targetPath, file);
+                            System.DateTime transferFinished = System.DateTime.Now;
 
-                        Debug.Log("Done uploading " + targetPath);
+                            Debug.Log("Uploaded "+targetPath+" in "+(transferFinished-transferStarted).TotalSeconds+" seconds");
+
+                        }
+                        else
+                        {
+                            Debug.LogError(ftpResponse.StatusCode);
+                            Debug.LogError(ftpResponse.StatusDescription);
+                        }
                     }
                 }
+
             }
             catch (System.Exception e)
             {

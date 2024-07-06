@@ -54,11 +54,28 @@ public class Player : MonoBehaviour
 
     public Camera Camera { get { return playerCamera.Camera; } }
 
+    public string DebugDump { get { return "PLAYER #"+index+"\n"+ lastDeath + "\n" + input.Dump(); } }
+
     private PlayerInput input;
 
     private float lifetime = 0f;
 
+    private string lastDeath = string.Empty;
+
     private int index;
+
+    // Debugging
+    public static Player[] players = new Player[Level.PLAYERS];
+
+    public static void SetDeathString(int index, string death)
+    {
+        if (players[index])
+        {
+            players[index].lastDeath = death;
+        }
+    }
+
+    // \Debugging
 
     public void Initialize(int index)
     {
@@ -71,7 +88,7 @@ public class Player : MonoBehaviour
         //        input = new XInputDLLPlayerInput();
 
         //        input = new MockInput();
-        input = new NativeUnityInput();
+        input = PlayerInput.MakeForPlatform();
 
         input.SetPlayerIndex(index);
 
@@ -80,10 +97,13 @@ public class Player : MonoBehaviour
             input.Dispose();
             input = new MockInput();
             input.SetPlayerIndex(index);
+
+            Console.WriteLine("Created mock input for player " + index + "");
         }
 
         this.index = index;
         name = "PLAYER #" + index;
+        players[index] = this;
 
         IsReady = Game.i.AlwaysReady;
         IsSpawned = false;
@@ -118,6 +138,11 @@ public class Player : MonoBehaviour
 
     public void NotifyKilled()
     {
+        if (lastDeath == string.Empty)
+        {
+            lastDeath = "Notify killed!";
+        }
+
         IsAlive = false;
         PlayDeathAnimation();
 
@@ -152,10 +177,11 @@ public class Player : MonoBehaviour
 
     public void NotifyOobDeath()
     {
+        lastDeath = "Out of bounds death";
         Collisions_OnCollide(null);
     }
 
-    private void Collisions_OnCollide(Collision _)
+    private void Collisions_OnCollide(Collision obj)
     {
         if (lifetime < 1f)
         {
@@ -165,6 +191,11 @@ public class Player : MonoBehaviour
 
         if (IsAlive)
         {
+            if (obj != null)
+            {
+                lastDeath = "(died colliding " + obj.gameObject.name + ")";
+            }
+            
             IsAlive = false;
             PlayDeathAnimation();
 

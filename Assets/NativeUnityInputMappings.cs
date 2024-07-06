@@ -49,6 +49,9 @@
 
     public static Axis[] axes = new Axis[]
     {
+        // 13 14 15 16 do nothing
+        // 2 3 4 7 neither (some of them are right thumb or a trigger)
+
             new Axis(GamepadInput.ThumbLX, 0),
             new Axis(GamepadInput.ThumbLY, 1),
             new Axis(GamepadInput.LeftTrigger, 8), // => 9
@@ -59,8 +62,6 @@
 
     public static Button[] buttons = new Button[]
     {
-            new Button(GamepadInput.A, "button 0"),
-            new Button(GamepadInput.Start, "button 7"),
     };
 
     public static string GetVirtualInputName(GamepadInput name, int playerIndex)
