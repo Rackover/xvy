@@ -21,6 +21,8 @@ public class NativeUnityInput : PlayerInput {
     {
 #if X360
         X360Core.SetControllerVibration((uint)playerIndex, leftValue, rightValue);
+#elif UNITY_PS3
+        PS3Pad.SetVibration(playerIndex, leftValue > 0f, rightValue);
 #else
 
         base.SetVibration(leftValue, rightValue);
@@ -34,7 +36,11 @@ public class NativeUnityInput : PlayerInput {
 
     public override bool GamepadPresent()
     {
+#if UNITY_PS3
+        return PS3Pad.IsReady(playerIndex);
+#else
         return Input.GetJoystickNames().Length > playerIndex;
+#endif
     }
 
     public override bool AnyKey()
