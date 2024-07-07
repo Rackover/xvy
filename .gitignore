@@ -67,3 +67,4 @@ crashlytics-build.properties
 /BUILD*/
 /test/
 .git.zip
+/RAW/
