@@ -873,7 +873,6 @@ MonoBehaviour:
   reloadTime: 0.5
   offCenterMultiplier: 0
   acquisitionSpeed: 0.33
-  aimAcquisitionMultiplier: 1
   aimingAmplitude: 150
   generalSource: {fileID: 82000013567160390}
   homingConfirmedClip: {fileID: 8300000, guid: c9ddef838585e7c43864942a95c0d2d6, type: 3}
@@ -1088,6 +1087,7 @@ MonoBehaviour:
   deathShuriken: {fileID: 198000012321682962}
   visualsTransform: {fileID: 4000013270107666}
   source: {fileID: 82000013567160390}
+  kickClip: {fileID: 8300000, guid: 41a8cfda7fdb48247bb47012fd40bbdb, type: 3}
   birthClip: {fileID: 8300000, guid: 13af0850f64f4de448ee7934876f3611, type: 3}
   readyClip: {fileID: 8300000, guid: c9ddef838585e7c43864942a95c0d2d6, type: 3}
   deathClip: {fileID: 8300000, guid: d4b073997f0d27f42ad4a459a9f50a47, type: 3}

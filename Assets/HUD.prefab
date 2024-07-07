@@ -238,7 +238,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 61c931384dd8fce43a7329b593670528, type: 3}
+    m_Font: {fileID: 12800000, guid: 9e15c8dd22729944a9f635a930ecf367, type: 3}
     m_FontSize: 90
     m_FontStyle: 0
     m_BestFit: 1
@@ -250,7 +250,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: READY UP
+  m_Text: ready up
 --- !u!114 &114000010398399066
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -395,6 +395,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a960d7da9eb10048ae23f303fe0d4b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  localization: {fileID: 114000014117113794, guid: 793216d305c69724ab10f60c0907aa2f,
+    type: 2}
   rawImageRect: {fileID: 0}
   textMesh: {fileID: 114000010077497198}
   titleMesh: {fileID: 114000010443830692}

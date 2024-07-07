@@ -1,33 +1,29 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.Callbacks;
-using System.IO;
-using System.Collections;
 
-
-public class ElfBuildPostProcessor
+public class PCBuildPostProcessor
 {
-    [MenuItem("Build/ELF")]
-    public static void BuildElf()
+    [MenuItem("Build/PC")]
+    public static void BuildPC()
     {
-        BuildElf(BuildOptions.None);
+        BuildPC(BuildOptions.None);
     }
 
-    [MenuItem("Build/ELF Debug")]
-    public static void BuildElfDebug()
+    [MenuItem("Build/PC Debug")]
+    public static void BuildPCDebug()
     {
-        BuildElf(BuildOptions.AllowDebugging | BuildOptions.Development);
+        BuildPC(BuildOptions.AllowDebugging | BuildOptions.Development);
     }
 
-    private static void BuildElf(BuildOptions options)
+    private static void BuildPC(BuildOptions options)
     {
         PlayerSettings.stripEngineCode = true;
         EditorUserBuildSettings.sceBuildSubtarget = SCEBuildSubtarget.HddTitle;
-        
+
         BuildPipeline.BuildPlayer(
             new string[] { "Assets/Scene/RUN.unity" },
-            "BUILD_PS3",
-            BuildTarget.PS3,
+            "BUILD_PC",
+            BuildTarget.StandaloneWindows64,
             options
         );
     }
@@ -36,7 +32,7 @@ public class ElfBuildPostProcessor
     [PostProcessBuild(1)]
     public static void OnPostProcessBuild(BuildTarget target, string pathToBuiltProject)
     {
-        if (target == BuildTarget.PS3)
+        if (target == BuildTarget.StandaloneWindows64)
         {
             System.Diagnostics.Process.Start("explorer", pathToBuiltProject);
         }

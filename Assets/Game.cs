@@ -10,6 +10,9 @@ public class Game : MonoBehaviour
     public event Action OnLevelLoaded;
 
     [SerializeField]
+    private Localization localization;
+
+    [SerializeField]
     private Fade fade;
 
     [SerializeField]
@@ -55,6 +58,9 @@ public class Game : MonoBehaviour
     [SerializeField]
     private bool allowMasterControl = true;
 
+    [SerializeField]
+    private bool forceFrog = false;
+
     public AudioSource GeneralAudioSource { get { return generalAudioSource; } }
 
     public IList<RenderTexture> Texes { get { return texes; } }
@@ -72,6 +78,8 @@ public class Game : MonoBehaviour
     public bool AlwaysHoming { get { return alwaysHoming; } }
 
     public bool ShowPerformanceInfo { get { return showPerformanceInfo; } }
+
+    public bool FrogForced { get { return forceFrog; } }
 
     public bool EmulateP2 { get { return emulateP2; } }
 
@@ -248,14 +256,14 @@ public class Game : MonoBehaviour
 
                                     if (winnerScore - loserScore <= 1)
                                     {
-                                        txt += "THAT WAS A CLOSE ONE\n\n";
+                                        txt += localization.Lang.CloseOne + "\n\n";
                                     }
                                     else
                                     {
-                                        txt += "WELL PLAYED\n\n";
+                                        txt += localization.Lang.WellPlayed + "\n\n";
                                     }
 
-                                    txt += "GOOD GAME";
+                                    txt += localization.Lang.GoodGame;
                                 }
                             }
                         }
@@ -278,7 +286,7 @@ public class Game : MonoBehaviour
                     else
                     {
                         bothPlayersAlive = false;
-                        txt = currentLevel.IsPlayerReady(1 - i) ? string.Empty : "WAITING FOR OTHER PLAYERS";
+                        txt = currentLevel.IsPlayerReady(1 - i) ? string.Empty : localization.Lang.WaitingForOtherPlayers;
                         split = Mathf.Max(split, 1f);
                     }
                 }
@@ -287,12 +295,12 @@ public class Game : MonoBehaviour
                     bothPlayersAlive = false;
                     if (currentLevel.IsPlayerConnected(i))
                     {
-                        txt = "READY UP";
+                        txt = localization.Lang.ReadyUp;
                         split = Mathf.Max(split, 0.75f);
                     }
                     else
                     {
-                        txt = Mathf.Sin(Time.time * 10f) > 0f ? string.Empty : "PLUG IN";
+                        txt = Mathf.Sin(Time.time * 10f) > 0f ? string.Empty : localization.Lang.PlugIn;
                         split = Mathf.Max(split, 0.5f);
                     }
                 }

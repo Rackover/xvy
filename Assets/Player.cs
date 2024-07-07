@@ -35,6 +35,9 @@ public class Player : MonoBehaviour
     private AudioSource source;
 
     [SerializeField]
+    private AudioClip kickClip;
+
+    [SerializeField]
     private AudioClip birthClip;
 
     [SerializeField]
@@ -76,6 +79,8 @@ public class Player : MonoBehaviour
     private PlayerInput input;
 
     private float lifetime = 0f;
+
+    private bool wasKicking = false;
 
     private string lastDeath = string.Empty;
 
@@ -179,9 +184,21 @@ public class Player : MonoBehaviour
 
     public void PlayDeathAnimation()
     {
-        source.PlayOneShot(deathClip);
-        deathShuriken.Play();
-        visualsTransform.gameObject.SetActive(false);
+        if (source)
+        {
+            source.PlayOneShot(deathClip);
+        }
+
+        if (deathShuriken)
+        {
+            deathShuriken.Play();
+        }
+
+        if (visualsTransform)
+        {
+            visualsTransform.gameObject.SetActive(false);
+        }
+
         RumbleForSeconds(0.4f);
     }
 
@@ -298,6 +315,16 @@ public class Player : MonoBehaviour
                     else
                     {
                         IsShooting = false;
+                    }
+
+                    if (wasKicking && !IsBoosting)
+                    {
+                        wasKicking = false;
+                    }
+                    else if (!wasKicking && IsBoosting && playerMovement.BoostAmount <= 0.1f)
+                    {
+                        wasKicking = true;
+                        source.PlayOneShot(kickClip);
                     }
                 }
             }

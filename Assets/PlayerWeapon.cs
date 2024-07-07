@@ -253,7 +253,7 @@ public class PlayerWeapon : MonoBehaviour
                 activeMissiles[i].transform.position = player.Transform.position + player.Transform.forward;
                 activeMissiles[i].SetOwner(player.Index);
 
-                Vector3 shootDirection = (GetShootDirection() + (Random.insideUnitSphere * 2f - Vector3.one) * currentImprecision).normalized;
+                Vector3 shootDirection = (GetShootDirection() + Random.insideUnitSphere * currentImprecision).normalized;
 
                 activeMissiles[i].transform.forward = shootDirection;
 
@@ -301,6 +301,18 @@ public class PlayerWeapon : MonoBehaviour
         {
             Pooler.Pool(this, activeMissiles[oldest.Value], STRAY_MISSILE_POOL);
             activeMissiles[oldest.Value] = null;
+        }
+    }
+
+    void OnDestroy()
+    {
+
+        for (int i = 0; i < activeMissiles.Length; i++)
+        {
+            if (activeMissiles[i])
+            {
+                Destroy(activeMissiles[i].gameObject);
+            }
         }
     }
 

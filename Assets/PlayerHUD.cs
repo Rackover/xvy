@@ -5,6 +5,9 @@ using UnityEngine.UI;
 public class PlayerHUD : MonoBehaviour
 {
     [SerializeField]
+    private Localization localization;
+
+    [SerializeField]
     private RectTransform rawImageRect;
 
     [SerializeField]
@@ -157,11 +160,11 @@ public class PlayerHUD : MonoBehaviour
             warningText.enabled = true;
             warningText.color = Color.Lerp(Color.red, transparentWhite, Mathf.Sin(Time.time * blinkSpeed * Mathf.PI));
 
-            warningText.text = @"/!\ MISSILE WARNING /!\
+            warningText.text = localization.Lang.MissileWarning + @"
 
 
 
-PLEASE PERFORM EVASION MANEUVERS";
+" + localization.Lang.Evasion;
         }
         else
         {
@@ -242,11 +245,11 @@ PLEASE PERFORM EVASION MANEUVERS";
             float distance = Vector3.Distance(otherPosition, myPosition);
 
             string distStr = distance.ToString("n0") + "m";
-            string name = "TARGET";
+            string name = localization.Lang.Target;
 
             if (weapon.HomingMissileAlive)
             {
-                name = "BYE-BYE";
+                name = localization.Lang.ByeBye;
                 aimTargetingChild.enabled = true;
                 aimTargetingChild.rectTransform.sizeDelta = new Vector2(32f, 32f) * Mathf.Lerp(1f, 1.2f, Mathf.Sin(Time.time * blinkSpeed * Mathf.PI));
 
@@ -261,8 +264,8 @@ PLEASE PERFORM EVASION MANEUVERS";
             }
             else if (weapon.TargetAcquired)
             {
-                name = "TARGET";
-                distStr = "LOCKED";
+                name = localization.Lang.Target;
+                distStr = localization.Lang.Locked;
 
                 var aimTrackerColor = Color.Lerp(lightGreen, Color.white, Mathf.Sin(Time.time * blinkSpeed * Mathf.PI));
 
@@ -274,7 +277,7 @@ PLEASE PERFORM EVASION MANEUVERS";
             }
             else if (weapon.IsAcquiring)
             {
-                name = "ACQUIRING";
+                name = localization.Lang.Acquiring;
                 Color orange = Color.Lerp(Color.red, Color.yellow, 0.5f);
                 trackerText.color = (Time.time * blinkSpeed) % 1f > 0.5f ? Color.white : orange;
 

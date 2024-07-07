@@ -34,7 +34,7 @@ public class XInputKernel : PlayerInput
     public override UnityEngine.Vector2 GetDirection()
     {
         XInputBindings.Vector2 input = XInputKernelBindings.GetThumbStickLeft(index);
-        return new UnityEngine.Vector2(input.x, input.y);
+        return new UnityEngine.Vector2(input.x, -input.y);
     }
 
     public override bool IsPressingStart()
