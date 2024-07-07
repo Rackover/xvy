@@ -263,7 +263,6 @@ public class Player : MonoBehaviour
 
         if (Game.i.InGame)
         {
-
             if (IsSpawned)
             {
                 if (IsAlive)
@@ -342,6 +341,10 @@ public class Player : MonoBehaviour
                     }
                 }
             }
+        }
+        else
+        {
+            IsReady = false;
         }
     }
 }

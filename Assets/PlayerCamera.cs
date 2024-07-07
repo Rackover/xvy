@@ -142,8 +142,8 @@ public class PlayerCamera : MonoBehaviour
                 lastVelocity = transform.position - lastPosition;
                 lastPosition = transform.position;
 
-                burnerSourceVolume = player.IsBoosting ? 1f : 0.5f;
-                windSourceVolume = player.IsBoosting ? 0.3f : 1f;
+                burnerSourceVolume = player.IsBoosting ? 0.5f : 0.2f;
+                windSourceVolume = player.IsBoosting ? 0.2f : 0.5f;
                 playLockOn = player.Weapon.TargetAcquired && !player.Weapon.HomingMissileAlive;
             }
             else

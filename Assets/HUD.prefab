@@ -413,7 +413,7 @@ MonoBehaviour:
   rotateAimTarget: 360
   sizeMultiplier: 10
   blinkSpeed: 10
-  minAcquisitionScreenDistance: 10
+  minAcquisitionScreenDistance: 15
   maxAcquisitionScreenDistance: 200
   aimTowardsArrow: {fileID: 114000012887510584}
 --- !u!114 &114000011420549550

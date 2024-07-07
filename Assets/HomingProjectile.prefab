@@ -446,8 +446,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifespan: 6
-  detonationDistance: 4
-  velocity: 260
+  detonationDistance: 2
+  velocity: 120
   birthSound: {fileID: 8300000, guid: 5e08ca6c3767b5d448e4d528a736c18c, type: 3}
   detonationSound: {fileID: 8300000, guid: 4a4d0927027103443a71c1da5077de59, type: 3}
   source: {fileID: 82000010961870244}
@@ -461,7 +461,6 @@ MonoBehaviour:
   - {fileID: 96000012344990080}
   trackAfterSeconds: 0.5
   stopTrackingAtDistanceBonus: 1
-  accelerationTime: 1
   animTransform: {fileID: 4000013606004868}
   axelCurve:
     serializedVersion: 2

@@ -40,6 +40,9 @@ public class Game : MonoBehaviour
     private float gameOverDuration = 8f;
 
     [SerializeField]
+    private AudioClip wantsToPlayClip;
+
+    [SerializeField]
     private RenderTexture[] texes;
 
     [Header("Debug switches")]
@@ -198,7 +201,12 @@ public class Game : MonoBehaviour
         {
             if (currentLevel.AnyKey())
             {
-                wantsToPlay = true;
+                if (!wantsToPlay)
+                {
+                    wantsToPlay = true;
+                    GeneralAudioSource.PlayOneShot(wantsToPlayClip);
+                }
+
                 idleTimer = 0f;
             }
         }
