@@ -10847,11 +10847,6 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 114000010579411000, guid: f161a022f6700de4e84ab08bf1a04796,
-        type: 2}
-      propertyPath: axelCurve.m_Curve.Array.size
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 4000013526909540, guid: f161a022f6700de4e84ab08bf1a04796, type: 2}
       propertyPath: m_LocalPosition.x
       value: -0.87
@@ -10883,16 +10878,6 @@ Prefab:
     - target: {fileID: 4000013526909540, guid: f161a022f6700de4e84ab08bf1a04796, type: 2}
       propertyPath: m_RootOrder
       value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000010579411000, guid: f161a022f6700de4e84ab08bf1a04796,
-        type: 2}
-      propertyPath: axelCurve.m_Curve.Array.data[4].time
-      value: 2.4953759
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000010579411000, guid: f161a022f6700de4e84ab08bf1a04796,
-        type: 2}
-      propertyPath: axelCurve.m_Curve.Array.data[4].value
-      value: 1.1496863
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f161a022f6700de4e84ab08bf1a04796, type: 2}
