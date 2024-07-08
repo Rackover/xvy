@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-
 public class NativeUnityInput : PlayerInput {
 
     int playerIndex = 0;
@@ -86,6 +85,15 @@ public class NativeUnityInput : PlayerInput {
         return Input.GetKey(playerIndex == 0 ? KeyCode.Joystick1Button7 : KeyCode.Joystick2Button7);
 #else
         return Input.GetKey(playerIndex == 0 ? KeyCode.JoystickButton7 : KeyCode.Joystick1Button7);
+#endif
+    }
+
+    public override bool IsPressingSelect()
+    {
+#if !UNITY_XBOX360
+        return Input.GetKey(playerIndex == 0 ? KeyCode.Joystick1Button6 : KeyCode.Joystick2Button6);
+#else
+        return Input.GetKey(playerIndex == 0 ? KeyCode.JoystickButton6 : KeyCode.Joystick1Button6);
 #endif
     }
 

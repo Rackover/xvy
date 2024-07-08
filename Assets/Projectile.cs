@@ -29,6 +29,8 @@ public class Projectile : MonoBehaviour {
 
     public int Owner { get { return owner; } }
 
+    protected float VelocityAdjusted { get { return Velocity * Game.i.Level.SpeedMultiplier; } }
+
     protected virtual float Velocity { get { return velocity; } }
 
     public bool Expired { get { return livedFor > lifespan; } }
@@ -111,7 +113,7 @@ public class Projectile : MonoBehaviour {
 
     private void MoveForward()
     {
-        transform.position += GetDirection() * Velocity * Time.deltaTime;
+        transform.position += GetDirection() * VelocityAdjusted * Time.deltaTime;
     }
    
     private void KillOtherPlayer()

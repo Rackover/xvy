@@ -21,6 +21,8 @@ public abstract class PlayerInput : IDisposable
 
     public abstract bool IsPressingStart();
 
+    public abstract bool IsPressingSelect();
+
     public abstract void Refresh();
 
     public abstract Vector2 GetDirection();
@@ -44,6 +46,7 @@ public abstract class PlayerInput : IDisposable
 
         builder.AppendLine("Connected: " + GamepadPresent());
         builder.AppendLine("Start: " + IsPressingStart());
+        builder.AppendLine("Select: " + IsPressingSelect());
         builder.AppendLine("LStick: " + GetDirection());
         builder.AppendLine("DPad: " + GetDPad());
         builder.AppendLine("A: " + AButton());

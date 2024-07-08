@@ -50,7 +50,7 @@ public class Game : MonoBehaviour
     private bool alwaysReady = false;
 
     [SerializeField]
-    private bool emulateP2 = false;
+    private bool fillEmptySeats = false;
 
     [SerializeField]
     private bool showPerformanceInfo = false;
@@ -84,7 +84,7 @@ public class Game : MonoBehaviour
 
     public bool FrogForced { get { return forceFrog; } }
 
-    public bool EmulateP2 { get { return emulateP2; } }
+    public bool FillEmptySeats { get { return fillEmptySeats; } }
 
     private bool wantsToPlay = false;
 
@@ -139,6 +139,11 @@ public class Game : MonoBehaviour
             if (masterInput.GetDPad().x > 0.8f)
             {
                 NextLevel();
+            }
+
+            if (masterInput.IsPressingSelect())
+            {
+                Level.FillEmptySeats();
             }
 
             yield return new WaitForSeconds(0.6f);

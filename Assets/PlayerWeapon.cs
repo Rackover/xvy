@@ -2,6 +2,7 @@
 using System.Collections;
 using LouveSystems;
 using System.Collections.Generic;
+using System.Reflection;
 
 public class PlayerWeapon : MonoBehaviour
 {
@@ -56,7 +57,7 @@ public class PlayerWeapon : MonoBehaviour
     [SerializeField]
     private AudioClip homingConfirmedClip;
 
-    public float AcquisitionDistanceMeters { get { return acquisitionDistance; } }
+    public float AcquisitionDistanceMeters { get { return acquisitionDistance * Game.i.Level.SpeedMultiplier; } }
 
     public bool HasEnemyInAcquisitionSights { set; private get; }
 
@@ -72,7 +73,9 @@ public class PlayerWeapon : MonoBehaviour
 
     public bool TargetAcquired { get { return acquisitionAmount >= 1f || homingMissileAlive; } }
 
-    public bool HomingMissileAlive { get { return homingMissileAlive; } }
+    public bool HasLineOfSightOnEnemy { get; private set; }
+
+    public HomingMissile HomingMissileAlive { get { return homingMissileAlive; } }
 
     private float reloadTimeRemaining = 0f;
 
@@ -87,7 +90,7 @@ public class PlayerWeapon : MonoBehaviour
 
     private readonly Projectile[] activeMissiles = new Projectile[100];
 
-    private bool homingMissileAlive = false;
+    private HomingMissile homingMissileAlive = null;
 
     private float acquisitionDistanceSquared;
 
@@ -97,16 +100,53 @@ public class PlayerWeapon : MonoBehaviour
 
     private float currentImprecision = 0f;
 
+    private int losMask = 0;
+
     void Awake()
     {
+        losMask = LayerMask.GetMask("Level");
         missilePrefab.gameObject.SetActive(false);
         homingMissilePrefab.gameObject.SetActive(false);
-
-        acquisitionDistanceSquared = acquisitionDistance * acquisitionDistance;
     }
 
+    private void RefreshLineOfSight()
+    {
+        HasLineOfSightOnEnemy = false;
+        if (Game.i.InGame)
+        {
+            if (player.IsReady)
+            {
+                if (player.IsAlive && player.IsSpawned)
+                {
+                    int otherPlayer = 1 - player.Index;
+
+                    if (Game.i.Level.IsPlayerAlive(otherPlayer))
+                    {
+                        Vector3 position = Game.i.Level.GetPlayerPosition(player.Index);
+                        Vector3 enemyPosition = Game.i.Level.GetPlayerPosition(otherPlayer);
+
+                        Ray ray = new Ray(position, enemyPosition - position);
+
+
+                        if (Physics.Raycast(ray, float.MaxValue, losMask))
+                        {
+                            HasLineOfSightOnEnemy = false;
+                        }
+                        else
+                        {
+                            HasLineOfSightOnEnemy = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
     void Update()
     {
+        acquisitionDistanceSquared = AcquisitionDistanceMeters * AcquisitionDistanceMeters;
+
+        RefreshLineOfSight();
+
         if (player.IsAlive)
         {
             if (player.IsShooting || burstIndex != 0)
@@ -211,7 +251,7 @@ public class PlayerWeapon : MonoBehaviour
 
                 homing.gameObject.SetActive(true);
 
-                homingMissileAlive = true;
+                homingMissileAlive = homing;
                 activeMissiles[i] = homing;
 
                 player.RumbleHeavy();
@@ -329,9 +369,9 @@ public class PlayerWeapon : MonoBehaviour
 
                     Pooler.Pool(this, activeMissiles[i], activeMissiles[i] is HomingMissile ? HOMING_MISSILE_POOL : STRAY_MISSILE_POOL);
 
-                    if (activeMissiles[i] is HomingMissile)
+                    if (activeMissiles[i] is HomingMissile && activeMissiles[i] == homingMissileAlive)
                     {
-                        homingMissileAlive = false;
+                        homingMissileAlive = null;
                     }
 
                     activeMissiles[i] = null;

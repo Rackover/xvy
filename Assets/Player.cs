@@ -99,6 +99,15 @@ public class Player : MonoBehaviour
 
     // \Debugging
 
+    public void MakeMock()
+    {
+        input.Dispose();
+        input = new MockInput();
+        input.SetPlayerIndex(index);
+
+        Console.WriteLine("Created mock input for player " + index + "");
+    }
+
     public void Initialize(int index)
     {
         if (input != null)
@@ -110,18 +119,14 @@ public class Player : MonoBehaviour
 
         input.SetPlayerIndex(index);
 
-        if (!input.GamepadPresent() && Game.i.EmulateP2)
-        {
-            input.Dispose();
-            input = new MockInput();
-            input.SetPlayerIndex(index);
-
-            Console.WriteLine("Created mock input for player " + index + "");
-        }
-
         this.index = index;
         name = "PLAYER #" + index;
         players[index] = this;
+
+        if (!input.GamepadPresent() && Game.i.FillEmptySeats)
+        {
+            MakeMock();
+        }
 
         IsReady = Game.i.AlwaysReady;
         IsSpawned = false;
@@ -252,6 +257,7 @@ public class Player : MonoBehaviour
         }
     }
 
+
     private void Update()
     {
         if (input == null)
@@ -323,6 +329,7 @@ public class Player : MonoBehaviour
                     else if (!wasKicking && IsBoosting && playerMovement.BoostAmount <= 0.1f)
                     {
                         wasKicking = true;
+                        RumbleLight();
                         source.PlayOneShot(kickClip);
                     }
                 }

@@ -48,5 +48,10 @@ public class MockInput : PlayerInput {
     public override UnityEngine.Vector2 GetDirection()
     {
         return new Vector2(Mathf.Sin(Time.time + playerIndex), Mathf.Clamp01(Mathf.Cos(Time.time + playerIndex) + 0.4f));
-    }    
+    }
+
+    public override bool IsPressingSelect()
+    {
+        return false;
+    }
 }

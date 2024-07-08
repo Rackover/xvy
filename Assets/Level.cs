@@ -41,7 +41,12 @@ public class Level : MonoBehaviour
     [SerializeField]
     private float maxOobTime = 3f;
 
+    [SerializeField]
+    private float speedMultiplier = 1f;
+
     public int Winner { get { return scores[0] > scores[1] ? 0 : 1; } }
+
+    public float SpeedMultiplier { get { return speedMultiplier; } }
 
     public IList<int> Scores { get { return scores; } }
     public bool GameOver { get { return gameOver; } }
@@ -101,6 +106,17 @@ public class Level : MonoBehaviour
 
         UpdateTrackingTargets();
 
+    }
+
+    public void FillEmptySeats()
+    {
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (!players[i].GamepadConnected())
+            {
+                players[i].MakeMock();
+            }
+        }
     }
 
     private void OnPlayerKilled(int player)

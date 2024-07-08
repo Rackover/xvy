@@ -10,7 +10,7 @@ public class XInputKernel : PlayerInput
 
     public override bool AnyKey()
     {
-        return XInputKernelBindings.GetButton(index, XInputButton.A);
+        return XInputKernelBindings.GetButton(index, XInputButton.A) || XInputKernelBindings.GetButton(index, XInputButton.Start);
     }
 
     public override bool GamepadPresent()
@@ -35,6 +35,11 @@ public class XInputKernel : PlayerInput
     {
         XInputBindings.Vector2 input = XInputKernelBindings.GetThumbStickLeft(index);
         return new UnityEngine.Vector2(input.x, -input.y);
+    }
+
+    public override bool IsPressingSelect()
+    {
+        return XInputKernelBindings.GetButton(index, XInputButton.Back);
     }
 
     public override bool IsPressingStart()

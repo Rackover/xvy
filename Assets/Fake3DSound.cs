@@ -22,26 +22,33 @@ public class Fake3DSound : MonoBehaviour
     {
         if (Game.i.Level)
         {
-            float closestDistanceSquared = float.PositiveInfinity;
-
-            for (int i = 0; i < Level.PLAYERS; i++)
+            if (Game.i.Playing)
             {
-                float distSquared = Vector3.SqrMagnitude(Game.i.Level.GetPlayerPosition(i) - transform.position);
+                float closestDistanceSquared = float.PositiveInfinity;
 
-                if (closestDistanceSquared > distSquared )
+                for (int i = 0; i < Level.PLAYERS; i++)
                 {
-                    closestDistanceSquared = distSquared;
-                }
-            }
+                    float distSquared = Vector3.SqrMagnitude(Game.i.Level.GetPlayerPosition(i) - transform.position);
 
-            if (linear)
-            {
-                float closestDistance = Mathf.Sqrt(closestDistanceSquared);
-                source.volume = (closestDistance / source.maxDistance) * maxVolume;
+                    if (closestDistanceSquared > distSquared)
+                    {
+                        closestDistanceSquared = distSquared;
+                    }
+                }
+
+                if (linear)
+                {
+                    float closestDistance = Mathf.Sqrt(closestDistanceSquared);
+                    source.volume = (1f - closestDistance / source.maxDistance) * maxVolume;
+                }
+                else
+                {
+                    source.volume = (1f - closestDistanceSquared / (source.maxDistance * source.maxDistance)) * maxVolume;
+                }
             }
             else
             {
-                source.volume = (closestDistanceSquared / (source.maxDistance * source.maxDistance)) * maxVolume;
+                source.volume = 0f;
             }
         }
     }

@@ -54,28 +54,91 @@ public class Jukebox : MonoBehaviour
 
     private readonly Dictionary<AudioClip, AudioSource> sourceForClip = new Dictionary<AudioClip, AudioSource>();
 
+    private AudioClip[] allClips;
+
+    private Coroutine syncTask;
+
+    public void Resynchronize()
+    {
+        if (syncTask != null)
+        {
+            // already synchronizing
+            return;
+        }
+
+        if (allClips == null)
+        {
+            return;
+        }
+
+
+        syncTask = StartCoroutine(SynchronizationTask());
+    }
+
+    private IEnumerator SynchronizationTask()
+    {
+        AudioSource referenceSource = sourceForClip[lightDrum];
+        referenceSource.loop = false;
+        while(referenceSource.isPlaying)
+        {
+            yield return null;
+        }
+
+        referenceSource.loop = true;
+        double startTime = AudioSettings.dspTime + 0.1;
+
+        for (int i = 0; i < allClips.Length; i++)
+        {
+            AudioSource source;
+
+            if (sourceForClip.TryGetValue(allClips[i], out source))
+            {
+                source.Stop();
+                source.PlayScheduled(startTime);
+            }
+        }
+
+
+        syncTask = null;
+    }
+
     void Awake()
     {
         exampleSource.gameObject.SetActive(false);
 
-        AudioClip[] clips = new AudioClip[]
+        allClips = new AudioClip[]
         {
             bassLine, fightingDistance, pressure, heavyDrum, lightDrum, title, titleStep2
         };
 
-        double startTime = AudioSettings.dspTime + 1;
-        for (int i = 0; i < clips.Length; i++)
+
+        for (int i = 0; i < allClips.Length; i++)
         {
             AudioSource source  = Pooler.DePool(this, exampleSource);
-            source.clip = clips[i];
+            source.playOnAwake = false;
+            source.clip = allClips[i];
             source.volume = 0.0f;
             source.gameObject.SetActive(true);
 
-            source.PlayScheduled(startTime);
-
-            sourceForClip[clips[i]] = source;
-
+            sourceForClip[allClips[i]] = source;
         }
+
+        Game.i.OnLevelLoaded += I_OnLevelLoaded;
+
+        if (Game.i.Level != null)
+        {
+            I_OnLevelLoaded();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        Game.i.OnLevelLoaded -= I_OnLevelLoaded;
+    }
+
+    private void I_OnLevelLoaded()
+    {
+        Resynchronize();
     }
 
     void Update()

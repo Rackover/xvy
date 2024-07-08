@@ -25,15 +25,19 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float kickBoostTime = 0.5f;
 
-    public bool IsBoosting { get { return gasPedal >= 0.5f; } }
+    public float MaxBoostAdjusted { get { return maxBoost * Game.i.Level.SpeedMultiplier; } }
+
+    public float MinBoostAdjusted { get { return minBoost * Game.i.Level.SpeedMultiplier; } }
+
+    public float KickBoostBonusAdjusted { get { return kickBoostBonus * Game.i.Level.SpeedMultiplier; } }
 
     public float Speed { get { return speed; } }
 
     public float KickAmount { get { return startedBoostingAtTime.HasValue ? Mathf.Clamp01(1f - (Time.time - startedBoostingAtTime.Value) / kickBoostTime) : 0f; } }
 
-    public float BoostAmount { get { return (speed - minBoost) / (maxBoost - minBoost); } }
+    public float BoostAmount { get { return (speed - MinBoostAdjusted) / (MaxBoostAdjusted - MinBoostAdjusted); } }
 
-    public float SpeedAmount { get { return speed / maxBoost; } }
+    public float SpeedAmount { get { return speed / MaxBoostAdjusted; } }
 
     public Vector2 VirtualJoystick { get { return virtualStick; } }
 
@@ -103,10 +107,10 @@ public class PlayerMovement : MonoBehaviour
         float kickSpeedBonus = 0f;
         if (startedBoostingAtTime.HasValue)
         {
-            kickSpeedBonus = kickBoostBonus * Mathf.Clamp01(1f - (Time.time - startedBoostingAtTime.Value) / kickBoostTime);
+            kickSpeedBonus = KickBoostBonusAdjusted * Mathf.Clamp01(1f - (Time.time - startedBoostingAtTime.Value) / kickBoostTime);
         }
 
-        speed = minBoost + (maxBoost - minBoost) * gasPedal;
+        speed = MinBoostAdjusted + (MaxBoostAdjusted - MinBoostAdjusted) * gasPedal;
         speed += kickSpeedBonus;
 
         transform.position += speed * Time.deltaTime * transform.forward;

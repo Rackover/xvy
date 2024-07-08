@@ -446,21 +446,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifespan: 6
-  detonationDistance: 2
-  velocity: 120
+  detonationDistance: 4
+  velocity: 180
   birthSound: {fileID: 8300000, guid: 5e08ca6c3767b5d448e4d528a736c18c, type: 3}
   detonationSound: {fileID: 8300000, guid: 4a4d0927027103443a71c1da5077de59, type: 3}
   source: {fileID: 82000010961870244}
   deathParticles: {fileID: 198000012914356950}
   body: {fileID: 54000010374258560}
-  maxTurnRate: 60
+  maxTurnRate: 50
   tailRotateSpeed: 440
   trails:
   - {fileID: 96000012056410170}
   - {fileID: 96000010334372948}
   - {fileID: 96000012344990080}
   trackAfterSeconds: 0.5
-  stopTrackingAtDistanceBonus: 1
+  stopTrackingAtDistanceBonus: 0
   animTransform: {fileID: 4000013606004868}
   axelCurve:
     serializedVersion: 2
