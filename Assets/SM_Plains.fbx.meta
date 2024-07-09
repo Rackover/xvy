@@ -1,0 +1,251 @@
+fileFormatVersion: 2
+guid: a584abe5aea92bf4eae8ec313e81983a
+timeCreated: 1720543228
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: BboolBigTop
+    100004: BigBuildingChunkMissing
+    100006: BigBuildingTunnel
+    100008: BooleanWater
+    100010: Buildings
+    100012: Camera
+    100014: Cube
+    100016: Cube.001
+    100018: Cube.002
+    100020: Cube.003
+    100022: Cube.004
+    100024: Cube.005
+    100026: Cube.006
+    100028: Cube.007
+    100030: Cube.008
+    100032: Cube.009
+    100034: Cube.010
+    100036: Cube.011
+    100038: Cube.012
+    100040: Cylinder
+    100042: Cylinder.001
+    100044: Cylinder.002
+    100046: Cylinder.003
+    100048: Cylinder.004
+    100050: Cylinder.005
+    100052: Empty
+    100054: GlobalTradeCenter
+    100056: Grid
+    100058: Grid.001
+    100060: House
+    100062: House.001
+    100064: Light
+    100066: NurbsPath
+    100068: NurbsPath.001
+    100070: NurbsPath.002
+    100072: stone arch
+    100074: stone arch 2
+    400000: //RootNode
+    400002: BboolBigTop
+    400004: BigBuildingChunkMissing
+    400006: BigBuildingTunnel
+    400008: BooleanWater
+    400010: Buildings
+    400012: Camera
+    400014: Cube
+    400016: Cube.001
+    400018: Cube.002
+    400020: Cube.003
+    400022: Cube.004
+    400024: Cube.005
+    400026: Cube.006
+    400028: Cube.007
+    400030: Cube.008
+    400032: Cube.009
+    400034: Cube.010
+    400036: Cube.011
+    400038: Cube.012
+    400040: Cylinder
+    400042: Cylinder.001
+    400044: Cylinder.002
+    400046: Cylinder.003
+    400048: Cylinder.004
+    400050: Cylinder.005
+    400052: Empty
+    400054: GlobalTradeCenter
+    400056: Grid
+    400058: Grid.001
+    400060: House
+    400062: House.001
+    400064: Light
+    400066: NurbsPath
+    400068: NurbsPath.001
+    400070: NurbsPath.002
+    400072: stone arch
+    400074: stone arch 2
+    2300000: //RootNode
+    2300002: BboolBigTop
+    2300004: BigBuildingChunkMissing
+    2300006: BigBuildingTunnel
+    2300008: BooleanWater
+    2300010: Buildings
+    2300012: Cube
+    2300014: Cube.001
+    2300016: Cube.002
+    2300018: Cube.003
+    2300020: Cube.004
+    2300022: Cube.005
+    2300024: Cube.006
+    2300026: Cube.007
+    2300028: Cube.008
+    2300030: Cube.009
+    2300032: Cube.010
+    2300034: Cube.011
+    2300036: Cube.012
+    2300038: Cylinder
+    2300040: Cylinder.001
+    2300042: Cylinder.002
+    2300044: Cylinder.003
+    2300046: Cylinder.004
+    2300048: Cylinder.005
+    2300050: GlobalTradeCenter
+    2300052: Grid
+    2300054: Grid.001
+    2300056: House
+    2300058: House.001
+    2300060: NurbsPath
+    2300062: NurbsPath.001
+    2300064: NurbsPath.002
+    2300066: stone arch
+    2300068: stone arch 2
+    3300000: //RootNode
+    3300002: BboolBigTop
+    3300004: BigBuildingChunkMissing
+    3300006: BigBuildingTunnel
+    3300008: BooleanWater
+    3300010: Buildings
+    3300012: Cube
+    3300014: Cube.001
+    3300016: Cube.002
+    3300018: Cube.003
+    3300020: Cube.004
+    3300022: Cube.005
+    3300024: Cube.006
+    3300026: Cube.007
+    3300028: Cube.008
+    3300030: Cube.009
+    3300032: Cube.010
+    3300034: Cube.011
+    3300036: Cube.012
+    3300038: Cylinder
+    3300040: Cylinder.001
+    3300042: Cylinder.002
+    3300044: Cylinder.003
+    3300046: Cylinder.004
+    3300048: Cylinder.005
+    3300050: GlobalTradeCenter
+    3300052: Grid
+    3300054: Grid.001
+    3300056: House
+    3300058: House.001
+    3300060: NurbsPath
+    3300062: NurbsPath.001
+    3300064: NurbsPath.002
+    3300066: stone arch
+    3300068: stone arch 2
+    4300000: Grid.001
+    4300002: Grid
+    4300004: Cylinder
+    4300006: Cube
+    4300008: Cube.001
+    4300010: Cube.002
+    4300012: House
+    4300014: House.001
+    4300016: Cylinder.001
+    4300018: stone arch
+    4300020: stone arch 2
+    4300022: Cube.005
+    4300024: Cube.006
+    4300026: BooleanWater
+    4300028: Buildings
+    4300030: Cube.008
+    4300032: Cube.009
+    4300034: Cube.010
+    4300036: Cube.011
+    4300038: Cube.012
+    4300040: Cube.007
+    4300042: BigBuildingChunkMissing
+    4300044: BboolBigTop
+    4300046: BigBuildingTunnel
+    4300048: Cylinder.002
+    4300050: Cube.003
+    4300052: Cube.004
+    4300054: Cylinder.003
+    4300056: NurbsPath
+    4300058: Cylinder.004
+    4300060: NurbsPath.001
+    4300062: Cylinder.005
+    4300064: NurbsPath.002
+    4300066: GlobalTradeCenter
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 200
+    meshCompression: 3
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

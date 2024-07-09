@@ -58,7 +58,41 @@ public class Jukebox : MonoBehaviour
 
     private Coroutine syncTask;
 
-    public void Resynchronize()
+    private Level levelRef;
+
+    private void ResynchronizeIfNecessary()
+    {
+        if (allClips == null)
+        {
+            return;
+        }
+
+        AudioSource referenceSource = sourceForClip[lightDrum];
+        float refTime = referenceSource.time;
+        bool needsSync = false;
+
+        for (int i = 0; i < allClips.Length; i++)
+        {
+            AudioSource source;
+
+            if (sourceForClip.TryGetValue(allClips[i], out source))
+            {
+                if (Mathf.Abs(source.time - refTime) > 0.05f)
+                {
+                    needsSync = true;
+                    break;
+                }
+            }
+        }
+
+        if (needsSync)
+        {
+            Resynchronize();
+        }
+
+    }
+
+    private void Resynchronize()
     {
         if (syncTask != null)
         {
@@ -79,7 +113,7 @@ public class Jukebox : MonoBehaviour
     {
         AudioSource referenceSource = sourceForClip[lightDrum];
         referenceSource.loop = false;
-        while(referenceSource.isPlaying)
+        while (referenceSource.isPlaying)
         {
             yield return null;
         }
@@ -114,7 +148,7 @@ public class Jukebox : MonoBehaviour
 
         for (int i = 0; i < allClips.Length; i++)
         {
-            AudioSource source  = Pooler.DePool(this, exampleSource);
+            AudioSource source = Pooler.DePool(this, exampleSource);
             source.playOnAwake = false;
             source.clip = allClips[i];
             source.volume = 0.0f;
@@ -133,12 +167,28 @@ public class Jukebox : MonoBehaviour
 
     private void OnDestroy()
     {
-        Game.i.OnLevelLoaded -= I_OnLevelLoaded;
+        if (Game.i)
+        {
+            Game.i.OnLevelLoaded -= I_OnLevelLoaded;
+        }
     }
 
     private void I_OnLevelLoaded()
     {
+        if (levelRef)
+        {
+            levelRef.OnScoreChanged -= Level_OnScoreChanged;
+        }
+
+        levelRef = Game.i.Level;
+
+        levelRef.OnScoreChanged += Level_OnScoreChanged;
         Resynchronize();
+    }
+
+    private void Level_OnScoreChanged()
+    {
+        ResynchronizeIfNecessary();
     }
 
     void Update()
@@ -169,7 +219,7 @@ public class Jukebox : MonoBehaviour
             {
                 SetClip(Ambience.Additional, additionalClip);
             }
-            else if (Game.i.Level.IsPlayerAlive(0) && Game.i.Level.IsPlayerAlive(1) && 
+            else if (Game.i.Level.IsPlayerAlive(0) && Game.i.Level.IsPlayerAlive(1) &&
                 (Game.i.Level.GetPlayerWeapon(0).IsAcquiring || Game.i.Level.GetPlayerWeapon(1).IsAcquiring))
             {
                 SetClip(Ambience.Additional, fightingDistance);
@@ -194,7 +244,7 @@ public class Jukebox : MonoBehaviour
             }
         }
 
-        foreach(var k in sourceForClip)
+        foreach (var k in sourceForClip)
         {
             AudioClip clip = k.Key;
             bool selected = false;
