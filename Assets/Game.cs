@@ -80,6 +80,8 @@ public class Game : MonoBehaviour
 
     public bool AlwaysHoming { get { return alwaysHoming; } }
 
+    public bool ShowingCredits { get; private set; }
+
     public bool ShowPerformanceInfo { get { return showPerformanceInfo; } }
 
     public bool FrogForced { get { return forceFrog; } }
@@ -100,7 +102,7 @@ public class Game : MonoBehaviour
 
     private float readyTimer = 0f;
 
-    private PlayerInput masterInput;
+    private bool wasPressingCreditsInput = false;
 
     void Awake()
     {
@@ -130,6 +132,8 @@ public class Game : MonoBehaviour
 
     private IEnumerator ListenToMaster()
     {
+        PlayerInput masterInput;
+
         masterInput = PlayerInput.MakeForPlatform();
         masterInput.SetPlayerIndex(0);
 
@@ -141,7 +145,7 @@ public class Game : MonoBehaviour
                 NextLevel();
             }
 
-            if (masterInput.IsPressingSelect())
+            if (masterInput.GetDPad().x < -0.8f)
             {
                 Level.FillEmptySeats();
             }
@@ -194,7 +198,7 @@ public class Game : MonoBehaviour
     {
         ExitLevel();
 
-        levelIndex = (levelIndex + 1)% levels.Length;
+        levelIndex = (levelIndex + 1) % levels.Length;
         currentLevel = levels[levelIndex];
 
         EnterLevel();
@@ -202,11 +206,25 @@ public class Game : MonoBehaviour
 
     void Update()
     {
-        for (int i = 0; i < Level.PLAYERS; i++)
+        if (currentLevel.WantsCredits() && !Playing)
         {
+            if (wasPressingCreditsInput)
+            {
+                // Wait for release
+            }
+            else
+            { 
+                wasPressingCreditsInput = true;
+                ShowingCredits = !ShowingCredits;
+            }
+        }
+        else
+        {
+            wasPressingCreditsInput = false;
+
             if (currentLevel.AnyKey())
             {
-                if (!wantsToPlay)
+                if (!wantsToPlay && !ShowingCredits)
                 {
                     wantsToPlay = true;
                     GeneralAudioSource.PlayOneShot(wantsToPlayClip);
@@ -322,11 +340,19 @@ public class Game : MonoBehaviour
             }
             else
             {
-                bothPlayersAlive = false;
-                animaticTarget += Time.deltaTime;
-                split = Mathf.Sin(animaticTarget * rotateIdleSpeed);
+                if (Game.i.ShowingCredits)
+                {
+                    split = 0f;
+                    huds[i].SetTitle(string.Empty);
+                }
+                else
+                {
+                    bothPlayersAlive = false;
+                    animaticTarget += Time.deltaTime;
+                    split = Mathf.Sin(animaticTarget * rotateIdleSpeed);
 
-                huds[i].SetTitle(i == 0 ? "X" : "Y");
+                    huds[i].SetTitle(i == 0 ? "X" : "Y");
+                }
             }
         }
 
@@ -359,7 +385,7 @@ public class Game : MonoBehaviour
             wantsToPlay = false;
         }
 
-        if (shouldLockHud  && !bothPlayersAlive)
+        if (shouldLockHud && !bothPlayersAlive)
         {
             splitRenders.Lock(split);
         }

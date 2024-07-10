@@ -19,7 +19,7 @@ public class TitleScreen : MonoBehaviour {
 
     void Update()
     {
-        if (Game.i.InGame)
+        if (Game.i.InGame || Game.i.ShowingCredits)
         {
             if (titleMesh.enabled)
             {

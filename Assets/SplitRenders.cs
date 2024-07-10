@@ -39,6 +39,9 @@ public class SplitRenders : MonoBehaviour
     [SerializeField]
     private RectTransform childMaskTransform;
 
+    [SerializeField]
+    private MaskableGraphic creditsText;
+
     public float HorizontalAmount { get { return Mathf.Sin(flip * Mathf.PI); } }
 
     private Vector2 CanvasSize { get { return canvasScaler.referenceResolution; } }
@@ -82,7 +85,15 @@ public class SplitRenders : MonoBehaviour
     {
         if (transforms != null)
         {
-            if (Game.i.Level.GameOver)
+            creditsText.enabled = Game.i.ShowingCredits;
+
+            if (Game.i.ShowingCredits)
+            {
+                winnerSplitAmount += Time.deltaTime;
+                winnerSplitAmount = Mathf.Clamp01(winnerSplitAmount);
+                flipTarget = 0f;
+            }
+            else if (Game.i.Level.GameOver)
             {
                 UpdateWinnerSplit();
             }
@@ -152,9 +163,10 @@ public class SplitRenders : MonoBehaviour
 
         }
 
-        if (Game.i && Game.i.Level.GameOver)
+        if (Game.i && (Game.i.Level.GameOver || Game.i.ShowingCredits))
         {
-            if (Game.i.Level.Winner == 0)
+            int winner = Game.i.ShowingCredits ? 0 : Game.i.Level.Winner;
+            if (winner == 0)
             {
                 topTransform.anchoredPosition = Vector3.Lerp(topTransform.anchoredPosition, Vector3.zero, winnerSplitAmount);
                 maskTransform.anchoredPosition = new Vector2(

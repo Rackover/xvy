@@ -144,6 +144,8 @@ public class Player : MonoBehaviour
 
     public bool AnyKey() { return input.AnyKey(); }
 
+    public bool WantsCredits() { return input.IsPressingSelect(); }
+
     public void Birth(Transform spawner)
     {
         Debug.Log("Spawning " + name + " on " + spawner);

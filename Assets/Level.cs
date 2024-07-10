@@ -183,6 +183,19 @@ public class Level : MonoBehaviour
 
         return false;
     }
+    
+    public bool WantsCredits()
+    {
+        for (int i = 0; i < PLAYERS; i++)
+        {
+            if (players[i] != null && players[i].WantsCredits())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public bool AnyKey()
     {
