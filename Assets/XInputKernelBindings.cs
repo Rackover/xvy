@@ -140,13 +140,16 @@ namespace XInputBindings
             }
         }
 
+        public static void UpdateState(uint userIndex)
+        {
+            UpdateStateInternal(userIndex);
+        }
+
         /// <summary>
         /// Returns true while the button on the identified controller is held down. 
         /// </summary>
         public static bool GetButton(uint userIndex, XInputButton button)
         {
-            UpdateState(userIndex);
-
             XInputState thisState = mThisFrame[userIndex];
 
             if (!thisState.IsConnected) return false;
@@ -159,8 +162,6 @@ namespace XInputBindings
         /// </summary>
         public static bool GetButtonDown(uint userIndex, XInputButton button)
         {
-            UpdateState(userIndex);
-
             XInputState thisState = mThisFrame[userIndex];
             XInputState lastState = mLastFrame[userIndex];
 
@@ -174,8 +175,6 @@ namespace XInputBindings
         /// </summary>
         public static bool GetButtonUp(uint userIndex, XInputButton button)
         {
-            UpdateState(userIndex);
-
             XInputState thisState = mThisFrame[userIndex];
             XInputState lastState = mLastFrame[userIndex];
 
@@ -187,32 +186,32 @@ namespace XInputBindings
         /// <summary>
         /// Returns the value of the left thumbstick on the identified controller.
         /// </summary>
-        public static Vector2 GetThumbStickLeft(uint userIndex) { UpdateState(userIndex); return mThisFrame[userIndex].ThumbLeft; }
+        public static Vector2 GetThumbStickLeft(uint userIndex) { return mThisFrame[userIndex].ThumbLeft; }
 
         /// <summary>
         /// Returns the value of the right thumbstick on the identified controller.
         /// </summary>
-        public static Vector2 GetThumbStickRight(uint userIndex) { UpdateState(userIndex); return mThisFrame[userIndex].ThumbRight; }
+        public static Vector2 GetThumbStickRight(uint userIndex) { return mThisFrame[userIndex].ThumbRight; }
 
         /// <summary>
         /// Returns the raw value of the left thumbstick on the identified controller.
         /// </summary>
-        public static Vector2 GetThumbStickLeftRaw(uint userIndex) { UpdateState(userIndex); return mThisFrame[userIndex].ThumbLeftRaw; }
+        public static Vector2 GetThumbStickLeftRaw(uint userIndex) { return mThisFrame[userIndex].ThumbLeftRaw; }
 
         /// <summary>
         /// Returns the raw value of the right thumbstick on the identified controller.
         /// </summary>
-        public static Vector2 GetThumbStickRightRaw(uint userIndex) { UpdateState(userIndex); return mThisFrame[userIndex].ThumbRightRaw; }
+        public static Vector2 GetThumbStickRightRaw(uint userIndex) { return mThisFrame[userIndex].ThumbRightRaw; }
 
         /// <summary>
         /// Returns the value of the left trigger on the identified controller.
         /// </summary>
-        public static float GetTriggerLeft(uint userIndex) { UpdateState(userIndex); return mThisFrame[userIndex].TriggerLeft; }
+        public static float GetTriggerLeft(uint userIndex) { return mThisFrame[userIndex].TriggerLeft; }
 
         /// <summary>
         /// Returns the value of the right trigger on the identified controller.
         /// </summary>
-        public static float GetTriggerRight(uint userIndex) { UpdateState(userIndex); return mThisFrame[userIndex].TriggerRight; }
+        public static float GetTriggerRight(uint userIndex) { return mThisFrame[userIndex].TriggerRight; }
 
         /// <summary>
         /// Sets the motor speed of the left and right motors in the identified controller.
@@ -225,9 +224,9 @@ namespace XInputBindings
             XInputSetState(userIndex, ref vibration);
         }
 
-        public static bool IsControllerConnected(uint userIndex) { UpdateState(userIndex); return mThisFrame[userIndex].IsConnected; }
+        public static bool IsControllerConnected(uint userIndex) { return mThisFrame[userIndex].IsConnected; }
 
-        private static void UpdateState(uint userIndex)
+        private static void UpdateStateInternal(uint userIndex)
         {
             XINPUT_STATE_GAMEPAD rawState = new XINPUT_STATE_GAMEPAD();
             bool isConnected = XInputGetState(userIndex, out rawState) == ERROR_SUCCESS;

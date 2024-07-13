@@ -206,7 +206,8 @@ public class Game : MonoBehaviour
 
     void Update()
     {
-        if (currentLevel.WantsCredits() && !Playing)
+        bool canSeeCredits = !Playing && !InGame;
+        if (currentLevel.WantsCredits() && canSeeCredits)
         {
             if (wasPressingCreditsInput)
             {
@@ -220,6 +221,8 @@ public class Game : MonoBehaviour
         }
         else
         {
+            ShowingCredits &= canSeeCredits;
+
             wasPressingCreditsInput = false;
 
             if (currentLevel.AnyKey())

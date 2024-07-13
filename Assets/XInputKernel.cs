@@ -59,7 +59,7 @@ public class XInputKernel : PlayerInput
 
     public override void Refresh()
     {
-
+        XInputKernelBindings.UpdateState(index);
     }
 
     public override float RightTrigger()
