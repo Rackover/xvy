@@ -863,16 +863,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acquisitionDistance: 600
   player: {fileID: 114000013519164070}
-  missilePrefab: {fileID: 0}
-  homingMissilePrefab: {fileID: 0}
+  missilePrefab: {fileID: 114000010455167594, guid: 3781cbf3b270b5b4baa7ecc29245de1b,
+    type: 2}
+  homingMissilePrefab: {fileID: 114000010579411000, guid: f161a022f6700de4e84ab08bf1a04796,
+    type: 2}
   precisionIncreaseOverTime: 0.07
   precisionDecreasePerShot: 0.01
   maxImprecisionAmount: 0.07
   fireRate: 0.1
   burstSize: 3
-  reloadTime: 0.5
+  reloadTime: 0.7
   offCenterMultiplier: 0
-  acquisitionSpeed: 0.33
+  acquisitionSpeed: 0.5
   aimingAmplitude: 150
   generalSource: {fileID: 82000013567160390}
   homingConfirmedClip: {fileID: 8300000, guid: c9ddef838585e7c43864942a95c0d2d6, type: 3}
@@ -891,8 +893,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 114000013519164070}
   minBoost: 30
-  maxBoost: 60
-  kickBoostBonus: 10
+  maxBoost: 70
+  kickBoostBonus: 15
   boostAcceleration: 2
   rotationSpeed: 4
   verticalStickMultiplier: 1
@@ -900,6 +902,10 @@ MonoBehaviour:
   rollLerpSpeed: 1
   pitchLerpSpeed: 0.8
   kickBoostTime: 0.8
+  lethalGees: 3
+  noEffectUntilGees: 1
+  minimumDeltaToGetGeesDegPerSec: 150
+  gees: 0
 --- !u!114 &114000013198618442
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1112,7 +1118,6 @@ MonoBehaviour:
   maxSpeedLinesOpacity: 0.2
   blur: {fileID: 114000013198618442}
   colorCorrection: {fileID: 114000013422539296}
-  split: {fileID: 0}
   behindDistance: -10.25
   behindDistanceHorizontalSplitBonus: -2
   verticalDistance: 2.11

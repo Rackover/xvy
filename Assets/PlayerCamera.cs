@@ -31,8 +31,6 @@ public class PlayerCamera : MonoBehaviour
 
     [SerializeField] private ColorCorrectionCurves colorCorrection;
 
-    [SerializeField]
-    private SplitRenders split;
 
     [SerializeField]
     private float behindDistance = -7.25f;
@@ -108,7 +106,7 @@ public class PlayerCamera : MonoBehaviour
 
     void Update()
     {
-        generalSource.panStereo = Mathf.Lerp(0.5f, player.Index == 0 ? -1f : 1f, split.HorizontalAmount);
+        generalSource.panStereo = Mathf.Lerp(0.5f, player.Index == 0 ? -1f : 1f, Game.i.HorizontalSplitAmount);
         for (int i = 0; i < localSources.Length; i++)
         {
             if (localSources[i] != generalSource)
@@ -137,7 +135,7 @@ public class PlayerCamera : MonoBehaviour
 
             if (player.IsAlive)
             {
-                transform.position = playerMovement.transform.TransformPoint(new Vector3(0f, verticalDistance, behindDistance + split.HorizontalAmount * behindDistanceHorizontalSplitBonus));
+                transform.position = playerMovement.transform.TransformPoint(new Vector3(0f, verticalDistance, behindDistance + Game.i.HorizontalSplitAmount * behindDistanceHorizontalSplitBonus));
 
                 lastVelocity = transform.position - lastPosition;
                 lastPosition = transform.position;

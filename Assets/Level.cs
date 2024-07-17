@@ -61,6 +61,11 @@ public class Level : MonoBehaviour
 
     private readonly float[] oobTime = new float[PLAYERS];
 
+    private void Awake()
+    {
+        Game.i.RegisterLevel(this);
+    }
+
     public Transform[] GetTrackingTargets()
     {
         return trackingTargets;
@@ -85,6 +90,7 @@ public class Level : MonoBehaviour
         RenderSettings.fogEndDistance = fogEnd;
         RenderSettings.fogDensity = fogColor.a;
         RenderSettings.fogColor = fogColor;
+        RenderSettings.fogMode = FogMode.Linear;
 
         playerPrefab.gameObject.SetActive(false);
         gameOver = false;
@@ -102,6 +108,8 @@ public class Level : MonoBehaviour
 
             int index = i;
             players[i].OnKilled += () => OnPlayerKilled(index);
+
+            Debug.Log("created player " + i);
         }
 
         UpdateTrackingTargets();
@@ -241,6 +249,11 @@ public class Level : MonoBehaviour
         {
             players[index].LocalSource.PlayOneShot(clip);
         }
+    }
+
+    public float GetPlayerGees(int index)
+    {
+        return players[index].Gees01;
     }
 
     public float GetPlayerSpeed(int index)

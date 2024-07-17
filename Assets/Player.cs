@@ -48,6 +48,8 @@ public class Player : MonoBehaviour
 
     public int Index { get { return index; } }
 
+    public float Gees01 { get { return playerMovement.GeesAmount01; } }
+
     public bool IsReady { get; private set; }
 
     public bool IsSpawned { get; private set; }
@@ -102,7 +104,7 @@ public class Player : MonoBehaviour
     public void MakeMock()
     {
         input.Dispose();
-        input = new MockInput();
+        input = new AIInput();
         input.SetPlayerIndex(index);
 
         Console.WriteLine("Created mock input for player " + index + "");
@@ -118,6 +120,7 @@ public class Player : MonoBehaviour
         input = PlayerInput.MakeForPlatform();
 
         input.SetPlayerIndex(index);
+        input.Refresh();
 
         this.index = index;
         name = "PLAYER #" + index;
@@ -275,64 +278,72 @@ public class Player : MonoBehaviour
             {
                 if (IsAlive)
                 {
-                    lifetime += Time.deltaTime;
-
-                    float gasAxis = input.RightTrigger();
-                    float antiGasAxis = input.LeftTrigger();
-                    bool shoot = input.AButton();
+                    if (playerMovement.GeesAmount01 >= 1f)
                     {
-                        Vector2 dir = input.GetDirection();
+                        lastDeath = "Too many sustained Gs";
+                        Collisions_OnCollide(null);
+                    }
+                    else
+                    {
+                        lifetime += Time.deltaTime;
 
-                        if (float.IsNaN(dir.x) || float.IsInfinity(dir.x))
+                        float gasAxis = input.RightTrigger();
+                        float antiGasAxis = input.LeftTrigger();
+                        bool shoot = input.AButton();
                         {
-                            dir.x = 0f;
+                            Vector2 dir = input.GetDirection();
+
+                            if (float.IsNaN(dir.x) || float.IsInfinity(dir.x))
+                            {
+                                dir.x = 0f;
+                            }
+
+                            if (float.IsNaN(dir.y) || float.IsInfinity(dir.y))
+                            {
+                                dir.y = 0f;
+                            }
+
+                            StickDirection = dir;
                         }
 
-                        if (float.IsNaN(dir.y) || float.IsInfinity(dir.y))
+
+                        if (gasAxis > 0f)
                         {
-                            dir.y = 0f;
+                            IsBoosting = true;
+                        }
+                        else
+                        {
+                            IsBoosting = false;
                         }
 
-                        StickDirection = dir;
-                    }
+                        if (antiGasAxis > 0f)
+                        {
+                            IsAiming = true;
+                        }
+                        else
+                        {
+                            IsAiming = false;
+                        }
 
+                        if (shoot)
+                        {
+                            IsShooting = true;
+                        }
+                        else
+                        {
+                            IsShooting = false;
+                        }
 
-                    if (gasAxis > 0f)
-                    {
-                        IsBoosting = true;
-                    }
-                    else
-                    {
-                        IsBoosting = false;
-                    }
-
-                    if (antiGasAxis > 0f)
-                    {
-                        IsAiming = true;
-                    }
-                    else
-                    {
-                        IsAiming = false;
-                    }
-
-                    if (shoot)
-                    {
-                        IsShooting = true;
-                    }
-                    else
-                    {
-                        IsShooting = false;
-                    }
-
-                    if (wasKicking && !IsBoosting)
-                    {
-                        wasKicking = false;
-                    }
-                    else if (!wasKicking && IsBoosting && playerMovement.BoostAmount <= 0.1f)
-                    {
-                        wasKicking = true;
-                        RumbleLight();
-                        source.PlayOneShot(kickClip);
+                        if (wasKicking && !IsBoosting)
+                        {
+                            wasKicking = false;
+                        }
+                        else if (!wasKicking && IsBoosting && playerMovement.BoostAmount <= 0.1f)
+                        {
+                            wasKicking = true;
+                            RumbleLight();
+                            source.PlayOneShot(kickClip);
+                        }
                     }
                 }
             }

@@ -64,6 +64,9 @@ public class PlayerHUD : MonoBehaviour
     private int blinkSpeed = 10;
 
     [SerializeField]
+    private Image geesOverlay;
+
+    [SerializeField]
     private float minAcquisitionScreenDistance = 20;
 
     [SerializeField]
@@ -124,6 +127,7 @@ public class PlayerHUD : MonoBehaviour
                             whiteFade.enabled = true;
                         }
 
+                        UpdateGeesOverlay();
                         UpdateWeaponReticle(boosting, weapon);
                         UpdateTargetTracking((playerIndex + 1) % 2, weapon, Game.i.Level.GetPlayerCamera(playerIndex));
                         UpdateWarnings();
@@ -137,6 +141,7 @@ public class PlayerHUD : MonoBehaviour
                         warningText.enabled = false;
                         aimTargetingChild.enabled = false;
                         missileDirectionImage.enabled = false;
+                        geesOverlay.enabled = false;
 
                         for (int i = 0; i < targetColorables.Length; i++)
                         {
@@ -156,6 +161,8 @@ public class PlayerHUD : MonoBehaviour
         warningText.enabled = false;
         missileDirectionImage.enabled = false;
 
+        geesOverlay.enabled = false;
+
         whiteFade.color = Color.white;
         whiteFade.enabled = false;
 
@@ -174,6 +181,23 @@ public class PlayerHUD : MonoBehaviour
         }
 
         IsReadyForRebirth = false;
+    }
+
+    private void UpdateGeesOverlay()
+    {
+        if (Game.i.Level.IsPlayerAlive(playerIndex))
+        {
+            float maxAlpha = Game.i.Level.GetPlayerGees(playerIndex);
+
+            maxAlpha = Mathf.Log(maxAlpha * Mathf.Exp(1f) + 1f);
+
+            geesOverlay.enabled = true;
+            geesOverlay.color = new Color(geesOverlay.color.r, geesOverlay.color.g, geesOverlay.color.b, Mathf.Clamp01(Random.Range(maxAlpha-0.2f, maxAlpha)));
+        }
+        else
+        {
+            geesOverlay.enabled = false;
+        }
     }
 
     private void UpdateWarnings()
@@ -281,10 +305,12 @@ public class PlayerHUD : MonoBehaviour
         Vector3 myPosition = Game.i.Level.GetPlayerPosition(playerIndex);
 
         weapon.HasEnemyInAcquisitionSights = false;
+        bool hasLos = weapon.HasLineOfSightOnEnemy;
+
+        Color defaultColor = hasLos ? Color.white : Color.gray;
 
         if (!Game.i.Level.IsPlayerAlive(otherIndex) ||
-            Vector3.Dot(myCamera.transform.forward, (otherPosition - myPosition).normalized) < 0f ||
-            !weapon.HasLineOfSightOnEnemy)
+            Vector3.Dot(myCamera.transform.forward, (otherPosition - myPosition).normalized) < 0f)
         {
             trackerImg.enabled = false;
             trackerText.enabled = false;
@@ -304,6 +330,7 @@ public class PlayerHUD : MonoBehaviour
             Vector2 acquisitionRectSize = new Vector2(32f, 32f) * Mathf.Lerp(sizeMultiplier, 1f, weapon.Acquisition01);
 
             weapon.HasEnemyInAcquisitionSights =
+                hasLos &&
                 !weapon.HomingMissileAlive &&
                 (
                     weapon.TargetAcquired ||
@@ -316,7 +343,7 @@ public class PlayerHUD : MonoBehaviour
             string name = localization.Lang.Target;
             bool enableProgressBar = false;
 
-            Color aimTrackerColor = Color.white;
+            Color aimTrackerColor = defaultColor;
 
             if (weapon.HomingMissileAlive)
             {
@@ -370,7 +397,7 @@ public class PlayerHUD : MonoBehaviour
             else
             {
                 aimTargetingChild.enabled = false;
-                trackerText.color = Color.white;
+                trackerText.color = defaultColor;
                 aimTargetingChild.rectTransform.localEulerAngles = Vector3.zero;
             }
 

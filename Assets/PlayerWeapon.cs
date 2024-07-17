@@ -81,6 +81,8 @@ public class PlayerWeapon : MonoBehaviour
 
     private bool shootLeft = false;
 
+    private int aliveProjectiles = 0;
+
     private int burstIndex = 0;
 
 #if UNITY_EDITOR
@@ -250,6 +252,7 @@ public class PlayerWeapon : MonoBehaviour
                 homing.transform.forward = fwd;
 
                 homing.gameObject.SetActive(true);
+                homing.PlaySound(true);
 
                 homingMissileAlive = homing;
                 activeMissiles[i] = homing;
@@ -301,11 +304,13 @@ public class PlayerWeapon : MonoBehaviour
                 activeMissiles[i].transform.position += player.Transform.right * offCenterMultiplier * (shootLeft ? 1f : -1f);
 
                 activeMissiles[i].gameObject.SetActive(true);
+                activeMissiles[i].PlaySound(aliveProjectiles < 4);
 
                 player.RumbleLight();
 
                 currentImprecision = Mathf.Clamp(currentImprecision + precisionDecreasePerShot, 0f, maxImprecisionAmount);
 
+                aliveProjectiles++;
                 shot = true;
 
                 break;
@@ -341,6 +346,7 @@ public class PlayerWeapon : MonoBehaviour
         {
             Pooler.Pool(this, activeMissiles[oldest.Value], STRAY_MISSILE_POOL);
             activeMissiles[oldest.Value] = null;
+            aliveProjectiles--;
         }
     }
 
@@ -366,6 +372,7 @@ public class PlayerWeapon : MonoBehaviour
                 if (activeMissiles[i].Expired)
                 {
                     activeMissiles[i].Expire();
+                    aliveProjectiles--;
 
                     Pooler.Pool(this, activeMissiles[i], activeMissiles[i] is HomingMissile ? HOMING_MISSILE_POOL : STRAY_MISSILE_POOL);
 

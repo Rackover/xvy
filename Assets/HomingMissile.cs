@@ -45,7 +45,7 @@ public class HomingMissile : Projectile
     public void SetHomingTarget(Transform target)
     {
         this.homingTarget = target;
-        this.noTrackDistanceSqrd = (stopTrackingAtDistanceBonus + DetonationDistance) * (stopTrackingAtDistanceBonus + DetonationDistance);
+        this.noTrackDistanceSqrd = stopTrackingAtDistanceBonus * stopTrackingAtDistanceBonus;
 
         acceleration = 0f;
 
@@ -91,9 +91,37 @@ public class HomingMissile : Projectile
                 direction = Vector3.Lerp(transform.forward, direction, trackAmount);
             }
 
-            return Vector3.Lerp(transform.forward, direction, Mathf.Clamp01(maxTurnRate * Time.deltaTime));
+            Quaternion lookAtRotation = Quaternion.LookRotation(direction);
+
+            return Quaternion.RotateTowards(transform.rotation, lookAtRotation, maxTurnRate * Time.deltaTime) * Vector3.forward;
         }
 
         return base.GetDirection();
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        if (homingTarget)
+        {
+            Vector3 distVector = homingTarget.position - transform.position;
+            Vector3 direction = distVector.normalized;
+
+            if (LivedFor < trackAfterSeconds)
+            {
+                direction = Vector3.Lerp(direction, transform.forward, Mathf.Clamp01(trackAfterSeconds - LivedFor));
+            }
+
+            if (direction.sqrMagnitude < noTrackDistanceSqrd)
+            {
+                float trackAmount = Mathf.Clamp01(distVector.sqrMagnitude / noTrackDistanceSqrd);
+                direction = Vector3.Lerp(transform.forward, direction, trackAmount);
+            }
+
+            Debug.DrawRay(transform.position, distVector, Color.blue);
+            Debug.DrawRay(transform.position, direction, Color.magenta);
+            Debug.DrawRay(transform.position, GetDirection(), Color.red);
+        }
+    }
+#endif
 }

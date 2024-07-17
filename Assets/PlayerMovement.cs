@@ -25,6 +25,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float kickBoostTime = 0.5f;
 
+    [SerializeField]
+    private float lethalGees = 3f;
+
+    [SerializeField]
+    private float noEffectUntilGees = 1f;
+
+    [SerializeField]
+    private float minimumDeltaToGetGeesDegPerSec = 60f;
+
+    public float GeesAmount01 { get { return (gees - noEffectUntilGees) / (lethalGees - noEffectUntilGees); } }
+
     public float MaxBoostAdjusted { get { return maxBoost * Game.i.Level.SpeedMultiplier; } }
 
     public float MinBoostAdjusted { get { return minBoost * Game.i.Level.SpeedMultiplier; } }
@@ -48,6 +59,12 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 virtualStick;
     private Vector2 realStick;
     private float? startedBoostingAtTime = 0f;
+    private Quaternion lastRotation;
+
+#if UNITY_EDITOR
+    [SerializeField]
+#endif
+    private float gees = 0f;
 
     void Awake()
     {
@@ -58,6 +75,7 @@ public class PlayerMovement : MonoBehaviour
     {
         transform.position = position;
         transform.forward = direction;
+        lastRotation = transform.rotation;
     }
 
     void Update()
@@ -66,8 +84,17 @@ public class PlayerMovement : MonoBehaviour
         {
             GrabInput();
 
+            lastRotation = transform.rotation;
             ApplyDirection();
             ApplyThrust();
+            ApplyGees();
+        }
+        else
+        {
+            gees = 0f;
+            virtualStick = Vector2.zero;
+            realStick = Vector2.zero;
+            gasPedal = 0f;
         }
     }
 
@@ -114,6 +141,37 @@ public class PlayerMovement : MonoBehaviour
         speed += kickSpeedBonus;
 
         transform.position += speed * Time.deltaTime * transform.forward;
+    }
+
+    void ApplyGees()
+    {
+        if (Time.deltaTime <= 0f)
+        {
+            return;
+        }
+
+        Vector3 forward = transform.forward;
+        Vector3 lastForward = lastRotation * Vector3.forward;
+
+        forward.y = 0f;
+        forward.Normalize();
+
+        lastForward.y = 0f;
+        lastForward.Normalize();
+
+        float angle = Vector3.Angle(forward, lastForward);
+        float delta = angle / Time.deltaTime;
+
+        if (delta > minimumDeltaToGetGeesDegPerSec)
+        {
+            gees += Time.deltaTime * (delta / minimumDeltaToGetGeesDegPerSec);
+        }
+        else
+        {
+            gees -= Time.deltaTime * (1f - delta / minimumDeltaToGetGeesDegPerSec);
+        }
+
+        gees = Mathf.Clamp(gees, 0f, lethalGees);
     }
 
     void ApplyDirection()

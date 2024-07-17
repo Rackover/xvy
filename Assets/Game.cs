@@ -19,7 +19,7 @@ public class Game : MonoBehaviour
     private AudioSource generalAudioSource;
 
     [SerializeField]
-    private Level[] levels;
+    private string[] scenes;
 
     [SerializeField]
     private SplitRenders splitRenders;
@@ -66,6 +66,8 @@ public class Game : MonoBehaviour
 
     public AudioSource GeneralAudioSource { get { return generalAudioSource; } }
 
+    public float HorizontalSplitAmount { get { return splitRenders.HorizontalAmount; } }
+
     public IList<RenderTexture> Texes { get { return texes; } }
 
     public int ScoreToWin { get { return scoreToWin; } }
@@ -91,6 +93,8 @@ public class Game : MonoBehaviour
     private bool wantsToPlay = false;
 
     private Level currentLevel;
+
+    private string currentScene;
 
     private int levelIndex = 0;
 
@@ -120,14 +124,42 @@ public class Game : MonoBehaviour
             StartCoroutine(ListenToMaster());
         }
 
-        currentLevel = levels[levelIndex];
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+
+        currentScene = scenes[levelIndex];
+        UnityEngine.SceneManagement.SceneManager.LoadScene(currentScene, UnityEngine.SceneManagement.LoadSceneMode.Single);
+
 
         for (int playerIndex = 0; playerIndex < huds.Length; playerIndex++)
         {
             huds[playerIndex].SetID(playerIndex);
         }
 
+        UnityEngine.Object.DontDestroyOnLoad(this);
+    }
+
+    private void SceneManager_sceneLoaded(UnityEngine.SceneManagement.Scene arg0, UnityEngine.SceneManagement.LoadSceneMode arg1)
+    {
+        if (arg0.name == currentScene)
+        {
+            StartCoroutine(EnterLevelAsap());
+        }
+    }
+
+    IEnumerator EnterLevelAsap()
+    {
+        while(currentLevel == null)
+        {
+            yield return null;
+        }
+
         EnterLevel();
+    }
+
+    public void RegisterLevel(Level level)
+    {
+        Debug.Log("Registered level "+ level.name);
+        currentLevel = level;
     }
 
     private IEnumerator ListenToMaster()
@@ -198,10 +230,9 @@ public class Game : MonoBehaviour
     {
         ExitLevel();
 
-        levelIndex = (levelIndex + 1) % levels.Length;
-        currentLevel = levels[levelIndex];
-
-        EnterLevel();
+        levelIndex = (levelIndex + 1) % scenes.Length;
+        currentScene = scenes[levelIndex];
+        UnityEngine.SceneManagement.SceneManager.LoadScene(currentScene);
     }
 
     void Update()

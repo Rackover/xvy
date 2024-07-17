@@ -74,6 +74,16 @@ public class Projectile : MonoBehaviour {
         }
     }
 
+    public virtual void PlaySound(bool playSound)
+    {
+        source.Stop();
+
+        if (playSound)
+        {
+            source.Play();
+        }
+    }
+
     public virtual void SetOwner(int id)
     {
         this.owner = id;
@@ -113,7 +123,8 @@ public class Projectile : MonoBehaviour {
 
     private void MoveForward()
     {
-        transform.position += GetDirection() * VelocityAdjusted * Time.deltaTime;
+        transform.forward = GetDirection();
+        transform.position += transform.forward * VelocityAdjusted * Time.deltaTime;
     }
    
     private void KillOtherPlayer()

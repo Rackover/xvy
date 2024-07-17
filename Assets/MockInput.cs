@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class MockInput : PlayerInput {
 
     int playerIndex = 0;

@@ -57,6 +57,11 @@ public class SplitRenders : MonoBehaviour
 
     private bool isLocked = false;
 
+    void Awake()
+    {
+        manualFlipControl = false;
+    }
+    
     public void SetTrackingTargets(Transform[] targets)
     {
         transforms = targets;
