@@ -22,6 +22,9 @@ public class Game : MonoBehaviour
     private string[] scenes;
 
     [SerializeField]
+    private string[] mapNames;
+
+    [SerializeField]
     private SplitRenders splitRenders;
 
     [SerializeField]
@@ -73,6 +76,10 @@ public class Game : MonoBehaviour
     public int ScoreToWin { get { return scoreToWin; } }
 
     public Level Level { get { return currentLevel; } }
+
+    public string LevelName { get; private set; }
+
+    public bool IsLoading{ get; private set; }
 
     public bool InGame { get { return wantsToPlay; } }
 
@@ -127,8 +134,10 @@ public class Game : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.sceneLoaded += SceneManager_sceneLoaded;
 
         currentScene = scenes[levelIndex];
-        UnityEngine.SceneManagement.SceneManager.LoadScene(currentScene, UnityEngine.SceneManagement.LoadSceneMode.Single);
+        this.LevelName = mapNames[levelIndex];
 
+        UnityEngine.SceneManagement.SceneManager.LoadScene(currentScene, UnityEngine.SceneManagement.LoadSceneMode.Single);
+        IsLoading = true;
 
         for (int playerIndex = 0; playerIndex < huds.Length; playerIndex++)
         {
@@ -219,6 +228,8 @@ public class Game : MonoBehaviour
 
         splitRenders.SetTrackingTargets(targets);
 
+        IsLoading = false;
+
         if (OnLevelLoaded != null)
         {
             OnLevelLoaded.Invoke();
@@ -232,7 +243,10 @@ public class Game : MonoBehaviour
 
         levelIndex = (levelIndex + 1) % scenes.Length;
         currentScene = scenes[levelIndex];
-        UnityEngine.SceneManagement.SceneManager.LoadScene(currentScene);
+        this.LevelName = mapNames[levelIndex];
+
+        this.IsLoading = true;
+        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(currentScene);
     }
 
     void Update()

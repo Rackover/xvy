@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.34007657, g: 0, b: 0.66237, a: 1}
+  m_IndirectSpecularColor: {r: 0.34007657, g: 0, b: 0.662368, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -545,9 +545,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 775e1ea06b2f7ab489e2cc454d80cdcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textMesh: {fileID: 0}
-  alignment: 1
-  useRichText: 0
 --- !u!1 &441779440
 GameObject:
   m_ObjectHideFlags: 0
@@ -873,7 +870,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 1443386152}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -1183,9 +1180,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 775e1ea06b2f7ab489e2cc454d80cdcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textMesh: {fileID: 985443708}
-  alignment: 0
-  useRichText: 1
 --- !u!1 &991482332 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 1000010035074168, guid: 13d15fe068098014ea10515c8744b0f9,
@@ -1645,9 +1639,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 775e1ea06b2f7ab489e2cc454d80cdcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textMesh: {fileID: 1040609993}
-  alignment: 1
-  useRichText: 0
 --- !u!1 &1104755384
 GameObject:
   m_ObjectHideFlags: 0
@@ -1767,9 +1758,112 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 775e1ea06b2f7ab489e2cc454d80cdcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textMesh: {fileID: 1104755388}
-  alignment: 4
-  useRichText: 0
+--- !u!1001 &1134182066
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1443386152}
+    m_Modifications:
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+        type: 2}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 114000010086231058, guid: 6503cc0755569904fb8bdf800b3e4e91, type: 2}
+  m_ParentPrefab: {fileID: 100100000, guid: 6503cc0755569904fb8bdf800b3e4e91, type: 2}
+  m_IsPrefabParent: 0
+--- !u!224 &1134182067 stripped
+RectTransform:
+  m_PrefabParentObject: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
+    type: 2}
+  m_PrefabInternal: {fileID: 1134182066}
 --- !u!1 &1149229068
 GameObject:
   m_ObjectHideFlags: 0
@@ -1956,6 +2050,7 @@ RectTransform:
   - {fileID: 413193032}
   - {fileID: 1656462576}
   - {fileID: 1149229069}
+  - {fileID: 1134182067}
   - {fileID: 734549043}
   m_Father: {fileID: 837495436}
   m_RootOrder: 0
@@ -2063,6 +2158,11 @@ MonoBehaviour:
   scenes:
   - WindMills
   - BigRock
+  - Forest
+  - Arecibo
+  mapNames:
+  - Domain
+  - Newark
   - Forest
   - Arecibo
   splitRenders: {fileID: 1443386153}
@@ -2341,7 +2441,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'v1.3.1 - 2024
+  m_Text: 'v1.3.2 - 2024
 
     Press SELECT for credits'
 --- !u!222 &1656462579

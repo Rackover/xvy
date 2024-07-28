@@ -3,6 +3,7 @@ using System.Collections;
 
 public class FixXenonTextMesh : MonoBehaviour {
 
+#if X360
 	[SerializeField]
 	UnityEngine.UI.Text textMesh;
 
@@ -11,6 +12,7 @@ public class FixXenonTextMesh : MonoBehaviour {
 
 	[SerializeField]
 	private bool useRichText = false;
+#endif
 
 	void OnEnable()
     {
