@@ -138,6 +138,12 @@ public class Jukebox : MonoBehaviour
 
     void Awake()
     {
+
+#if UNITY_WEBGL
+        menuVolume /= (float)Ambience.Count;
+        ingameVolume /= (float)Ambience.Count;
+#endif
+
         exampleSource.gameObject.SetActive(false);
 
         allClips = new AudioClip[]

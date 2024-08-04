@@ -97,7 +97,12 @@ public class PlayerCamera : MonoBehaviour
         }
 
         lockOnSource.Stop();
+
+#if UNITY_WEBGL
+        lockOnSource.volume = 0.085f;
+#else
         lockOnSource.volume = 1f;
+#endif
 
 #if UNITY_PS3
         blur.enabled = false;
@@ -206,6 +211,11 @@ public class PlayerCamera : MonoBehaviour
             }
         }
 
+
+#if UNITY_WEBGL
+        burnerSourceVolume *= 0.12f;
+        windSourceVolume *= 0.1f;
+#endif
 
         burnerSource.volume = burnerSourceVolume;
         windSource.volume = windSourceVolume;

@@ -214,6 +214,10 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+#if UNITY_WEBGL
+        source.volume = 0.22f;
+#endif
+
         collisions.OnCollide += Collisions_OnCollide;
         visualsTransform.gameObject.SetActive(false);
     }

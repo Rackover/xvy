@@ -15,6 +15,11 @@ public class Fake3DSound : MonoBehaviour
     void Awake()
     {
         maxVolume = source.volume;
+
+#if UNITY_WEBGL
+        maxVolume = 0.03f;
+#endif
+
         source.spatialBlend = 0.0f;
     }
 
@@ -35,16 +40,21 @@ public class Fake3DSound : MonoBehaviour
                         closestDistanceSquared = distSquared;
                     }
                 }
-
+#if UNITY_WEBGL
+                source.volume = maxVolume * Mathf.Clamp01(1f - closestDistanceSquared / 200000);
+#else
                 if (linear)
                 {
                     float closestDistance = Mathf.Sqrt(closestDistanceSquared);
+
                     source.volume = (1f - closestDistance / source.maxDistance) * maxVolume;
                 }
                 else
                 {
                     source.volume = (1f - closestDistanceSquared / (source.maxDistance * source.maxDistance)) * maxVolume;
                 }
+                
+#endif
             }
             else
             {

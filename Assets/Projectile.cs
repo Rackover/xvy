@@ -64,6 +64,10 @@ public class Projectile : MonoBehaviour {
     void Awake()
     {
         deathParticles.transform.parent = null;
+
+#if UNITY_WEBGL
+        source.volume /= 4f;
+#endif
     }
 
     void OnDestroy()

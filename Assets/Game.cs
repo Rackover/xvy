@@ -126,6 +126,11 @@ public class Game : MonoBehaviour
 
         i = this;
 
+#if UNITY_WEBGL
+        generalAudioSource.volume = 0.4f;
+#endif
+
+
         if (allowMasterControl)
         {
             StartCoroutine(ListenToMaster());
