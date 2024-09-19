@@ -35,11 +35,11 @@ ModelImporter:
   meshes:
     lODScreenPercentages: []
     globalScale: 1000
-    meshCompression: 0
+    meshCompression: 3
     addColliders: 0
     importBlendShapes: 1
     swapUVChannels: 0
-    generateSecondaryUV: 0
+    generateSecondaryUV: 1
     useFileUnits: 1
     optimizeMeshForGPU: 1
     keepQuads: 0

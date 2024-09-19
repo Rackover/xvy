@@ -85,6 +85,8 @@ public class PlayerHUD : MonoBehaviour
 
     private float deadAnimationTimer = 0f;
 
+    private bool enemyWasAbove = false;
+
     private bool wasAlive = false;
 
     public void SetID(int index)
@@ -401,22 +403,32 @@ public class PlayerHUD : MonoBehaviour
                 aimTargetingChild.rectTransform.localEulerAngles = Vector3.zero;
             }
 
-            string txt = name + (distStr == string.Empty ? distStr : "\n" + distStr);
-            trackerText.text = txt;
+            if (distStr == string.Empty)
+            {
+                trackerText.text = name;
+            }
+            else
+            {
+                trackerText.text = string.Format("{0}\n{1}", name, distStr);
+            }
 
             Vector3 viewPortPosition = myCamera.WorldToViewportPoint(otherPosition);
             trackerImg.rectTransform.anchoredPosition = Vector3.Scale(rawImageRect.sizeDelta, viewPortPosition);
 
             bool enemyAbove = otherPosition.y > myPosition.y;
-            if (enemyAbove)
+            if (enemyAbove != enemyWasAbove) // This additional check saves us an allocation perframe
             {
-                trackerText.alignment = TextAnchor.LowerRight;
-                targetAcquisitionFiller.fillOrigin = 1;
-            }
-            else
-            {
-                trackerText.alignment = TextAnchor.UpperLeft;
-                targetAcquisitionFiller.fillOrigin = 0;
+                enemyWasAbove = enemyAbove;
+                if (enemyAbove)
+                {
+                    trackerText.alignment = TextAnchor.LowerRight;
+                    targetAcquisitionFiller.fillOrigin = 1;
+                }
+                else
+                {
+                    trackerText.alignment = TextAnchor.UpperLeft;
+                    targetAcquisitionFiller.fillOrigin = 0;
+                }
             }
 
             for (int i = 0; i < targetColorables.Length; i++)
