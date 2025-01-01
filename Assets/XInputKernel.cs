@@ -22,8 +22,13 @@ public class XInputKernel : PlayerInput
     {
         return new UnityEngine.Vector2(
             XInputKernelBindings.GetButton(index, XInputButton.DPadRight) ? 1f : (XInputKernelBindings.GetButton(index, XInputButton.DPadLeft) ? -1f : 0f),
-            XInputKernelBindings.GetButton(index, XInputButton.DPadUp) ? 1f : (XInputKernelBindings.GetButton(index, XInputButton.DPadLeft) ? -1f : 0f)
+            XInputKernelBindings.GetButton(index, XInputButton.DPadUp) ? 1f : (XInputKernelBindings.GetButton(index, XInputButton.DPadDown) ? -1f : 0f)
         );
+    }
+
+    public override bool IsPressingRS()
+    {
+        return XInputKernelBindings.GetButton(index, XInputButton.RightThumb);
     }
 
     public override bool AButton()

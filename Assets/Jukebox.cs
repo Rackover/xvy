@@ -48,6 +48,8 @@ public class Jukebox : MonoBehaviour
     [SerializeField]
     private float ingameVolume = 0.6f;
 
+    public bool IsEnabled { get { return musicEnabled; } }
+
     private float time;
 
     private AudioClip[] selectedClips = new AudioClip[(int)Ambience.Count];
@@ -59,6 +61,8 @@ public class Jukebox : MonoBehaviour
     private Coroutine syncTask;
 
     private Level levelRef;
+
+    private bool musicEnabled = true;
 
     private void ResynchronizeIfNecessary()
     {
@@ -89,11 +93,40 @@ public class Jukebox : MonoBehaviour
         {
             Resynchronize();
         }
+    }
 
+    public void Toggle(bool on)
+    {
+        for (int i = 0; i < allClips.Length; i++)
+        {
+            AudioSource source;
+
+            if (sourceForClip.TryGetValue(allClips[i], out source))
+            {
+                if (on)
+                {
+                    source.enabled = true;
+                }
+                else
+                {
+                    source.Stop();
+                    source.enabled = false;
+                }
+            }
+        }
+
+        musicEnabled = on;
+
+        Resynchronize();
     }
 
     private void Resynchronize()
     {
+        if (!musicEnabled)
+        {
+            return;
+        }
+
         if (syncTask != null)
         {
             // already synchronizing
@@ -118,20 +151,22 @@ public class Jukebox : MonoBehaviour
             yield return null;
         }
 
-        referenceSource.loop = true;
-        double startTime = AudioSettings.dspTime + 0.1;
-
-        for (int i = 0; i < allClips.Length; i++)
+        if (musicEnabled)
         {
-            AudioSource source;
+            referenceSource.loop = true;
+            double startTime = AudioSettings.dspTime + 0.1;
 
-            if (sourceForClip.TryGetValue(allClips[i], out source))
+            for (int i = 0; i < allClips.Length; i++)
             {
-                source.Stop();
-                source.PlayScheduled(startTime);
+                AudioSource source;
+
+                if (sourceForClip.TryGetValue(allClips[i], out source))
+                {
+                    source.Stop();
+                    source.PlayScheduled(startTime);
+                }
             }
         }
-
 
         syncTask = null;
     }
@@ -199,7 +234,7 @@ public class Jukebox : MonoBehaviour
 
     void Update()
     {
-        if (Game.i.Playing)
+        if (Game.i.Playing && musicEnabled)
         {
             SetClip(Ambience.Base, bassLine);
 

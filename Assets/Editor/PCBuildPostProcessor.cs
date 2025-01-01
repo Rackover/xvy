@@ -18,7 +18,6 @@ public class PCBuildPostProcessor
     private static void BuildPC(BuildOptions options)
     {
         PlayerSettings.stripEngineCode = true;
-        EditorUserBuildSettings.sceBuildSubtarget = SCEBuildSubtarget.HddTitle;
 
         BuildPipeline.BuildPlayer(
             new string[] { "Assets/Scene/RUN.unity" },

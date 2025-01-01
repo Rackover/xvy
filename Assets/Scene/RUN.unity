@@ -840,6 +840,41 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 681660748}
+--- !u!1 &684552577
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 684552578}
+  m_Layer: 0
+  m_Name: PerformanceParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &684552578
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 684552577}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 1988642023}
+  - {fileID: 746985150}
+  m_Father: {fileID: 1443386152}
+  m_RootOrder: 2
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &734549042
 GameObject:
   m_ObjectHideFlags: 0
@@ -870,7 +905,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 1443386152}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -972,6 +1007,75 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 321449031}
   m_Script: {fileID: 11500000, guid: 0a960d7da9eb10048ae23f303fe0d4b1, type: 3}
+--- !u!1 &746985149
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 746985150}
+  - 222: {fileID: 746985152}
+  - 114: {fileID: 746985151}
+  m_Layer: 0
+  m_Name: PerformanceMenu
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &746985150
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 746985149}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 1513573693}
+  m_Father: {fileID: 684552578}
+  m_RootOrder: 1
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 45, y: 45}
+  m_SizeDelta: {x: 250, y: 600}
+  m_Pivot: {x: 0, y: 0}
+--- !u!114 &746985151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 746985149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+--- !u!222 &746985152
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 746985149}
 --- !u!1 &836804054
 GameObject:
   m_ObjectHideFlags: 0
@@ -1161,7 +1265,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: "\n\n\n\na game by <color=#ffbff0>louve hurlante</color> @ systems\n        level
     - windmills\n        level - new york\n        level - lyoko forest\n        level
-    - arecibo\n\nthanks for playing - share me around!"
+    - arecibo\n        level - speedway\n\nthanks for playing - share me around!"
 --- !u!222 &985443709
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1803,7 +1907,7 @@ Prefab:
     - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
         type: 2}
       propertyPath: m_RootOrder
-      value: 8
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 224000013261082696, guid: 6503cc0755569904fb8bdf800b3e4e91,
         type: 2}
@@ -2044,14 +2148,14 @@ RectTransform:
   m_Children:
   - {fileID: 1843248250}
   - {fileID: 740997316}
-  - {fileID: 1988642023}
+  - {fileID: 684552578}
   - {fileID: 1022044626}
   - {fileID: 1040609992}
   - {fileID: 413193032}
   - {fileID: 1656462576}
   - {fileID: 1149229069}
-  - {fileID: 1134182067}
   - {fileID: 734549043}
+  - {fileID: 1134182067}
   m_Father: {fileID: 837495436}
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
@@ -2160,11 +2264,13 @@ MonoBehaviour:
   - BigRock
   - Forest
   - Arecibo
+  - Highway
   mapNames:
   - Domain
   - Newark
   - Forest
   - Arecibo
+  - Speedway
   splitRenders: {fileID: 1443386153}
   huds:
   - {fileID: 745275005}
@@ -2178,7 +2284,7 @@ MonoBehaviour:
   - {fileID: 8400000, guid: 5af65befae4692e46a7b9c84df446d70, type: 2}
   - {fileID: 8400000, guid: 46a4eb9b24ef7d944819ced186526136, type: 2}
   alwaysReady: 0
-  fillEmptySeats: 1
+  fillEmptySeats: 0
   showPerformanceInfo: 0
   alwaysHoming: 0
   allowMasterControl: 1
@@ -2213,8 +2319,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24842bfb359f3b045b7b1ee7aa4c2da2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  performanceInfoParent: {fileID: 1988642022}
+  performanceInfoParent: {fileID: 684552577}
   performanceInfo: {fileID: 88239073}
+  performanceMenu: {fileID: 1513573694}
 --- !u!82 &1498359812
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2289,6 +2396,82 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!1 &1513573692
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1513573693}
+  - 222: {fileID: 1513573695}
+  - 114: {fileID: 1513573694}
+  m_Layer: 0
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1513573693
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1513573692}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 746985150}
+  m_RootOrder: 0
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -20, y: -20}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1513573694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1513573692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: 61c931384dd8fce43a7329b593670528, type: 3}
+    m_FontSize: 16
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 0
+    m_MaxSize: 40
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1.38
+  m_Text: '<color=orange>420 FPS</color>
+
+    RT 120x302'
+--- !u!222 &1513573695
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1513573692}
 --- !u!1 &1548750870
 GameObject:
   m_ObjectHideFlags: 0
@@ -2441,7 +2624,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'v1.3.2 - 2024
+  m_Text: 'v1.4.0 - 2024
 
     Press SELECT for credits'
 --- !u!222 &1656462579
@@ -2703,8 +2886,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 88239072}
-  m_Father: {fileID: 1443386152}
-  m_RootOrder: 2
+  m_Father: {fileID: 684552578}
+  m_RootOrder: 0
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -45, y: 45}

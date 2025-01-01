@@ -8,6 +8,39 @@ using System.Security.Cryptography;
 
 public class Performance : MonoBehaviour
 {
+    public class PerformanceToggle
+    {
+        private Func<string> displayText;
+        private string name;
+
+        private string cachedText;
+
+        public Action<sbyte> set;
+
+        public PerformanceToggle(string name, Action<sbyte> set, Func<string> displayText)
+        {
+            this.name = name;
+            this.set = (b)=>
+            {
+                set(b);
+                RefreshTxt();
+            };
+
+            this.displayText = displayText;
+
+            RefreshTxt();
+        }
+
+        public void RefreshTxt()
+        {
+            cachedText = string.Format("{0}: {1}", name, displayText());
+        }
+
+        public string GetDisplayTextSafe()
+        {
+            return cachedText;
+        }
+    }
 
     [SerializeField]
     private GameObject performanceInfoParent;
@@ -15,9 +48,16 @@ public class Performance : MonoBehaviour
     [SerializeField]
     private UnityEngine.UI.Text performanceInfo;
 
+    [SerializeField]
+    private UnityEngine.UI.Text performanceMenu;
+
+    public static Performance i;
+
+    public bool IsPerformanceDisplayed { get { return performanceInfoParent.gameObject.activeSelf; } }
+
     private PlayerInput input;
 
-    private bool ready = true;
+    private bool readyForInput = true;
 
     private readonly Vector2[] textureSizes = new Vector2[]
     {
@@ -31,46 +71,134 @@ public class Performance : MonoBehaviour
 #endif
     };
 
+#if !X360
+    private const string ON = "<color=#AAFFAA>ON</color>";
+    private const string OFF = "<color=#FF5555>OFF</color>";
+#else
+    private const string ON = "ON";
+    private const string OFF = "OFF";
+#endif
+
+    private PerformanceToggle[] toggles;
+
+    private int selectedItem = 0;
+
     private int sizeIndex = 0;
+
+    public void Toggle()
+    {
+        performanceInfoParent.gameObject.SetActive(!performanceInfoParent.activeSelf);
+    }
+
+    void Awake()
+    {
+        i = this;
+    }
+
+    void OnDestroy()
+    {
+        i = null;
+    }
+
 
     private void Start()
     {
+        List<PerformanceToggle> toggles = new List<PerformanceToggle>();
+
+        toggles.Add(new PerformanceToggle(
+            "Motion blur", (_)=> Toggle<UnityStandardAssets.ImageEffects.MotionBlur>(), ()=> Get<UnityStandardAssets.ImageEffects.MotionBlur>() ? ON : OFF
+        ));
+
+        toggles.Add(new PerformanceToggle(
+            "Outline", (_)=>Toggle<UnityStandardAssets.ImageEffects.EdgeDetection>(), () => Get<UnityStandardAssets.ImageEffects.EdgeDetection>() ? ON : OFF
+        ));
+
+        toggles.Add(new PerformanceToggle(
+            "RTSize", (_) => ResizeRenderTextures(), () => string.Format("{0}x{1}", textureSizes[sizeIndex].x, textureSizes[sizeIndex].y)
+        ));
+
+        toggles.Add(new PerformanceToggle(
+            "BGM", (_) => ToggleMusic(), () => MusicEnabled() ? ON : OFF
+        ));
+
+        this.toggles = toggles.ToArray();
+
         input = PlayerInput.MakeForPlatform();
         input.SetPlayerIndex(sizeIndex);
 
         performanceInfoParent.gameObject.SetActive(Game.i.ShowPerformanceInfo);
     }
 
+    private bool MusicEnabled()
+    {
+        Jukebox jk = FindObjectOfType<Jukebox>();
+        if (jk)
+        {
+            return jk.IsEnabled;
+        }
+
+        return false;
+    }
+
+    private void ToggleMusic()
+    {
+        Jukebox jukebox = FindObjectOfType<Jukebox>();
+        jukebox.Toggle(!jukebox.IsEnabled);
+    }
+
     private void Update()
     {
         PushPerformanceInfo();
-        input.Refresh();
+        DrawPerformanceMenu();
 
-        Vector2 dpad = input.GetDPad();
+        if (performanceInfoParent.activeSelf)
+        {
+            input.Refresh();
 
-        if (dpad.x > 0.5f)
-        {
-            Toggle<UnityStandardAssets.ImageEffects.MotionBlur>();
-            ready = false;
-        }
-        else if (dpad.x < -0.5f)
-        {
-            Toggle<UnityStandardAssets.ImageEffects.EdgeDetection>();
-            ready = false;
-        }
-        else if (dpad.y > 0.5f)
-        {
-            ResizeRenderTextures();
-            ready = false;
-        }
-        else if (dpad.y < -0.5f)
-        {
-            performanceInfoParent.SetActive(!performanceInfoParent.gameObject.activeSelf);
-            ready = false;
-        }
-        else
-        {
-            ready = true;
+            Vector2 dpad = input.GetDPad();
+
+            if (dpad.x > 0.5f)
+            {
+                if (readyForInput)
+                {
+                    toggles[selectedItem].set(1);
+                    readyForInput = false;
+                }
+            }
+            else if (dpad.x < -0.5f)
+            {
+                if (readyForInput)
+                {
+                    toggles[selectedItem].set(-1);
+                    readyForInput = false;
+                }
+            }
+            else if (dpad.y < -0.5f)
+            {
+                if (readyForInput)
+                {
+                    selectedItem++;
+                    selectedItem = selectedItem % toggles.Length;
+                    readyForInput = false;
+                }
+            }
+            else if (dpad.y > 0.5f)
+            {
+                if (readyForInput)
+                {
+                    selectedItem--;
+                    if (selectedItem < 0)
+                    {
+                        selectedItem = toggles.Length - 1;
+                    }
+
+                    readyForInput = false;
+                }
+            }
+            else
+            {
+                readyForInput = true;
+            }
         }
     }
 
@@ -81,7 +209,7 @@ public class Performance : MonoBehaviour
             return;
         }
 
-        if (!ready)
+        if (!readyForInput)
         {
             return;
         }
@@ -163,6 +291,33 @@ public class Performance : MonoBehaviour
         return FindObjectsOfType<Camera>();
     }
 
+    bool Get<T>() where T : Behaviour
+    {
+        if (!performanceInfoParent.gameObject.activeSelf)
+        {
+            return false;
+        }
+
+        if (!readyForInput)
+        {
+            return false;
+        }
+
+        bool enabled = false;
+        var cameras = GetAllCameras();
+        foreach (var cam in cameras)
+        {
+            var comp = cam.GetComponent<T>();
+
+            if (comp)
+            {
+                enabled |= comp.enabled;
+            }
+        }
+
+        return enabled;
+    }
+
     void Toggle<T>() where T : Behaviour
     {
         if (!performanceInfoParent.gameObject.activeSelf)
@@ -170,7 +325,7 @@ public class Performance : MonoBehaviour
             return;
         }
 
-        if (!ready)
+        if (!readyForInput)
         {
             return;
         }
@@ -184,6 +339,33 @@ public class Performance : MonoBehaviour
             {
                 comp.enabled = !comp.enabled;
             }
+        }
+    }
+
+    void DrawPerformanceMenu()
+    {
+        if (performanceInfoParent.activeSelf)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            for (int index = 0; index < this.toggles.Length; index++)
+            {
+                if (index == selectedItem)
+                {
+                    sb.Append(" > ");
+                }
+
+                sb.Append(this.toggles[index].GetDisplayTextSafe());
+                
+                if (index == selectedItem)
+                {
+                    sb.Append(" < ");
+                }
+
+                sb.AppendLine();
+            }
+
+            performanceMenu.text = sb.ToString();
         }
     }
 

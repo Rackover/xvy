@@ -17,7 +17,7 @@ public class Fake3DSound : MonoBehaviour
         maxVolume = source.volume;
 
 #if UNITY_WEBGL
-        maxVolume = 0.03f;
+        maxVolume = source.volume * 0.012f;
 #endif
 
         source.spatialBlend = 0.0f;

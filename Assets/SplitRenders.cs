@@ -102,7 +102,7 @@ public class SplitRenders : MonoBehaviour
             {
                 UpdateWinnerSplit();
             }
-            else if (!isLocked)
+            else if (!isLocked && !Game.i.ShowingCredits)
             {
                 ComputeSplit();
             }

@@ -178,6 +178,9 @@ public class Game : MonoBehaviour
 
     private IEnumerator ListenToMaster()
     {
+        WaitForSeconds wait = new WaitForSeconds(0.1f);
+        bool needRelease = false;
+
         PlayerInput masterInput;
 
         masterInput = PlayerInput.MakeForPlatform();
@@ -186,17 +189,44 @@ public class Game : MonoBehaviour
         while (true)
         {
             masterInput.Refresh();
-            if (masterInput.GetDPad().x > 0.8f)
+
+            if (needRelease)
             {
-                NextLevel();
+                // Do nothing
+                if (!masterInput.AnyKey())
+                {
+                    needRelease = false;
+                }
+            }
+            else
+            {
+                if (masterInput.GetDPad().x > 0.8f)
+                {
+                    if (!Performance.i.IsPerformanceDisplayed)
+                    {
+                        needRelease = true;
+                        NextLevel();
+                    }
+                }
+                else if (masterInput.GetDPad().x < -0.8f)
+                {
+                    if (!Performance.i.IsPerformanceDisplayed)
+                    {
+                        needRelease = true;
+                        Level.FillEmptySeats();
+                    }
+                }
+                else if (masterInput.IsPressingRS())
+                {
+                    needRelease = true;
+                    if (Performance.i)
+                    {
+                        Performance.i.Toggle();
+                    }
+                }
             }
 
-            if (masterInput.GetDPad().x < -0.8f)
-            {
-                Level.FillEmptySeats();
-            }
-
-            yield return new WaitForSeconds(0.6f);
+            yield return wait;
         }
     }
 
@@ -232,6 +262,8 @@ public class Game : MonoBehaviour
         Transform[] targets = currentLevel.GetTrackingTargets();
 
         splitRenders.SetTrackingTargets(targets);
+        splitRenders.Unlock();
+        wantsToPlay = false;
 
         IsLoading = false;
 

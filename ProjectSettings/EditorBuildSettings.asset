@@ -15,3 +15,5 @@ EditorBuildSettings:
     path: Assets/Scene/Forest.unity
   - enabled: 1
     path: Assets/Scene/WindMills.unity
+  - enabled: 1
+    path: Assets/Scene/Highway.unity

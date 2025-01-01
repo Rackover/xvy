@@ -29,6 +29,8 @@ public abstract class PlayerInput : IDisposable
 
     public virtual Vector2 GetDPad() { return Vector2.zero; }
 
+    public virtual bool IsPressingRS() { return false; }
+
     protected virtual void SetVibration(float leftValue, float rightValue) { }
 
     public static PlayerInput MakeForPlatform()

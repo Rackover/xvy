@@ -16,6 +16,15 @@ public class NativeUnityInput : PlayerInput {
         }
     }
 
+    public override bool IsPressingRS()
+    {
+#if !UNITY_XBOX360
+        return Input.GetKey(playerIndex == 0 ? KeyCode.Joystick1Button9 : KeyCode.Joystick2Button9);
+#else
+        return Input.GetKey(playerIndex == 0 ? KeyCode.JoystickButton9 : KeyCode.Joystick1Button9);
+#endif
+    }
+
     protected override void SetVibration(float leftValue, float rightValue)
     {
 #if X360

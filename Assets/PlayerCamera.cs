@@ -99,7 +99,7 @@ public class PlayerCamera : MonoBehaviour
         lockOnSource.Stop();
 
 #if UNITY_WEBGL
-        lockOnSource.volume = 0.085f;
+        lockOnSource.volume = 0.025f;
 #else
         lockOnSource.volume = 1f;
 #endif
