@@ -136,7 +136,15 @@ public class PlayerCamera : MonoBehaviour
         if (player.IsSpawned)
         {
             bool firstFrame = wasSpawned;
-            camera.targetTexture = Game.i.Texes[player.Index];
+
+            if (Performance.i && Performance.i.HasDisabledRenderTarget)
+            {
+                // Do not set target texture
+            }
+            else
+            {
+                camera.targetTexture = Game.i.Texes[player.Index];
+            }
 
             if (player.IsAlive)
             {

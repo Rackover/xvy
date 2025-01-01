@@ -51,9 +51,17 @@ public class Performance : MonoBehaviour
     [SerializeField]
     private UnityEngine.UI.Text performanceMenu;
 
+    [SerializeField]
+    private MaskableGraphic blackScreen;
+
+    [SerializeField]
+    private GameObject split;
+
     public static Performance i;
 
     public bool IsPerformanceDisplayed { get { return performanceInfoParent.gameObject.activeSelf; } }
+
+    public bool HasDisabledRenderTarget { get { return !blackScreen.enabled; } }
 
     private PlayerInput input;
 
@@ -114,11 +122,15 @@ public class Performance : MonoBehaviour
         ));
 
         toggles.Add(new PerformanceToggle(
-            "RTSize", (_) => ResizeRenderTextures(), () => string.Format("{0}x{1}", textureSizes[sizeIndex].x, textureSizes[sizeIndex].y)
+            "RTSize", (sign) => ResizeRenderTextures(sign), () => string.Format("{0}x{1}", textureSizes[sizeIndex].x, textureSizes[sizeIndex].y)
         ));
 
         toggles.Add(new PerformanceToggle(
             "BGM", (_) => ToggleMusic(), () => MusicEnabled() ? ON : OFF
+        ));
+
+        toggles.Add(new PerformanceToggle(
+            "RenderTarget", (_) => KillRenderTarget(), ()=> blackScreen.enabled ? ON : OFF
         ));
 
         this.toggles = toggles.ToArray();
@@ -127,6 +139,25 @@ public class Performance : MonoBehaviour
         input.SetPlayerIndex(sizeIndex);
 
         performanceInfoParent.gameObject.SetActive(Game.i.ShowPerformanceInfo);
+    }
+
+    private void KillRenderTarget()
+    {
+        if (blackScreen.enabled)
+        {
+            Camera[] cameras = GetAllCameras();
+            for (int i = 0; i < cameras.Length; i++)
+            {
+                cameras[i].targetTexture = null;
+            }
+        }
+        else
+        {
+            ResizeRenderTextures(0);
+        }
+
+        split.gameObject.SetActive(!split.gameObject.activeSelf);
+        blackScreen.enabled = !blackScreen.enabled;
     }
 
     private bool MusicEnabled()
@@ -202,7 +233,7 @@ public class Performance : MonoBehaviour
         }
     }
 
-    void ResizeRenderTextures()
+    void ResizeRenderTextures(int sign)
     {
         if (!performanceInfoParent.gameObject.activeSelf)
         {
@@ -261,7 +292,19 @@ public class Performance : MonoBehaviour
             }
         }
 
-        sizeIndex = (sizeIndex + 1) % textureSizes.Length;
+        if (sign > 0)
+        {
+            sizeIndex = (sizeIndex + 1) % textureSizes.Length;
+        }
+        else if (sign < 0)
+        {
+            sizeIndex--;
+            if (sizeIndex < 0)
+            {
+                sizeIndex = textureSizes.Length - 1;
+            }
+        }
+
         Vector2 size = textureSizes[sizeIndex];
 
         int ti = 0;

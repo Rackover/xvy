@@ -2284,7 +2284,7 @@ MonoBehaviour:
   - {fileID: 8400000, guid: 5af65befae4692e46a7b9c84df446d70, type: 2}
   - {fileID: 8400000, guid: 46a4eb9b24ef7d944819ced186526136, type: 2}
   alwaysReady: 0
-  fillEmptySeats: 0
+  fillEmptySeats: 1
   showPerformanceInfo: 0
   alwaysHoming: 0
   allowMasterControl: 1
@@ -2322,6 +2322,8 @@ MonoBehaviour:
   performanceInfoParent: {fileID: 684552577}
   performanceInfo: {fileID: 88239073}
   performanceMenu: {fileID: 1513573694}
+  blackScreen: {fileID: 1843248251}
+  split: {fileID: 740997315}
 --- !u!82 &1498359812
 AudioSource:
   m_ObjectHideFlags: 0
