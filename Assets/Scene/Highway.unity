@@ -14,8 +14,8 @@ SceneSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 7
-  m_Fog: 0
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_Fog: 1
+  m_FogColor: {r: 1, g: 1, b: 1, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
   m_LinearFogStart: 0
@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.8219836, g: 0.862858, b: 0.9449251, a: 1}
+  m_IndirectSpecularColor: {r: 0.72128195, g: 0.7345341, b: 1.0000023, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -91,7 +91,7 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &720060992
+--- !u!1001 &1702767200
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -129,20 +129,6 @@ Prefab:
     - target: {fileID: 4000010671179508, guid: 3235b31c7379fc84a8ab9d6585bd7db7, type: 2}
       propertyPath: m_RootOrder
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011951204352, guid: 3235b31c7379fc84a8ab9d6585bd7db7, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -7.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000010872006092, guid: 3235b31c7379fc84a8ab9d6585bd7db7,
-        type: 2}
-      propertyPath: minimumDeltaToGetGeesDegPerSec
-      value: 120
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000010872006092, guid: 3235b31c7379fc84a8ab9d6585bd7db7,
-        type: 2}
-      propertyPath: lethalGees
-      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3235b31c7379fc84a8ab9d6585bd7db7, type: 2}

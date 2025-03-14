@@ -31,7 +31,6 @@ QualitySettings:
     particleRaycastBudget: 4096
     asyncUploadTimeSlice: 2
     asyncUploadBufferSize: 4
-    excludedTargetPlatforms: []
-  m_PerPlatformDefaultQuality:
-    Standalone: 0
-    WebGL: 0
+    excludedTargetPlatforms:
+    - PS3
+  m_PerPlatformDefaultQuality: {}

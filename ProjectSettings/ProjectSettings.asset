@@ -26,7 +26,7 @@ PlayerSettings:
   m_ActiveColorSpace: 0
   m_MTRendering: 1
   m_MobileMTRendering: 0
-  m_StackTraceTypes: 010000000000000000000000000000000000000001000000
+  m_StackTraceTypes: 010000000100000001000000010000000100000001000000
   iosShowActivityIndicatorOnLoading: -1
   androidShowActivityIndicatorOnLoading: -1
   iosAppInBackgroundBehavior: 0
@@ -51,7 +51,7 @@ PlayerSettings:
   forceSingleInstance: 0
   resizableWindow: 1
   useMacAppStoreValidation: 0
-  gpuSkinning: 0
+  gpuSkinning: 1
   graphicsJobs: 0
   xboxPIXTextureCapture: 0
   xboxEnableAvatar: 0
@@ -75,7 +75,7 @@ PlayerSettings:
   xboxOneResolution: 0
   xboxOneMonoLoggingLevel: 0
   xboxOneLoggingLevel: 1
-  ps3SplashScreen: {fileID: 0}
+  ps3SplashScreen: {fileID: 2800000, guid: 98e5671a24926bd47ac4c4c56a5d037d, type: 3}
   videoMemoryForVertexBuffers: 0
   psp2PowerMode: 0
   psp2AcquireBGM: 1
@@ -114,8 +114,8 @@ PlayerSettings:
   ForceSDCardPermission: 0
   CreateWallpaper: 0
   APKExpansionFiles: 0
-  preloadShaders: 1
-  StripUnusedMeshComponents: 0
+  preloadShaders: 0
+  StripUnusedMeshComponents: 1
   VertexChannelCompressionMask:
     serializedVersion: 2
     m_Bits: 238
@@ -187,6 +187,9 @@ PlayerSettings:
   - m_BuildTarget: WebGL
     m_StaticBatching: 1
     m_DynamicBatching: 1
+  - m_BuildTarget: XBOX360
+    m_StaticBatching: 1
+    m_DynamicBatching: 0
   m_BuildTargetGraphicsAPIs: []
   webPlayerTemplate: APPLICATION:Default
   m_TemplateCustomTags: {}
@@ -222,10 +225,10 @@ PlayerSettings:
   xboxAdditionalTitleMemorySize: 0
   xboxDeployKinectHeadOrientation: 0
   xboxDeployKinectHeadPosition: 0
-  ps3TitleConfigPath: 
+  ps3TitleConfigPath: TITLECONFIG.XML
   ps3DLCConfigPath: 
-  ps3ThumbnailPath: 
-  ps3BackgroundPath: 
+  ps3ThumbnailPath: ICON0.PNG
+  ps3BackgroundPath: Assets/PS3 Submission Package/BACKGROUND.PNG
   ps3SoundPath: 
   ps3NPAgeRating: 12
   ps3TrophyCommId: 
@@ -233,12 +236,12 @@ PlayerSettings:
   ps3TrophyPackagePath: 
   ps3BootCheckMaxSaveGameSizeKB: 128
   ps3TrophyCommSig: 
-  ps3SaveGameSlots: 1
+  ps3SaveGameSlots: 0
   ps3TrialMode: 0
   ps3VideoMemoryForAudio: 0
   ps3EnableVerboseMemoryStats: 0
   ps3UseSPUForUmbra: 0
-  ps3EnableMoveSupport: 1
+  ps3EnableMoveSupport: 0
   ps3DisableDolbyEncoding: 0
   ps4NPAgeRating: 12
   ps4NPTitleSecret: 

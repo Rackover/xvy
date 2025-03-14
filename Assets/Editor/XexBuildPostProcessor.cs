@@ -5,7 +5,7 @@ using System.IO;
 using System.Collections;
 
 public class XexBuildPostProcessor {
-
+#if UNITY_XENON
     [MenuItem("Build/XEX")]
     public static void BuildXeX()
     {
@@ -27,7 +27,7 @@ public class XexBuildPostProcessor {
         PlayerSettings.stripEngineCode = true;
 
         BuildPipeline.BuildPlayer(
-            new string[] { "Assets/Scene/RUN.unity" },
+            EditorBuildSettings.scenes,
             "BUILD_X360",
             BuildTarget.XBOX360,
             options
@@ -164,4 +164,5 @@ public class XexBuildPostProcessor {
 
         }
     }
+#endif
 }

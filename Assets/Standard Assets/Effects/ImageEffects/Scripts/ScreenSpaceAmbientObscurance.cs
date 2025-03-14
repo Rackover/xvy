@@ -56,7 +56,7 @@ namespace UnityStandardAssets.ImageEffects
                  ((1.0f + P[1,2]) / P[1,1]));
 
 
-#if UNITY_5_4_1
+#if UNITY_5_4_1 && !UNITY_PS3
 			if (camera.stereoEnabled)
 			{
 				Matrix4x4 P0 = camera.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left);
@@ -79,7 +79,7 @@ namespace UnityStandardAssets.ImageEffects
 			}
 #endif
 
-			aoMaterial.SetVector ("_ProjInfo", projInfo); // used for unprojection
+            aoMaterial.SetVector ("_ProjInfo", projInfo); // used for unprojection
             aoMaterial.SetMatrix ("_ProjectionInv", invP); // only used for reference
             aoMaterial.SetTexture ("_Rand", rand); // not needed for DX11 :)
             aoMaterial.SetFloat ("_Radius", radius);
