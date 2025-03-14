@@ -1,7 +1,6 @@
  # <img align="left" width="100" height="100" src="PROMOTION/favicon.png"> LouveSystems' XvY 
 XvY is a split-screen aerial-shooting game targeting the Xbox360, made for two players.
 
-It is made to run on **Unity 5.4.X** and **only** on that version, at least for now - for this game targets the Xbox360 and the export plugin for that platform is, as of today, only publicly available for that unity version.
 On the target hardware, it should run at 60 frames per second (somewhat) stable. Builds can also be made for Windows PC and Web, and have been shown to work without problem.
 
 <p>
