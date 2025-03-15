@@ -100,7 +100,7 @@ public class SplitRenders : MonoBehaviour
                 winnerSplitAmount = Mathf.Clamp01(winnerSplitAmount);
                 flipTarget = 0f;
             }
-            else if (Game.i.Level.GameOver)
+            else if (Game.i.Level && Game.i.Level.GameOver)
             {
                 UpdateWinnerSplit();
             }
@@ -170,7 +170,7 @@ public class SplitRenders : MonoBehaviour
 
         }
 
-        if (Game.i && (Game.i.Level.GameOver || Game.i.ShowingCredits))
+        if (Game.i && Game.i.Level && (Game.i.Level.GameOver || Game.i.ShowingCredits))
         {
             int winner = Game.i.ShowingCredits ? 0 : Game.i.Level.Winner;
             if (winner == 0)

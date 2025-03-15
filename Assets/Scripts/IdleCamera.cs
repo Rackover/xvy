@@ -19,13 +19,17 @@ public class IdleCamera : MonoBehaviour {
 
         if (initialSkip)
 		{
-			//animator.SetTrigger("Skip");
-			//animator.SetTime(0.5f);
+#if UNITY_PS3
+            animator.SetTrigger("Skip");
+            animator.SetTime(0.5f);
+#else
 			animator.Update(1.5f / speed);
-
+#endif
         }
 
+#if !UNITY_PS3
 		animator.Play("Entry");
+#endif
 
         if (Game.i == null && initialSkip)
         {

@@ -48,6 +48,11 @@ public class PlayerAnimation : MonoBehaviour
             return;
         }
 
+        if (Game.i.Level == null)
+        {
+            return;
+        }
+
         if (player.IsAlive)
         {
             bool firstFrame = !wasAlive;

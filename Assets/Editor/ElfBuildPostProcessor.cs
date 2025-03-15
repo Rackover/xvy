@@ -8,18 +8,35 @@ using System.Collections;
 public class ElfBuildPostProcessor
 {
 #if UNITY_PS3
-    [MenuItem("Build/ELF")]
-    public static void BuildElf()
+
+    private static string MakePS3DevDefines()
     {
-        BuildElf(BuildOptions.None);
+        return MakePS3NormalDefines() + "PS3DEV;";
+    }
+
+    private static string MakePS3NormalDefines()
+    {
+        return PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.PS3).Replace("PS3DEV;", string.Empty);
     }
 
     [MenuItem("Build/ELF Debug")]
     public static void BuildElfDebug()
     {
-        BuildElf(BuildOptions.Development | BuildOptions.AllowDebugging);
+        // It is strongly discouraged to build a Development version of the Unity Player for the PS3
+        // Doing so will crash instantly because the embedded profiler is unstable
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.PS3, MakePS3DevDefines());
+
+        BuildElf(BuildOptions.None);
     }
 
+    [MenuItem("Build/ELF")]
+    public static void BuildElf()
+    {
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.PS3, MakePS3NormalDefines());
+
+        BuildElf(BuildOptions.None);
+    }
+    
     private static void BuildElf(BuildOptions options)
     {
         PlayerSettings.stripEngineCode = true;
@@ -39,6 +56,19 @@ public class ElfBuildPostProcessor
     {
         if (target == BuildTarget.PS3)
         {
+            // Copy image files cause unity can't do it apparently
+            {
+                const string sub = "Assets/PS3 Submission Package";
+                if (Directory.Exists(sub))
+                {
+                    foreach (var file in Directory.GetFiles(sub, "*.PNG"))
+                    {
+                        File.Copy(file, Path.Combine(pathToBuiltProject,Path.Combine( "PS3_GAME", Path.GetFileName(file))), overwrite: true);
+                    }
+                }
+            }
+
+
             // Upload
             try
             {

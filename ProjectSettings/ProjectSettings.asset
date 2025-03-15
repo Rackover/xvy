@@ -4,7 +4,6 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 8
-  productGUID: 903914fa3bcf11c49a25528e7bfa8bba
   AndroidProfiler: 0
   defaultScreenOrientation: 4
   targetDevice: 2
@@ -14,7 +13,6 @@ PlayerSettings:
   productName: XvY
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
-  m_SplashScreenStyle: 0
   m_ShowUnitySplashScreen: 0
   m_VirtualRealitySplashScreen: {fileID: 0}
   defaultScreenWidth: 1280
@@ -52,7 +50,6 @@ PlayerSettings:
   resizableWindow: 1
   useMacAppStoreValidation: 0
   gpuSkinning: 1
-  graphicsJobs: 0
   xboxPIXTextureCapture: 0
   xboxEnableAvatar: 0
   xboxEnableKinect: 0
@@ -73,8 +70,6 @@ PlayerSettings:
   uiUse16BitDepthBuffer: 0
   ignoreAlphaClear: 0
   xboxOneResolution: 0
-  xboxOneMonoLoggingLevel: 0
-  xboxOneLoggingLevel: 1
   ps3SplashScreen: {fileID: 2800000, guid: 98e5671a24926bd47ac4c4c56a5d037d, type: 3}
   videoMemoryForVertexBuffers: 0
   psp2PowerMode: 0
@@ -99,8 +94,8 @@ PlayerSettings:
   preloadedAssets: []
   metroEnableIndependentInputSource: 0
   xboxOneDisableKinectGpuReservation: 0
-  singlePassStereoRendering: 0
   protectGraphicsMemory: 0
+  productGUID: 903914fa3bcf11c49a25528e7bfa8bba
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 9
   AndroidPreferredInstallLocation: 1
@@ -121,8 +116,6 @@ PlayerSettings:
     m_Bits: 238
   iPhoneSdkVersion: 988
   iPhoneTargetOSVersion: 24
-  tvOSSdkVersion: 0
-  tvOSTargetOSVersion: 900
   uIPrerenderedIcon: 0
   uIRequiresPersistentWiFi: 0
   uIRequiresFullScreen: 1
@@ -268,7 +261,6 @@ PlayerSettings:
   ps4NPtitleDatPath: 
   ps4RemotePlayKeyAssignment: -1
   ps4RemotePlayKeyMappingDir: 
-  ps4PlayTogetherPlayerCount: 0
   ps4EnterButtonAssignment: 1
   ps4ApplicationParam1: 0
   ps4ApplicationParam2: 0
@@ -277,7 +269,6 @@ PlayerSettings:
   ps4DownloadDataSize: 0
   ps4GarlicHeapSize: 2048
   ps4Passcode: frAQBc8Wsa1xVPfvJcrgRYwTiizs2trQ
-  ps4UseDebugIl2cppLibs: 0
   ps4pnSessions: 1
   ps4pnPresence: 1
   ps4pnFriends: 1
@@ -291,13 +282,10 @@ PlayerSettings:
   ps4PatchPkgPath: 
   ps4PatchLatestPkgPath: 
   ps4PatchChangeinfoPath: 
-  ps4PatchDayOne: 0
   ps4attribUserManagement: 0
   ps4attribMoveSupport: 0
   ps4attrib3DSupport: 0
   ps4attribShareSupport: 0
-  ps4attribExclusiveVR: 0
-  ps4disableAutoHideSplash: 0
   ps4IncludedModules: []
   monoEnv: 
   psp2Splashimage: {fileID: 0}
@@ -346,10 +334,10 @@ PlayerSettings:
   psp2UseLibLocation: 0
   psp2InfoBarOnStartup: 0
   psp2InfoBarColor: 0
-  psp2UseDebugIl2cppLibs: 0
   psmSplashimage: {fileID: 0}
   spritePackerPolicy: 
   scriptingDefineSymbols:
+    5: PS3DEV
     6: X360
   metroPackageName: xplane
   metroPackageVersion: 
@@ -382,7 +370,6 @@ PlayerSettings:
   tizenSigningProfileName: 
   tizenGPSPermissions: 0
   tizenMicrophonePermissions: 0
-  tizenMinOSVersion: 0
   n3dsUseExtSaveData: 0
   n3dsCompressStaticMem: 1
   n3dsExtSaveDataNumber: 0x12345

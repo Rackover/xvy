@@ -105,13 +105,6 @@ public class PlayerCamera : MonoBehaviour
 #else
         lockOnSource.volume = 1f;
 #endif
-
-#if UNITY_PS3
-        if (blur)
-        {
-            blur.enabled = false;
-        }
-#endif
     }
 
     void Start()

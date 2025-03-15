@@ -122,7 +122,7 @@ public class Game : MonoBehaviour
 
     void Awake()
     {
-#if DEBUG
+#if DEBUG || PS3DEV
 
 
 #else
@@ -175,11 +175,11 @@ public class Game : MonoBehaviour
             StartCoroutine(ListenToMaster());
         }
 
-#if UNITY_5_4_1 && !UNITY_PS3
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded += SceneManager_sceneLoaded;
-#else
+#if UNITY_PS3
         currentLevel = null;
         StartCoroutine(EnterLevelAsap());
+#else
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += SceneManager_sceneLoaded;
 #endif
 
         currentScene = scenes[levelIndex];
@@ -239,12 +239,16 @@ public class Game : MonoBehaviour
                 break;
             }
         }
+#else
+        yield return null;
 #endif
 
     }
 
     IEnumerator EnterLevelAsap()
     {
+        Debug.Log("Enter Level ASAP");
+
         while(currentLevel == null)
         {
             yield return null;
@@ -329,6 +333,8 @@ public class Game : MonoBehaviour
 
     private void ExitLevel()
     {
+        Debug.Log("Exiting level " + currentLevel);
+
         idleTimer = 0f;
 
         currentLevel.Exit();
@@ -338,6 +344,8 @@ public class Game : MonoBehaviour
 
     private void EnterLevel()
     {
+        Debug.Log("Entering level " + currentLevel);
+
         currentLevel.gameObject.SetActive(true);
 
         currentLevel.Enter();
@@ -368,11 +376,22 @@ public class Game : MonoBehaviour
         this.LevelName = mapNames[levelIndex];
 
         this.IsLoading = true;
+
+#if UNITY_PS3
+        currentLevel = null;
+        StartCoroutine(EnterLevelAsap());
+#endif
+        
         UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(currentScene);
     }
 
     void Update()
     {
+        if (currentLevel == null)
+        {
+            return;
+        }
+
         bool canSeeCredits = !Playing && !InGame;
         if (currentLevel.WantsCredits() && canSeeCredits)
         {
@@ -407,6 +426,11 @@ public class Game : MonoBehaviour
         wantsToPlay |= alwaysReady;
 
         UpdateHud();
+
+        if (currentLevel == null)
+        {
+            return;
+        }
 
         if (fade.IsAnimating)
         {
