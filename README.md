@@ -6,7 +6,8 @@ On the target hardware, it should run at 60 frames per second (somewhat) stable.
 <p>
   <img height=200 src="https://github.com/user-attachments/assets/edf5f3dd-6e13-4059-b400-2390784e8451">
   <img height=200 src="https://github.com/user-attachments/assets/85a47979-e2c7-411b-a184-5c68e1d2c845">
-  <img height=400 src="https://github.com/user-attachments/assets/8e54679c-0576-485a-a589-fc8da3d65297">
+  <img height=200 src="https://github.com/user-attachments/assets/8e54679c-0576-485a-a589-fc8da3d65297">
+  <img height=200 src="https://github.com/user-attachments/assets/85993f6b-8a9c-49a5-b72c-c683c42ad422">
 </p>
 
 
