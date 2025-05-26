@@ -29,7 +29,7 @@ XvY is built to be as stable as possible and should never crash or error out.
 - Sound can get slightly out of sync but will always synchronize back
 
 ## Thanks
-Thanks to [newin](https://bsky.app/profile/newincpp.bsky.social) and every person I bothered on [acegikmo](https://bsky.app/profile/freya.bsky.social)'s discord server for numerous technical issues, and i'd like to give a shoutout too to [antoine](https://bsky.app/profile/toinou.fyi) [konoe](https://bsky.app/profile/konoeyumeko.bsky.social) julien and many others who helped me playtest XvY and flesh out some features :)
+Thanks to [newin](https://bsky.app/profile/newincpp.bsky.social) and every person I bothered on [acegikmo](https://bsky.app/profile/freya.bsky.social)'s discord server for numerous technical issues, to [artik](https://www.logic-sunrise.com/forums/user/1-artik/) for setting up my Xbox360, and i'd like to give a shoutout too to [antoine](https://bsky.app/profile/toinou.fyi), julien, [konoe](https://bsky.app/profile/konoeyumeko.bsky.social) and many others who helped me playtest XvY and flesh out some features :)
 
 LouveSystems 2025
 <img src="PROMOTION/SplashClean.png">
